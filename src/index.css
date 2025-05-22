@@ -1,0 +1,152 @@
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+form {
+  display: flex;
+  width: 100%;
+  background: white;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+}
+
+input {
+  font-size: 16px;
+  border: 0;
+  outline: none;
+  flex-grow: 1;
+  padding: 20px;
+  border-radius: 50px;
+  font-family: "Overpass Mono";
+}
+
+button {
+  padding: 5px 0px;
+  font-size: 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-family: "Overpass Mono";
+}
+
+button:active:not(:disabled) {
+  transform: translateY(3px) !important;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-4px);
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+  cursor: unset;
+}
+
+button.primary {
+  background-color: #55ad51;
+  color: white;
+  border: none;
+}
+
+button.primary:disabled {
+  background-color: #92bea0;
+}
+
+button.secondary {
+  background-color: #fff;
+  color: #000;
+  border: none;
+}
+
+button.secondary:disabled {
+  background-color: #b29268;
+}
+
+button.send:disabled {
+  cursor: unset !important;
+  transform: unset !important;
+}
+
+button.send {
+  background-color: unset !important;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+button.send:hover {
+  transform: translateY(-3px);
+}
+
+button.send:disabled {
+  background-color: #9292be;
+}
+
+button.cancel {
+  background-color: #c31c1c;
+  color: white;
+  border: none;
+}
+
+button.cancel:disabled {
+  background-color: #b67070;
+}
+
+a {
+  color: #0000db;
+}
+
+a:active {
+  color: lightblue;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.Home_currentMember__wDVfO {
+  .Home_text__3B15I {
+    text-align: left !important;
+    padding-left: 16px !important;
+  }
+}
+
+::placeholder {
+  color: grey;
+  font-weight: bold;
+  opacity: 1;
+}
+
+::-ms-input-placeholder { /* Edge 12 -18 */
+  color: grey;
+  font-weight: bold;
+}

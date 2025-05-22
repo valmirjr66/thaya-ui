@@ -1,0 +1,66 @@
+{
+  "name": "thaya-ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^7.1.0",
+    "@mui/x-date-pickers": "^8.4.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.1.5",
+    "@types/react-dom": "^19.1.5",
+    "axios": "^1.9.0",
+    "react": "^19.1.0",
+    "react-device-detect": "^2.2.3",
+    "react-dom": "^19.1.0",
+    "react-error-boundary": "^6.0.0",
+    "react-font": "^1.2.1",
+    "react-loading-skeleton": "^3.5.0",
+    "react-markdown": "^10.1.0",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.5",
+    "react-type-animation": "^3.2.0",
+    "rehype-raw": "^7.0.0",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.119",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "gh-pages": "^6.2.0",
+    "typescript": "^4.9.5"
+  },
+  "overrides": {
+    "react-font": {
+      "react": "$react"
+    }
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
