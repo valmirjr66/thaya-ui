@@ -9,7 +9,8 @@ export default function SidePanel({ showPanel }: SidePanelProps) {
     <div
       className="sidePanelWrapper"
       style={{
-        display: !showPanel ? "none" : "flex",
+        transform: showPanel ? "scale(1)" : "scale(0)",
+        opacity: showPanel ? "1" : "0",
         width: isMobile ? "65%" : "25%",
         height: isMobile ? "50vh" : "70vh",
       }}
