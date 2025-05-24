@@ -9,6 +9,7 @@ import MainFrame from "../components/MainFrame";
 import SidePanel from "../components/SidePanel";
 import useToaster from "../hooks/useToaster";
 import menuIcon from "../imgs/ic-menu.svg";
+import settingsIcon from "../imgs/ic-settings.svg";
 import httpCallers from "../service";
 import { Message } from "../types";
 
@@ -17,7 +18,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io(`${process.env.REACT_APP_WS_URL}`, {
+      socketRef.current = io(`${import.meta.env.REACT_APP_WS_URL}`, {
         extraHeaders: { userId: localStorage.getItem("userId")! },
         reconnection: true,
         reconnectionDelay: 1000,
@@ -127,6 +128,15 @@ export default function Chat() {
           justifyContent: "end",
         }}
       >
+        <img
+          src={settingsIcon}
+          alt="Settings"
+          width={25}
+          style={{
+            cursor: "pointer",
+            marginRight: 25,
+          }}
+        />
         <img
           src={menuIcon}
           alt="Menu"
