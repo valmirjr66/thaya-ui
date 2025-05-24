@@ -73,15 +73,9 @@ export default function Chat() {
     setIsLoadingMessages(true);
 
     try {
-      const { data: handshakeData } = await httpCallers.post(
-        `assistant/handshake`
-      );
+      const { data } = await httpCallers.get(`assistant/chat`);
 
-      if (handshakeData.status === "active") {
-        const { data } = await httpCallers.get(`assistant/chat`);
-
-        setMessages(data.messages);
-      }
+      setMessages(data.messages);
     } catch {
       triggerToast(
         "Something wen't wrong while fetching the messages, please try again 😟"
