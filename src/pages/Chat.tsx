@@ -6,10 +6,10 @@ import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import Input from "../components/Input";
 import MainFrame from "../components/MainFrame";
-import SidePanel from "../components/SidePanel";
+import ActionPanel from "../components/ActionPanel";
 import useToaster from "../hooks/useToaster";
-import menuIcon from "../imgs/ic-menu.svg";
 import settingsIcon from "../imgs/ic-settings.svg";
+import actionsIcon from "../imgs/ic-actions.svg";
 import httpCallers from "../service";
 import { Message } from "../types";
 
@@ -65,8 +65,9 @@ export default function Chat() {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [waitingAnswer, setWaitingAnswer] = useState(false);
-  const [showSidePanel, setShowSidePanel] = useState(false);
+  const [showActionPanel, setShowActionPanel] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [intputContent, setIntputContent] = useState("");
 
   const { triggerToast } = useToaster({ type: "error" });
 
@@ -121,7 +122,11 @@ export default function Chat() {
   return (
     <main className="app">
       <ToastContainer />
-      <SidePanel showPanel={showSidePanel} />
+      <ActionPanel
+        showPanel={showActionPanel}
+        setShowPanel={setShowActionPanel}
+        insertPrompt={(value) => setIntputContent(value)}
+      />
       <header
         className="appHeader"
         style={{
@@ -129,20 +134,21 @@ export default function Chat() {
         }}
       >
         <img
+          src={actionsIcon}
+          alt="Actions"
+          width={30}
+          style={{ cursor: "pointer", marginRight: 25 }}
+          onClick={() => setShowActionPanel((prevState) => !prevState)}
+          className={`actionsIcon ${showActionPanel ? "active" : ""}`}
+        />
+        <img
           src={settingsIcon}
           alt="Settings"
           width={25}
           style={{
-            cursor: "pointer",
             marginRight: 25,
           }}
-        />
-        <img
-          src={menuIcon}
-          alt="Menu"
-          width={30}
-          style={{ cursor: "pointer", marginRight: 25 }}
-          onClick={() => setShowSidePanel((prevState) => !prevState)}
+          className="settingsIcon"
         />
       </header>
       <div className="appWrapper">
@@ -164,7 +170,9 @@ export default function Chat() {
               />
             </div>
             <Input
-              onSendMessage={onSendMessage}
+              content={intputContent}
+              setContent={setIntputContent}
+              onSubmit={onSendMessage}
               waitingAnswer={waitingAnswer}
             />
           </div>
