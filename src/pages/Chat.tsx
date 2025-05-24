@@ -18,7 +18,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io(`${import.meta.env.REACT_APP_WS_URL}`, {
+      socketRef.current = io(`${import.meta.env.VITE_WS_URL}`, {
         extraHeaders: { userId: localStorage.getItem("userId")! },
         reconnection: true,
         reconnectionDelay: 1000,
