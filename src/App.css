@@ -35,7 +35,6 @@
 
 .messagesMessage.currentMember {
   flex-direction: row-reverse;
-  text-align: right;
 }
 
 .avatar {
