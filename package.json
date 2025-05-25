@@ -18,6 +18,7 @@
     "react-font": "^1.2.1",
     "react-loading-skeleton": "^3.5.0",
     "react-markdown": "^10.1.0",
+    "react-router": "^7.6.0",
     "react-toastify": "^11.0.5",
     "react-type-animation": "^3.2.0",
     "rehype-raw": "^7.0.0",

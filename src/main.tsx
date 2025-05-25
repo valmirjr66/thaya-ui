@@ -1,12 +1,75 @@
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
+import { ptBR } from "@mui/x-date-pickers/locales";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import reportWebVitals from './reportWebVitals';
-import './index.css';
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
+import Font from "react-font";
+import { SkeletonTheme } from "react-loading-skeleton";
+import { BrowserRouter, Route, Routes } from "react-router";
+import "./App.css";
+import "./index.css";
+import Chat from "./pages/Chat";
+import Login from "./pages/Login";
+import reportWebVitals from "./reportWebVitals";
+import RestrictWrapper from "./RestrictWrapper";
+
+const theme = createTheme(
+  {
+    palette: {
+      primary: { main: "#1976d2" },
+    },
+  },
+  ptBR
+);
+
+function fallbackRender({ error, resetErrorBoundary }: FallbackProps) {
+  // TODO: Implement a pretty fallback page
+  return (
+    <div
+      role="alert"
+      style={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+      }}
+    >
+      <p style={{ textAlign: "center" }}>Something went wrong:</p>
+      <pre style={{ textAlign: "center", color: "red" }}>{error.message}</pre>
+      <p style={{ display: "flex", justifyContent: "center" }}>
+        <button onClick={resetErrorBoundary} style={{ padding: 6 }}>
+          Try again
+        </button>
+      </p>
+    </div>
+  );
+}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary
+      fallbackRender={fallbackRender}
+      onReset={(details) => {
+        // TODO: Implement something
+        // Reset the state of your app so the error doesn't happen again
+      }}
+    >
+      <ThemeProvider theme={theme}>
+        <SkeletonTheme baseColor="#7a7a7a" highlightColor="#d2d2d2">
+          <Font family="Overpass Mono">
+            <BrowserRouter>
+              <Routes>
+                <Route element={<RestrictWrapper />}>
+                  <Route path="/" element={<Chat />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </BrowserRouter>
+          </Font>
+        </SkeletonTheme>
+      </ThemeProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

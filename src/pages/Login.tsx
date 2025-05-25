@@ -1,4 +1,5 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import { TypeAnimation } from "react-type-animation";
 
@@ -10,6 +11,8 @@ export default function Login() {
 
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+
+  let navigate = useNavigate();
 
   const submitCallback = (event: SyntheticEvent<any>) => {
     event.preventDefault();
@@ -35,6 +38,11 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("userId")) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
       <ToastContainer />
