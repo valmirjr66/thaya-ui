@@ -12,7 +12,7 @@ export default function Login() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const submitCallback = (event: SyntheticEvent<any>) => {
     event.preventDefault();
@@ -43,6 +43,7 @@ export default function Login() {
       navigate("/");
     }
   }, []);
+
   return (
     <>
       <ToastContainer />

@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import Input from "../components/Input";
+import InputWithButton from "../components/InputWithButton";
 import MainFrame from "../components/MainFrame";
 import ActionPanel from "../components/ActionPanel";
 import useToaster from "../hooks/useToaster";
@@ -12,6 +12,7 @@ import settingsIcon from "../imgs/ic-settings.svg";
 import actionsIcon from "../imgs/ic-actions.svg";
 import httpCallers from "../service";
 import { Message } from "../types";
+import { useNavigate } from "react-router";
 
 export default function Chat() {
   const socketRef = useRef<Socket | null>(null);
@@ -68,6 +69,8 @@ export default function Chat() {
   const [showActionPanel, setShowActionPanel] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [intputContent, setIntputContent] = useState("");
+
+  const navigate = useNavigate();
 
   const { triggerToast } = useToaster({ type: "error" });
 
@@ -149,6 +152,7 @@ export default function Chat() {
             marginRight: 25,
           }}
           className="settingsIcon"
+          onClick={() => navigate("/settings")}
         />
       </header>
       <div className="appWrapper">
@@ -169,7 +173,7 @@ export default function Chat() {
                 onSendMessage={onSendMessage}
               />
             </div>
-            <Input
+            <InputWithButton
               content={intputContent}
               setContent={setIntputContent}
               onSubmit={onSendMessage}

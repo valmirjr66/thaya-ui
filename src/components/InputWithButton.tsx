@@ -2,14 +2,14 @@ import { useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import sendIcon from "../imgs/ic-send.svg";
 
-type InputProps = {
+type InputWithButtonProps = {
   onSubmit: (msg: string) => void;
   content: string;
   setContent: (msg: string) => void;
   waitingAnswer: boolean;
 };
 
-export default function Input(props: InputProps) {
+export default function InputWithButton(props: InputWithButtonProps) {
   const { onSubmit, waitingAnswer, content, setContent } = props;
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
