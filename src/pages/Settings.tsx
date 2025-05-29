@@ -2,8 +2,8 @@ import { TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
 import { ToastContainer } from "react-toastify";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 import Header from "../components/Header";
 import useToaster from "../hooks/useToaster";
 import loadingIcon from "../imgs/loading.gif";
@@ -17,10 +17,10 @@ type User = {
 };
 
 export default function Settings() {
-  const navigate = useNavigate();
-
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [passwordModalIsOpen, setPasswordModalIsOpen] =
+    useState<boolean>(false);
 
   const { triggerToast: triggerToastError } = useToaster({ type: "error" });
   const { triggerToast: triggerToastSuccess } = useToaster({ type: "success" });
@@ -66,6 +66,10 @@ export default function Settings() {
   return (
     <>
       <ToastContainer />
+      <ChangePasswordModal
+        isOpen={passwordModalIsOpen}
+        handleClose={() => setPasswordModalIsOpen(false)}
+      />
       <main className="app">
         <Header buttonsToRender={["chat"]} />
         <div className="appWrapper">
@@ -122,12 +126,13 @@ export default function Settings() {
                       }))
                     }
                   />
-                  <Link
-                    to="/settings/password"
+                  <a
+                    href="#"
                     style={{ fontSize: 12, color: "lightblue" }}
+                    onClick={() => setPasswordModalIsOpen(true)}
                   >
                     Change password
-                  </Link>
+                  </a>
                   <button
                     type="submit"
                     className="primary"

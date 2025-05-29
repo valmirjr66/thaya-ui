@@ -12,7 +12,6 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import "./index.css";
-import ChangePassword from "./pages/ChangePassword";
 import Chat from "./pages/Chat";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
@@ -69,10 +68,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route element={<RestrictWrapper />}>
                     <Route path="/" element={<Chat />} />
                     <Route path="/settings" element={<Settings />} />
-                    <Route
-                      path="/settings/password"
-                      element={<ChangePassword />}
-                    />
                   </Route>
                   <Route path="/login" element={<Login />} />
                 </Routes>
