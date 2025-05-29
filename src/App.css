@@ -283,6 +283,7 @@
   justify-content: space-around;
   align-items: center;
   min-width: 300px;
+  height: 50%;
 }
 
 .settingsContent {
@@ -291,6 +292,7 @@
   flex-direction: row;
   box-sizing: border-box;
   justify-content: center;
+  align-items: center;
   background-color: #323232;
   padding: 16px 16px;
   background-size: cover;
