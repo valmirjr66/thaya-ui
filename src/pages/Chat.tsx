@@ -13,6 +13,7 @@ import useToaster from "../hooks/useToaster";
 import actionsIcon from "../imgs/ic-actions.svg";
 import settingsIcon from "../imgs/ic-settings.svg";
 import httpCallers from "../service";
+import { useActionPanelStore } from "../store";
 import { Message } from "../types";
 
 export default function Chat() {
@@ -123,24 +124,15 @@ export default function Chat() {
     }
   };
 
-  const [actionAnchorEl, setActionAnchorEl] = useState<HTMLImageElement | null>(
-    null
-  );
-
-  const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
-    setActionAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setActionAnchorEl(null);
-  };
+  const { handleClick, handleClose, actionAnchorElement } =
+    useActionPanelStore();
 
   return (
     <main className="app">
       <ToastContainer />
       <Popover
-        open={Boolean(actionAnchorEl)}
-        anchorEl={actionAnchorEl}
+        open={Boolean(actionAnchorElement)}
+        anchorEl={actionAnchorElement}
         onClose={handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
