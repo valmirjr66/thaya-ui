@@ -10,6 +10,10 @@ code {
     monospace;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 a {
   color: lightblue;
 }
