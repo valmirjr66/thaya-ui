@@ -1,3 +1,4 @@
+import { TextField } from "@mui/material";
 import { useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import sendIcon from "../imgs/ic-send.svg";
@@ -13,7 +14,9 @@ type InputWithButtonProps = {
 export default function InputWithButton(props: InputWithButtonProps) {
   const { onSubmit, waitingAnswer, content, setContent, placeholder } = props;
 
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const value = e.target.value;
     setContent(value);
   }
@@ -39,23 +42,24 @@ export default function InputWithButton(props: InputWithButtonProps) {
     >
       <form
         onSubmit={(e) => onSubmitInternal(e)}
-        style={{ width: isMobile ? "100%" : "75%" }}
+        style={{ width: isMobile ? "90%" : "75%", display: "flex" }}
       >
-        <input
+        <TextField
+          label={placeholder}
+          multiline
+          maxRows={3}
           onChange={(e) => onChange(e)}
           value={content}
-          type="text"
-          placeholder={placeholder}
           autoFocus
           spellCheck={false}
-          className="largeInput"
+          fullWidth
         />
         <button className="send" disabled={isButtonDisabled}>
           <img
             src={sendIcon}
             width={35}
             alt="Send"
-            style={{ opacity: isButtonDisabled ? 0.5 : 1, marginRight: 10 }}
+            style={{ opacity: isButtonDisabled ? 0.5 : 1, marginLeft: 10 }}
           />
         </button>
       </form>
