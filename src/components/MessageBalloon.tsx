@@ -56,7 +56,10 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
         />
         <div
           className="messageContent"
-          style={{ marginBottom: isAnchor ? 30 : 0 }}
+          style={{
+            marginBottom: isAnchor ? 30 : 0,
+            width: role === "assistant" ? "100%" : undefined,
+          }}
         >
           <div className="username">{member.clientData.username}</div>
           <div
