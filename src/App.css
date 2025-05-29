@@ -50,6 +50,7 @@
 .username {
   color: lightgray;
   font-size: 14px;
+  display: flex;
 }
 
 .messageContent > .username {
@@ -312,4 +313,16 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.previouPromptArrow {
+  margin-left: 16px;
+  cursor: pointer;
+  transform: translateY(-4px);
+}
+
+.previouPromptArrow:hover {
+  transform: translateY(-6px);
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(100deg)
+    brightness(80%) contrast(100%);
 }

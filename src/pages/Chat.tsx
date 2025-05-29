@@ -92,7 +92,7 @@ export default function Chat() {
   }, [fetchMessages]);
 
   useEffect(() => {
-    const element = document.getElementById("anchor");
+    const element = document.getElementById("end_of_chat_anchor");
     element?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 

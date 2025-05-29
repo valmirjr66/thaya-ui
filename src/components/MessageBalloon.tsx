@@ -1,6 +1,7 @@
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { isMobile } from "react-device-detect";
 import Markdown from "react-markdown";
-import remarkGfm from 'remark-gfm';
+import remarkGfm from "remark-gfm";
 import downloadIcon from "../imgs/ic-download.svg";
 import myAvatar from "../imgs/ic-me.svg";
 import aiAvatar from "../imgs/logo.svg";
@@ -22,21 +23,24 @@ const members = {
 };
 
 interface MessageBalloonProps {
-  key: string;
+  id: string;
   role: "assistant" | "user";
   content: React.ReactNode;
   actions?: { type: string; feedbackResponse: string }[];
   references?: Reference[];
-  isAnchor?: boolean;
+  isLastMessage?: boolean;
+  previousPromptAnchorId?: string;
   onSendMessage?: (msg: string) => void;
 }
 
 const MessageBalloon: React.FC<MessageBalloonProps> = ({
+  id,
   role,
   content,
   actions,
   references,
-  isAnchor,
+  isLastMessage,
+  previousPromptAnchorId,
   onSendMessage,
 }) => {
   const member = members[role];
@@ -48,6 +52,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
 
   return (
     <>
+      <div id={`${id}_anchor`} />
       <li className={className}>
         <img
           className="avatar"
@@ -57,11 +62,26 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
         <div
           className="messageContent"
           style={{
-            marginBottom: isAnchor ? 30 : 0,
+            marginBottom: isLastMessage ? 30 : 0,
             width: role === "assistant" ? "100%" : undefined,
           }}
         >
-          <div className="username">{member.clientData.username}</div>
+          <div className="username">
+            {member.clientData.username}
+            {previousPromptAnchorId && (
+              <ArrowUpwardIcon
+                fontSize="small"
+                style={{ marginLeft: 16 }}
+                className="previouPromptArrow"
+                onClick={() => {
+                  const element = document.getElementById(
+                    `${previousPromptAnchorId}_anchor`
+                  );
+                  element?.scrollIntoView({ behavior: "smooth" });
+                }}
+              />
+            )}
+          </div>
           <div
             className="messageText"
             style={{ maxWidth: isMobile || role === "assistant" ? "70%" : 400 }}
@@ -82,7 +102,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
               return (
                 <button
                   className={className}
-                  disabled={!isAnchor}
+                  disabled={!isLastMessage}
                   onClick={() => onSendMessage?.(action?.feedbackResponse)}
                 >
                   {action?.feedbackResponse}
@@ -117,7 +137,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
               })}
         </div>
       </li>
-      {isAnchor && <div id="anchor" />}
+      {isLastMessage && <div id="end_of_chat_anchor" />}
     </>
   );
 };

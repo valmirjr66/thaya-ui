@@ -7,7 +7,7 @@ import { Reference } from "../types";
 import MessageBalloon from "./MessageBalloon";
 
 type Message = {
-  id: string;
+  _id: string;
   content: string | ReactElement;
   role: "assistant" | "user";
   references?: Reference[];
@@ -30,7 +30,7 @@ export default function MainFrame({
 
   const loadingMessages: Message[] = [
     {
-      id: "1",
+      _id: "1",
       role: "user",
       content: (
         <Skeleton
@@ -43,7 +43,7 @@ export default function MainFrame({
       ),
     },
     {
-      id: "2",
+      _id: "2",
       role: "assistant",
       content: (
         <Skeleton
@@ -56,7 +56,7 @@ export default function MainFrame({
       ),
     },
     {
-      id: "3",
+      _id: "3",
       role: "user",
       content: (
         <Skeleton
@@ -80,23 +80,30 @@ export default function MainFrame({
       }}
     >
       {(isLoading ? loadingMessages : messages).map(
-        (message, index) =>
+        (message, index, array) =>
           message && (
             <MessageBalloon
+              id={message._id}
               content={message.content}
               role={message.role}
-              isAnchor={messages.length === index + 1}
-              key={message.id}
+              isLastMessage={messages.length === index + 1}
+              key={message._id}
               onSendMessage={onSendMessage}
               references={message.references}
+              previousPromptAnchorId={
+                message.role === "user" && !isLoading && array[index - 2]
+                  ? array[index - 2]._id
+                  : null
+              }
             />
           )
       )}
       {waitingAnswer && messages[messages.length - 1].role === "user" && (
         <MessageBalloon
+          id={`loading_msg_${uuidv4()}`}
           content={<LoadingDots />}
           role="assistant"
-          isAnchor
+          isLastMessage
           key={`loading_msg_${uuidv4()}`}
           onSendMessage={onSendMessage}
         />
