@@ -23,6 +23,10 @@ const theme = createTheme(
     palette: {
       mode: "dark",
     },
+    typography: { fontFamily: "overpass mono" },
+    components: {
+      MuiModal: { styleOverrides: { root: { fontFamily: "overpass mono" } } },
+    },
   },
   ptBR
 );
