@@ -1,6 +1,6 @@
 import { isMobile } from "react-device-detect";
 import Markdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
+import remarkGfm from 'remark-gfm';
 import downloadIcon from "../imgs/ic-download.svg";
 import myAvatar from "../imgs/ic-me.svg";
 import aiAvatar from "../imgs/logo.svg";
@@ -67,7 +67,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
             style={{ maxWidth: isMobile || role === "assistant" ? "70%" : 400 }}
           >
             {typeof content === "string" ? (
-              <Markdown rehypePlugins={[rehypeRaw]}>{content}</Markdown>
+              <Markdown rehypePlugins={[remarkGfm]}>{content}</Markdown>
             ) : (
               content
             )}
