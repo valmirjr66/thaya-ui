@@ -282,9 +282,19 @@
 .closeIcon {
   cursor: pointer;
 }
+
 .closeIcon:hover {
   filter: invert(30%) sepia(100%) saturate(4000%) hue-rotate(0deg)
     brightness(90%) contrast(120%);
+}
+
+.chatIcon {
+  cursor: pointer;
+}
+
+.chatIcon:hover {
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
+    brightness(80%) contrast(100%);
 }
 
 .promptSuggestion {
@@ -294,4 +304,32 @@
 
 .promptSuggestion:hover {
   text-decoration: underline;
+}
+
+.settingsPanel {
+  background-color: #3a3a3a;
+  padding: 24px 32px;
+  border: rgba(255, 255, 255, 0.8) solid 1px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 300px;
+}
+
+.settingsContent {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  justify-content: center;
+  background-color: #323232;
+  padding: 16px 16px;
+  background-size: cover;
+}
+
+input.largeInput {
+  font-size: 16px;
+  padding: 20px;
 }

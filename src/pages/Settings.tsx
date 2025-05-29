@@ -1,0 +1,163 @@
+import { TextField } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import useToaster from "../hooks/useToaster";
+import chatIcon from "../imgs/ic-chat.svg";
+import loadingIcon from "../imgs/loading.gif";
+import httpCallers from "../service";
+import { ToastContainer } from "react-toastify";
+
+type User = {
+  fullname: string;
+  nickname?: string;
+  email: string;
+  birthdate: Date;
+};
+
+export default function Settings() {
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const { triggerToast: triggerToastError } = useToaster({ type: "error" });
+  const { triggerToast: triggerToastSuccess } = useToaster({ type: "success" });
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const email = localStorage.getItem("userEmail");
+        const { data } = await httpCallers.get(`user/info`);
+
+        const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
+          .split("-")
+          .map((x: string) => Number(x));
+
+        setUser({
+          fullname: data.fullname,
+          nickname: data.nickname,
+          email: data.email || email || "",
+          birthdate: new Date(birdateYear, birthdateMonth - 1, birthdateDay),
+        });
+      } catch {
+        triggerToastError(
+          "Something wen't wrong while fetching user info, please try again 😟"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUser();
+  }, []);
+
+  const submitForm = async () => {
+    await httpCallers.put("/user/info", {
+      fullname: user.fullname,
+      nickname: user.nickname,
+      birthdate: user.birthdate.toISOString().split("T")[0],
+    });
+
+    triggerToastSuccess("Informations updated successfully!");
+  };
+
+  return (
+    <>
+      <ToastContainer />
+      <main className="app">
+        <header
+          className="appHeader"
+          style={{
+            justifyContent: "end",
+          }}
+        >
+          <img
+            src={chatIcon}
+            alt="Chat"
+            width={25}
+            style={{
+              marginRight: 25,
+            }}
+            className="chatIcon"
+            onClick={() => navigate("/")}
+          />
+        </header>
+        <div className="appWrapper">
+          <section className="settingsContent">
+            <div className="settingsPanel">
+              {loading ? (
+                <img src={loadingIcon} width={30} />
+              ) : (
+                <>
+                  <TextField
+                    label="Fullname"
+                    value={user.fullname}
+                    fullWidth
+                    onChange={(e) =>
+                      setUser((prevState) => ({
+                        ...prevState,
+                        fullname: e.target.value,
+                      }))
+                    }
+                  />
+                  <div style={{ display: "flex" }}>
+                    <TextField
+                      label="Nickname"
+                      value={user.nickname}
+                      fullWidth
+                      onChange={(e) =>
+                        setUser((prevState) => ({
+                          ...prevState,
+                          nickname: e.target.value,
+                        }))
+                      }
+                      style={{ marginRight: 20 }}
+                    />
+                    <DatePicker
+                      label="Birthdate"
+                      value={dayjs(new Date(user.birthdate))}
+                      onChange={(e) =>
+                        setUser((prevState) => ({
+                          ...prevState,
+                          birthdate: new Date(e.toISOString()),
+                        }))
+                      }
+                    />
+                  </div>
+                  <TextField
+                    label="E-mail"
+                    value={user.email}
+                    disabled
+                    fullWidth
+                    onChange={(e) =>
+                      setUser((prevState) => ({
+                        ...prevState,
+                        email: e.target.value,
+                      }))
+                    }
+                  />
+                  <Link
+                    to="/settings/password"
+                    style={{ fontSize: 12, color: "lightblue" }}
+                  >
+                    Change password
+                  </Link>
+                  <button
+                    type="submit"
+                    className="primary"
+                    style={{ width: 150 }}
+                    onClick={submitForm}
+                  >
+                    Save
+                  </button>
+                </>
+              )}
+            </div>
+          </section>
+        </div>
+      </main>
+    </>
+  );
+}

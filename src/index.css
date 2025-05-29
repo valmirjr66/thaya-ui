@@ -19,11 +19,9 @@ form {
 }
 
 input {
-  font-size: 16px;
   border: 0;
   outline: none;
   flex-grow: 1;
-  padding: 20px;
   border-radius: 50px;
   font-family: "Overpass Mono";
 }
@@ -146,7 +144,8 @@ a:active {
   opacity: 1;
 }
 
-::-ms-input-placeholder { /* Edge 12 -18 */
+::-ms-input-placeholder {
+  /* Edge 12 -18 */
   color: grey;
   font-weight: bold;
 }

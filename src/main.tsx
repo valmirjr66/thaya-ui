@@ -1,6 +1,9 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ptBR } from "@mui/x-date-pickers/locales";
+import "dayjs/locale/pt-br";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
@@ -9,15 +12,17 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import "./index.css";
+import ChangePassword from "./pages/ChangePassword";
 import Chat from "./pages/Chat";
 import Login from "./pages/Login";
+import Settings from "./pages/Settings";
 import reportWebVitals from "./reportWebVitals";
 import RestrictWrapper from "./RestrictWrapper";
 
 const theme = createTheme(
   {
     palette: {
-      primary: { main: "#1976d2" },
+      mode: "dark",
     },
   },
   ptBR
@@ -58,14 +63,21 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ThemeProvider theme={theme}>
         <SkeletonTheme baseColor="#7a7a7a" highlightColor="#d2d2d2">
           <Font family="Overpass Mono">
-            <BrowserRouter>
-              <Routes>
-                <Route element={<RestrictWrapper />}>
-                  <Route path="/" element={<Chat />} />
-                </Route>
-                <Route path="/login" element={<Login />} />
-              </Routes>
-            </BrowserRouter>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <BrowserRouter>
+                <Routes>
+                  <Route element={<RestrictWrapper />}>
+                    <Route path="/" element={<Chat />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route
+                      path="/settings/password"
+                      element={<ChangePassword />}
+                    />
+                  </Route>
+                  <Route path="/login" element={<Login />} />
+                </Routes>
+              </BrowserRouter>
+            </LocalizationProvider>
           </Font>
         </SkeletonTheme>
       </ThemeProvider>

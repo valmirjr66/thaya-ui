@@ -7,10 +7,11 @@ type InputWithButtonProps = {
   content: string;
   setContent: (msg: string) => void;
   waitingAnswer: boolean;
+  placeholder: string;
 };
 
 export default function InputWithButton(props: InputWithButtonProps) {
-  const { onSubmit, waitingAnswer, content, setContent } = props;
+  const { onSubmit, waitingAnswer, content, setContent, placeholder } = props;
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -44,9 +45,10 @@ export default function InputWithButton(props: InputWithButtonProps) {
           onChange={(e) => onChange(e)}
           value={content}
           type="text"
-          placeholder="Ask me anything"
+          placeholder={placeholder}
           autoFocus
           spellCheck={false}
+          className="largeInput"
         />
         <button className="send" disabled={isButtonDisabled}>
           <img

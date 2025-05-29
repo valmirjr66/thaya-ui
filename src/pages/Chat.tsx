@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
+import { useNavigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
+import ActionPanel from "../components/ActionPanel";
 import InputWithButton from "../components/InputWithButton";
 import MainFrame from "../components/MainFrame";
-import ActionPanel from "../components/ActionPanel";
 import useToaster from "../hooks/useToaster";
-import settingsIcon from "../imgs/ic-settings.svg";
 import actionsIcon from "../imgs/ic-actions.svg";
+import settingsIcon from "../imgs/ic-settings.svg";
 import httpCallers from "../service";
 import { Message } from "../types";
-import { useNavigate } from "react-router";
 
 export default function Chat() {
   const socketRef = useRef<Socket | null>(null);
@@ -20,7 +20,7 @@ export default function Chat() {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(`${import.meta.env.VITE_WS_URL}`, {
-        extraHeaders: { userId: localStorage.getItem("userId")! },
+        extraHeaders: { userEmail: localStorage.getItem("userEmail")! },
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
@@ -174,6 +174,7 @@ export default function Chat() {
               />
             </div>
             <InputWithButton
+              placeholder="Ask me anything"
               content={intputContent}
               setContent={setIntputContent}
               onSubmit={onSendMessage}

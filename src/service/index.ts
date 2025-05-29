@@ -4,9 +4,9 @@ const API_ADDRESS = import.meta.env.VITE_API_URL;
 
 const axiosInstance = axios.create({ baseURL: API_ADDRESS });
 
-const userId = localStorage.getItem("userId");
+const userEmail = localStorage.getItem("userEmail");
 
-const defaultConfig = { headers: { userId } };
+const defaultConfig = { headers: { userEmail } };
 
 const httpCallers = {
   get: async (path: string) => {

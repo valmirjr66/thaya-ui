@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router";
 
 export default function RestrictWrapper() {
-  const userId = localStorage.getItem("userId");
+  const userEmail = localStorage.getItem("userEmail");
 
-  return userId ? (
+  return userEmail ? (
     <Outlet />
   ) : (
     <Navigate to="/login" replace state={{ path: location.pathname }} />
