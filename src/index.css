@@ -46,8 +46,8 @@ button:active:not(:disabled) {
 }
 
 button:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
 }
 
 button:disabled {
@@ -65,13 +65,14 @@ button.primary:disabled {
 }
 
 button.secondary {
-  background-color: #fff;
-  color: #000;
+  background-color: #009dff;
+  color: #fff;
   border: none;
 }
 
 button.secondary:disabled {
-  background-color: #b29268;
+  background-color: #b4e2ff;
+  color: #7f7f7f;
 }
 
 button.send:disabled {

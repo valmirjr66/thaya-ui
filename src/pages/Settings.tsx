@@ -1,3 +1,4 @@
+import EditIcon from "@mui/icons-material/Edit";
 import { TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -21,6 +22,7 @@ export default function Settings() {
   const [loading, setLoading] = useState<boolean>(true);
   const [passwordModalIsOpen, setPasswordModalIsOpen] =
     useState<boolean>(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   const { triggerToast: triggerToastError } = useToaster({ type: "error" });
   const { triggerToast: triggerToastSuccess } = useToaster({ type: "success" });
@@ -54,13 +56,19 @@ export default function Settings() {
   }, []);
 
   const submitForm = async () => {
-    await httpCallers.put("/user/info", {
-      fullname: user.fullname,
-      nickname: user.nickname,
-      birthdate: user.birthdate.toISOString().split("T")[0],
-    });
+    try {
+      await httpCallers.put("/user/info", {
+        fullname: user.fullname,
+        nickname: user.nickname,
+        birthdate: user.birthdate.toISOString().split("T")[0],
+      });
 
-    triggerToastSuccess("Informations updated successfully!");
+      triggerToastSuccess("Informations updated successfully!");
+    } catch {
+      triggerToastError();
+    } finally {
+      setEditMode(false);
+    }
   };
 
   return (
@@ -83,6 +91,7 @@ export default function Settings() {
                     label="Fullname"
                     value={user.fullname}
                     fullWidth
+                    disabled={!editMode}
                     onChange={(e) =>
                       setUser((prevState) => ({
                         ...prevState,
@@ -95,6 +104,7 @@ export default function Settings() {
                       label="Nickname"
                       value={user.nickname}
                       fullWidth
+                      disabled={!editMode}
                       onChange={(e) =>
                         setUser((prevState) => ({
                           ...prevState,
@@ -106,6 +116,7 @@ export default function Settings() {
                     <DatePicker
                       label="Birthdate"
                       value={dayjs(new Date(user.birthdate))}
+                      disabled={!editMode}
                       onChange={(e) =>
                         setUser((prevState) => ({
                           ...prevState,
@@ -133,14 +144,26 @@ export default function Settings() {
                   >
                     Change password
                   </a>
-                  <button
-                    type="submit"
-                    className="primary"
-                    style={{ width: 150 }}
-                    onClick={submitForm}
-                  >
-                    Save
-                  </button>
+                  {editMode ? (
+                    <button
+                      type="submit"
+                      className="primary"
+                      style={{ width: 150 }}
+                      onClick={submitForm}
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="secondary"
+                      style={{ width: 150, justifyContent: "center" }}
+                      onClick={() => setEditMode(true)}
+                    >
+                      <EditIcon fontSize="small" style={{ marginRight: 8 }} />
+                      Edit
+                    </button>
+                  )}
                 </>
               )}
             </div>
