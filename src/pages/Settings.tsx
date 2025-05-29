@@ -2,7 +2,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 import Header from "../components/Header";
@@ -27,31 +27,31 @@ export default function Settings() {
   const { triggerToast: triggerToastError } = useToaster({ type: "error" });
   const { triggerToast: triggerToastSuccess } = useToaster({ type: "success" });
 
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        const email = localStorage.getItem("userEmail");
-        const { data } = await httpCallers.get(`user/info`);
+  const loadUser = useCallback(async () => {
+    try {
+      const email = localStorage.getItem("userEmail");
+      const { data } = await httpCallers.get(`user/info`);
 
-        const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
-          .split("-")
-          .map((x: string) => Number(x));
+      const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
+        .split("-")
+        .map((x: string) => Number(x));
 
-        setUser({
-          fullname: data.fullname,
-          nickname: data.nickname,
-          email: data.email || email || "",
-          birthdate: new Date(birdateYear, birthdateMonth - 1, birthdateDay),
-        });
-      } catch {
-        triggerToastError(
-          "Something wen't wrong while fetching user info, please try again 😟"
-        );
-      } finally {
-        setLoading(false);
-      }
+      setUser({
+        fullname: data.fullname,
+        nickname: data.nickname,
+        email: data.email || email || "",
+        birthdate: new Date(birdateYear, birthdateMonth - 1, birthdateDay),
+      });
+    } catch {
+      triggerToastError(
+        "Something wen't wrong while fetching user info, please try again 😟"
+      );
+    } finally {
+      setLoading(false);
     }
+  }, []);
 
+  useEffect(() => {
     loadUser();
   }, []);
 
@@ -69,6 +69,13 @@ export default function Settings() {
     } finally {
       setEditMode(false);
     }
+  };
+
+  const cancelUpdate = async () => {
+    setEditMode(false);
+    setLoading(true);
+    await loadUser();
+    setLoading(false);
   };
 
   return (
@@ -145,14 +152,22 @@ export default function Settings() {
                     Change password
                   </a>
                   {editMode ? (
-                    <button
-                      type="submit"
-                      className="primary"
-                      style={{ width: 150 }}
-                      onClick={submitForm}
-                    >
-                      Save
-                    </button>
+                    <>
+                      <button
+                        className="primary"
+                        style={{ width: 150 }}
+                        onClick={submitForm}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="cancel"
+                        style={{ width: 150 }}
+                        onClick={cancelUpdate}
+                      >
+                        Cancel
+                      </button>
+                    </>
                   ) : (
                     <button
                       type="button"
