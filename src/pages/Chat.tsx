@@ -39,7 +39,7 @@ export default function Chat() {
 
             if (newState[newState.length - 1].role === "user") {
               newState.push({
-                id: `packet-${uuidv4()}`,
+                _id: `packet-${uuidv4()}`,
                 role: "assistant",
                 content: "",
               });
@@ -100,7 +100,7 @@ export default function Chat() {
     setMessages((prevState) => [
       ...prevState,
       {
-        id: "temp_id",
+        _id: "temp_id",
         content: message,
         role: "user",
       },
