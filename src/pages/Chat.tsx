@@ -1,3 +1,4 @@
+import { Popover } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useNavigate } from "react-router";
@@ -5,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import ActionPanel from "../components/ActionPanel";
+import ActionPanelContent from "../components/ActionPanelContent";
 import InputWithButton from "../components/InputWithButton";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
@@ -122,14 +123,32 @@ export default function Chat() {
     }
   };
 
+  const [actionAnchorEl, setActionAnchorEl] = useState<HTMLImageElement | null>(
+    null
+  );
+
+  const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
+    setActionAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setActionAnchorEl(null);
+  };
+
   return (
     <main className="app">
       <ToastContainer />
-      <ActionPanel
-        showPanel={showActionPanel}
-        setShowPanel={setShowActionPanel}
-        insertPrompt={(value) => setIntputContent(value)}
-      />
+      <Popover
+        open={Boolean(actionAnchorEl)}
+        anchorEl={actionAnchorEl}
+        onClose={handleClose}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+      >
+        <ActionPanelContent
+          closePanel={handleClose}
+          insertPrompt={(value) => setIntputContent(value)}
+        />
+      </Popover>
       <header
         className="appHeader"
         style={{
@@ -141,7 +160,7 @@ export default function Chat() {
           alt="Actions"
           width={30}
           style={{ cursor: "pointer", marginRight: 25 }}
-          onClick={() => setShowActionPanel((prevState) => !prevState)}
+          onClick={handleClick}
           className={`actionsIcon ${showActionPanel ? "active" : ""}`}
         />
         <img
