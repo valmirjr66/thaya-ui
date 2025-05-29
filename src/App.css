@@ -315,14 +315,13 @@
   transform: translate(-50%, -50%);
 }
 
-.previouPromptArrow {
+.previousPromptArrow {
   margin-left: 16px;
   cursor: pointer;
   transform: translateY(-4px);
 }
 
-.previouPromptArrow:hover {
-  transform: translateY(-6px);
+.previousPromptArrow:hover {
   filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(100deg)
     brightness(80%) contrast(100%);
 }

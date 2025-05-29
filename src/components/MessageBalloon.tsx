@@ -72,7 +72,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
               <ArrowUpwardIcon
                 fontSize="small"
                 style={{ marginLeft: 16 }}
-                className="previouPromptArrow"
+                className="previousPromptArrow"
                 onClick={() => {
                   const element = document.getElementById(
                     `${previousPromptAnchorId}_anchor`
