@@ -53,6 +53,7 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
           autoFocus
           spellCheck={false}
           fullWidth
+          variant="filled"
         />
         <button className="send" disabled={isButtonDisabled}>
           <img
