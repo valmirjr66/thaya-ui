@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import sendIcon from "../imgs/ic-send.svg";
 
-type InputWithButtonProps = {
+type AssistantChatInputProps = {
   onSubmit: (msg: string) => void;
   content: string;
   setContent: (msg: string) => void;
@@ -11,7 +11,7 @@ type InputWithButtonProps = {
   placeholder: string;
 };
 
-export default function InputWithButton(props: InputWithButtonProps) {
+export default function AssistantChatInput(props: AssistantChatInputProps) {
   const { onSubmit, waitingAnswer, content, setContent, placeholder } = props;
 
   function onChange(

@@ -6,8 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import ActionPanelContent from "../components/ActionPanelContent";
+import AssistantChatInput from "../components/AssistantChatInput";
 import Header from "../components/Header";
-import InputWithButton from "../components/InputWithButton";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
@@ -154,7 +154,7 @@ export default function Chat() {
                 onSendMessage={onSendMessage}
               />
             </div>
-            <InputWithButton
+            <AssistantChatInput
               placeholder="Ask me anything"
               content={intputContent}
               setContent={setIntputContent}
