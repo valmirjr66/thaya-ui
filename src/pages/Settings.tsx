@@ -3,11 +3,11 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { ToastContainer } from "react-toastify";
+import Header from "../components/Header";
 import useToaster from "../hooks/useToaster";
-import chatIcon from "../imgs/ic-chat.svg";
 import loadingIcon from "../imgs/loading.gif";
 import httpCallers from "../service";
-import { ToastContainer } from "react-toastify";
 
 type User = {
   fullname: string;
@@ -67,23 +67,7 @@ export default function Settings() {
     <>
       <ToastContainer />
       <main className="app">
-        <header
-          className="appHeader"
-          style={{
-            justifyContent: "end",
-          }}
-        >
-          <img
-            src={chatIcon}
-            alt="Chat"
-            width={25}
-            style={{
-              marginRight: 25,
-            }}
-            className="chatIcon"
-            onClick={() => navigate("/")}
-          />
-        </header>
+        <Header buttonsToRender={["chat"]} />
         <div className="appWrapper">
           <section className="settingsContent">
             <div className="settingsPanel">

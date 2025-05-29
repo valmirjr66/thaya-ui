@@ -1,7 +1,6 @@
 import { Popover } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
-import { useNavigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io, Socket } from "socket.io-client";
@@ -10,8 +9,7 @@ import ActionPanelContent from "../components/ActionPanelContent";
 import InputWithButton from "../components/InputWithButton";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
-import actionsIcon from "../imgs/ic-actions.svg";
-import settingsIcon from "../imgs/ic-settings.svg";
+import Header from "../components/Header";
 import httpCallers from "../service";
 import { useActionPanelStore } from "../store";
 import { Message } from "../types";
@@ -68,11 +66,8 @@ export default function Chat() {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [waitingAnswer, setWaitingAnswer] = useState(false);
-  const [showActionPanel, setShowActionPanel] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [intputContent, setIntputContent] = useState("");
-
-  const navigate = useNavigate();
 
   const { triggerToast } = useToaster({ type: "error" });
 
@@ -124,48 +119,23 @@ export default function Chat() {
     }
   };
 
-  const { handleClick, handleClose, actionAnchorElement } =
-    useActionPanelStore();
+  const actionPanelStore = useActionPanelStore();
 
   return (
     <main className="app">
       <ToastContainer />
       <Popover
-        open={Boolean(actionAnchorElement)}
-        anchorEl={actionAnchorElement}
-        onClose={handleClose}
+        open={actionPanelStore.isOpen}
+        anchorEl={actionPanelStore.anchorElement}
+        onClose={actionPanelStore.handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
         <ActionPanelContent
-          closePanel={handleClose}
+          closePanel={actionPanelStore.handleClose}
           insertPrompt={(value) => setIntputContent(value)}
         />
       </Popover>
-      <header
-        className="appHeader"
-        style={{
-          justifyContent: "end",
-        }}
-      >
-        <img
-          src={actionsIcon}
-          alt="Actions"
-          width={30}
-          style={{ cursor: "pointer", marginRight: 25 }}
-          onClick={handleClick}
-          className={`actionsIcon ${showActionPanel ? "active" : ""}`}
-        />
-        <img
-          src={settingsIcon}
-          alt="Settings"
-          width={25}
-          style={{
-            marginRight: 25,
-          }}
-          className="settingsIcon"
-          onClick={() => navigate("/settings")}
-        />
-      </header>
+      <Header buttonsToRender={["actions", "settings"]} />
       <div className="appWrapper">
         <section className="appContent">
           <div
