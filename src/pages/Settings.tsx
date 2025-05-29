@@ -139,7 +139,7 @@ export default function Settings() {
                   />
                   <a
                     href="#"
-                    style={{ fontSize: 12, color: "lightblue" }}
+                    style={{ fontSize: 12 }}
                     onClick={() => setPasswordModalIsOpen(true)}
                   >
                     Change password

@@ -10,6 +10,14 @@ code {
     monospace;
 }
 
+a {
+  color: lightblue;
+}
+
+a:hover {
+  color: #7d86ff;
+}
+
 input {
   border: 0;
   outline: none;
@@ -96,10 +104,6 @@ button.cancel {
 
 button.cancel:disabled {
   background-color: #b67070;
-}
-
-a {
-  color: #0000db;
 }
 
 a:active {
