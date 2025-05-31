@@ -144,13 +144,15 @@ export default function Settings() {
                       }))
                     }
                   />
-                  <a
-                    href="#"
-                    style={{ fontSize: 12 }}
-                    onClick={() => setPasswordModalIsOpen(true)}
-                  >
-                    Change password
-                  </a>
+                  {!editMode && (
+                    <a
+                      href="#"
+                      style={{ fontSize: 12 }}
+                      onClick={() => setPasswordModalIsOpen(true)}
+                    >
+                      Change password
+                    </a>
+                  )}
                   {editMode ? (
                     <>
                       <button
