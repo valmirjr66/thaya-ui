@@ -1,17 +1,24 @@
+import BoltIcon from "@mui/icons-material/Bolt";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ChatIcon from "@mui/icons-material/Chat";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router";
-import actionsIcon from "../imgs/ic-actions.svg";
-import chatIcon from "../imgs/ic-chat.svg";
-import settingsIcon from "../imgs/ic-settings.svg";
-import { useActionPanelStore } from "../store";
+import { useActionPanelStore, useAgendaPanelStore } from "../store";
 
 export type HeaderProps = {
-  buttonsToRender: ("actions" | "settings" | "chat")[];
+  buttonsToRender: ("actions" | "settings" | "chat" | "calendar")[];
+  sharedIconsStyle: React.CSSProperties;
 };
 
-export default function Header({ buttonsToRender }: HeaderProps) {
+export default function Header({
+  buttonsToRender,
+  sharedIconsStyle,
+}: HeaderProps) {
   const navigate = useNavigate();
 
   const actionPanelStore = useActionPanelStore();
+  const agendaPanelStore = useAgendaPanelStore();
 
   return (
     <header
@@ -24,42 +31,47 @@ export default function Header({ buttonsToRender }: HeaderProps) {
         switch (item) {
           case "actions":
             return (
-              <img
-                src={actionsIcon}
-                alt="Actions"
-                width={30}
-                style={{ cursor: "pointer", marginRight: 25 }}
-                onClick={actionPanelStore.handleClick}
-                className={`actionsIcon ${
-                  actionPanelStore.isOpen ? "active" : ""
-                }`}
-              />
+              <Box onClick={actionPanelStore.handleOpen}>
+                <BoltIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className={`actionsIcon ${
+                    actionPanelStore.isOpen ? "active" : ""
+                  }`}
+                />
+              </Box>
             );
           case "settings":
             return (
-              <img
-                src={settingsIcon}
-                alt="Settings"
-                width={25}
-                style={{
-                  marginRight: 25,
-                }}
-                className="settingsIcon"
-                onClick={() => navigate("/settings")}
-              />
+              <Box onClick={() => navigate("/settings")}>
+                <SettingsIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className="settingsIcon"
+                />
+              </Box>
             );
           case "chat":
             return (
-              <img
-                src={chatIcon}
-                alt="Chat"
-                width={25}
-                style={{
-                  marginRight: 25,
-                }}
-                className="chatIcon"
-                onClick={() => navigate("/")}
-              />
+              <Box onClick={() => navigate("/")}>
+                <ChatIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className="chatIcon"
+                />
+              </Box>
+            );
+          case "calendar":
+            return (
+              <Box onClick={agendaPanelStore.handleOpen}>
+                <CalendarMonthIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className={`calendarIcon ${
+                    agendaPanelStore.isOpen ? "active" : ""
+                  }`}
+                />
+              </Box>
             );
           default:
             throw new Error(`Invalid button to render ${item}`);

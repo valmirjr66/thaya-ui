@@ -20,7 +20,7 @@ export default function Chat() {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(`${import.meta.env.VITE_WS_URL}`, {
-        extraHeaders: { 'x-user-email': localStorage.getItem("userEmail")! },
+        extraHeaders: { "x-user-email": localStorage.getItem("userEmail")! },
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
@@ -137,7 +137,10 @@ export default function Chat() {
           insertPrompt={(value) => setIntputContent(value)}
         />
       </Popover>
-      <Header buttonsToRender={["actions", "settings"]} />
+      <Header
+        buttonsToRender={["actions", "calendar", "settings"]}
+        sharedIconsStyle={{ marginRight: 25 }}
+      />
       <div className="appWrapper">
         <section className="appContent">
           <div

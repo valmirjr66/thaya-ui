@@ -75,16 +75,11 @@
   color: white;
 }
 
-.emptyIcon {
-  align-self: center;
-  filter: opacity(0.2);
-}
-
 .appHeader {
   width: 100%;
   background-color: #3a3a3a;
   color: #fff;
-  height: 100px;
+  height: 75px;
   border-bottom: rgba(255, 255, 255, 0.5) solid 1px;
   display: flex;
   align-items: center;
@@ -261,6 +256,15 @@
 }
 
 .chatIcon:hover {
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
+    brightness(80%) contrast(100%);
+}
+
+.calendarIcon {
+  cursor: pointer;
+}
+
+.calendarIcon:hover {
   filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
     brightness(80%) contrast(100%);
 }

@@ -88,7 +88,10 @@ export default function Settings() {
         handleClose={() => setPasswordModalIsOpen(false)}
       />
       <main className="app">
-        <Header buttonsToRender={["chat"]} />
+        <Header
+          buttonsToRender={["chat"]}
+          sharedIconsStyle={{ marginRight: 25 }}
+        />
         <div className="appWrapper">
           <section className="settingsContent">
             {loading ? (
