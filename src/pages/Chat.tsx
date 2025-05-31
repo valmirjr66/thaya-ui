@@ -20,7 +20,7 @@ export default function Chat() {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(`${import.meta.env.VITE_WS_URL}`, {
-        extraHeaders: { userEmail: localStorage.getItem("userEmail")! },
+        extraHeaders: { 'x-user-email': localStorage.getItem("userEmail")! },
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,

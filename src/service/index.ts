@@ -6,7 +6,7 @@ const axiosInstance = axios.create({ baseURL: API_ADDRESS });
 
 const userEmail = localStorage.getItem("userEmail");
 
-const defaultConfig = { headers: { userEmail } };
+const defaultConfig = { headers: { "x-user-email": userEmail } };
 
 const httpCallers = {
   get: async (path: string) => {
@@ -23,7 +23,7 @@ const httpCallers = {
   },
   delete: async (path: string) => {
     return await axiosInstance.delete(path, defaultConfig);
-  }
+  },
 };
 
 export default httpCallers;
