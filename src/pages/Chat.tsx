@@ -77,7 +77,9 @@ export default function Chat() {
     try {
       const { data } = await httpCallers.get(`assistant/chat`);
 
-      setMessages(data.messages);
+      const chatMessages = data.messages || [];
+
+      setMessages(chatMessages);
     } catch {
       triggerToast(
         "Something wen't wrong while fetching the messages, please try again 😟"
