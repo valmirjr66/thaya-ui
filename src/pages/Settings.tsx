@@ -55,7 +55,9 @@ export default function Settings() {
     loadUser();
   }, []);
 
-  const submitForm = async () => {
+  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     try {
       await httpCallers.put("/user/info", {
         fullname: user.fullname,
@@ -89,101 +91,102 @@ export default function Settings() {
         <Header buttonsToRender={["chat"]} />
         <div className="appWrapper">
           <section className="settingsContent">
-            <div className="settingsPanel">
-              {loading ? (
-                <img src={loadingIcon} width={30} />
-              ) : (
-                <>
+            {loading ? (
+              <img src={loadingIcon} width={30} />
+            ) : (
+              <form onSubmit={submitForm} className="settingsPanel">
+                <TextField
+                  label="Fullname"
+                  value={user.fullname}
+                  fullWidth
+                  disabled={!editMode}
+                  required
+                  onChange={(e) =>
+                    setUser((prevState) => ({
+                      ...prevState,
+                      fullname: e.target.value,
+                    }))
+                  }
+                />
+                <div style={{ display: "flex" }}>
                   <TextField
-                    label="Fullname"
-                    value={user.fullname}
+                    label="Nickname"
+                    value={user.nickname}
                     fullWidth
                     disabled={!editMode}
                     onChange={(e) =>
                       setUser((prevState) => ({
                         ...prevState,
-                        fullname: e.target.value,
+                        nickname: e.target.value,
                       }))
                     }
+                    style={{ marginRight: 20 }}
                   />
-                  <div style={{ display: "flex" }}>
-                    <TextField
-                      label="Nickname"
-                      value={user.nickname}
-                      fullWidth
-                      disabled={!editMode}
-                      onChange={(e) =>
-                        setUser((prevState) => ({
-                          ...prevState,
-                          nickname: e.target.value,
-                        }))
-                      }
-                      style={{ marginRight: 20 }}
-                    />
-                    <DatePicker
-                      label="Birthdate"
-                      value={dayjs(new Date(user.birthdate))}
-                      disabled={!editMode}
-                      onChange={(e) =>
-                        setUser((prevState) => ({
-                          ...prevState,
-                          birthdate: new Date(e.toISOString()),
-                        }))
-                      }
-                    />
-                  </div>
-                  <TextField
-                    label="E-mail"
-                    value={user.email}
-                    disabled
-                    fullWidth
+                  <DatePicker
+                    label="Birthdate"
+                    value={dayjs(new Date(user.birthdate))}
+                    disabled={!editMode}
+                    slotProps={{ textField: { required: true } }}
                     onChange={(e) =>
                       setUser((prevState) => ({
                         ...prevState,
-                        email: e.target.value,
+                        birthdate: new Date(e.toISOString()),
                       }))
                     }
                   />
-                  {!editMode && (
-                    <a
-                      href="#"
-                      style={{ fontSize: 12 }}
-                      onClick={() => setPasswordModalIsOpen(true)}
-                    >
-                      Change password
-                    </a>
-                  )}
-                  {editMode ? (
-                    <>
-                      <button
-                        className="primary"
-                        style={{ width: 150 }}
-                        onClick={submitForm}
-                      >
-                        Save
-                      </button>
-                      <button
-                        className="cancel"
-                        style={{ width: 150 }}
-                        onClick={cancelUpdate}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
+                </div>
+                <TextField
+                  label="E-mail"
+                  value={user.email}
+                  disabled
+                  required
+                  fullWidth
+                  onChange={(e) =>
+                    setUser((prevState) => ({
+                      ...prevState,
+                      email: e.target.value,
+                    }))
+                  }
+                />
+                {!editMode && (
+                  <a
+                    href="#"
+                    style={{ fontSize: 12 }}
+                    onClick={() => setPasswordModalIsOpen(true)}
+                  >
+                    Change password
+                  </a>
+                )}
+                {editMode ? (
+                  <>
                     <button
-                      type="button"
-                      className="secondary"
-                      style={{ width: 150, justifyContent: "center" }}
-                      onClick={() => setEditMode(true)}
+                      className="primary"
+                      type="submit"
+                      style={{ width: 150 }}
                     >
-                      <EditIcon fontSize="small" style={{ marginRight: 8 }} />
-                      Edit
+                      Save
                     </button>
-                  )}
-                </>
-              )}
-            </div>
+                    <button
+                      className="cancel"
+                      style={{ width: 150 }}
+                      onClick={cancelUpdate}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="secondary"
+                    style={{ width: 150, justifyContent: "center" }}
+                    onClick={() => setEditMode(true)}
+                  >
+                    <EditIcon fontSize="small" style={{ marginRight: 8 }} />
+                    Edit
+                  </button>
+                )}
+              </form>
+            )}
           </section>
         </div>
       </main>
