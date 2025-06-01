@@ -79,7 +79,7 @@ export default function MainFrame({
 
   const { setContent: injectPrompt } = useUserPromptStore();
 
-  console.log(messages)
+  console.log(messages);
   return !isLoading && messages.length === 0 ? (
     <div
       className="messagesList"
@@ -90,6 +90,7 @@ export default function MainFrame({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        marginTop: 16,
       }}
     >
       <span style={{ marginLeft: 16 }}>Prompt ideas</span>
