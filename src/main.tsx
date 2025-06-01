@@ -15,6 +15,7 @@ import "./index.css";
 import Chat from "./pages/Chat";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
+import Signup from "./pages/Signup";
 import reportWebVitals from "./reportWebVitals";
 import RestrictWrapper from "./RestrictWrapper";
 
@@ -74,6 +75,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     <Route path="/settings" element={<Settings />} />
                   </Route>
                   <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
                 </Routes>
               </BrowserRouter>
             </LocalizationProvider>

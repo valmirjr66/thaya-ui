@@ -9,13 +9,7 @@ import Header from "../components/Header";
 import useToaster from "../hooks/useToaster";
 import loadingIcon from "../imgs/loading.gif";
 import httpCallers from "../service";
-
-type User = {
-  fullname: string;
-  nickname?: string;
-  email: string;
-  birthdate: Date;
-};
+import { User } from "../types";
 
 export default function Settings() {
   const [user, setUser] = useState<User | null>(null);
@@ -144,12 +138,6 @@ export default function Settings() {
                   disabled
                   required
                   fullWidth
-                  onChange={(e) =>
-                    setUser((prevState) => ({
-                      ...prevState,
-                      email: e.target.value,
-                    }))
-                  }
                 />
                 {!editMode && (
                   <a

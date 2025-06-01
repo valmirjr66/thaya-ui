@@ -1,10 +1,10 @@
 import { SyntheticEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { TypeAnimation } from "react-type-animation";
 import useToaster from "../hooks/useToaster";
-import httpCallers from "../service";
 import loadingIcon from "../imgs/loading.gif";
+import httpCallers from "../service";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -102,6 +102,17 @@ export default function Login() {
               Login
             </button>
           )}
+          <div
+            style={{
+              marginTop: 16,
+              fontSize: 12,
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            <hr style={{ width: "100%" }} />
+            <span>No account?</span> <Link to="/signup">Click here!</Link>
+          </div>
         </form>
       </main>
     </>

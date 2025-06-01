@@ -178,6 +178,19 @@
   max-width: 350px;
 }
 
+.signupContainer {
+  background-color: #3a3a3a;
+  padding: 24px 32px;
+  border: rgba(255, 255, 255, 0.8) solid 1px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 30vw;
+  height: 45vh;
+}
+
 .fieldWrapper {
   margin-bottom: 32px;
   display: flex;

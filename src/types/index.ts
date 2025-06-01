@@ -12,3 +12,10 @@ export type Message = {
   role: "assistant" | "user";
   references?: Reference[];
 };
+
+export type User = {
+  fullname: string;
+  nickname?: string;
+  email: string;
+  birthdate: Date;
+};
