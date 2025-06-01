@@ -4,9 +4,10 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useAgendaPanelStore } from "../store";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export type HeaderProps = {
-  buttonsToRender: ("settings" | "chat" | "calendar")[];
+  buttonsToRender: ("settings" | "chat" | "calendar" | "logout")[];
   sharedIconsStyle: React.CSSProperties;
 };
 
@@ -56,6 +57,21 @@ export default function Header({
                   className={`calendarIcon ${
                     agendaPanelStore.isOpen ? "active" : ""
                   }`}
+                />
+              </Box>
+            );
+          case "logout":
+            return (
+              <Box
+                onClick={() => {
+                  localStorage.removeItem("userEmail");
+                  document.location.reload();
+                }}
+              >
+                <LogoutIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className="logoutIcon"
                 />
               </Box>
             );

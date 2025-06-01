@@ -245,6 +245,15 @@
     brightness(80%) contrast(100%);
 }
 
+.logoutIcon {
+  cursor: pointer;
+}
+
+.logoutIcon:hover {
+  filter: invert(30%) sepia(100%) saturate(4000%) hue-rotate(0deg)
+    brightness(90%) contrast(120%);
+}
+
 .promptSuggestion {
   font-size: 14px;
   cursor: pointer;

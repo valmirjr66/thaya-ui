@@ -89,7 +89,7 @@ export default function Settings() {
       />
       <main className="app">
         <Header
-          buttonsToRender={["chat"]}
+          buttonsToRender={["chat", "logout"]}
           sharedIconsStyle={{ marginRight: 25 }}
         />
         <div className="appWrapper">
