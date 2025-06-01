@@ -53,7 +53,10 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
   return (
     <>
       <div id={`${id}_anchor`} />
-      <li className={className}>
+      <li
+        className={className}
+        style={{ marginBottom: isMobile && !isLastMessage ? 32 : "unset" }}
+      >
         <img
           className="avatar"
           alt={member.clientData.username}
@@ -62,7 +65,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
         <div
           className="messageContent"
           style={{
-            marginBottom: isLastMessage ? 30 : 0,
+            marginBottom: isLastMessage ? 20 : 0,
             width: role === "assistant" ? "100%" : undefined,
           }}
         >
@@ -84,7 +87,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
           </div>
           <div
             className="messageText"
-            style={{ maxWidth: isMobile || role === "assistant" ? "70%" : 400 }}
+            style={{ maxWidth: role === "assistant" ? "90%" : "60vw" }}
           >
             {typeof content === "string" ? (
               <Markdown rehypePlugins={[remarkGfm]}>{content}</Markdown>

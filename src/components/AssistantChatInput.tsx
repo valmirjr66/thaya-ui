@@ -55,6 +55,9 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
           spellCheck={false}
           fullWidth
           variant="filled"
+          slotProps={{
+            input: { style: { fontSize: isMobile ? 12 : "unset" } },
+          }}
         />
         <button className="send" disabled={isButtonDisabled}>
           <img

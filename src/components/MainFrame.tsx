@@ -114,8 +114,9 @@ export default function MainFrame({
       id="list-of-messages"
       className="messagesList"
       style={{
-        fontSize: isMobile ? 14 : "unset",
-        height: isMobile ? "70vh" : "60vh",
+        fontSize: isMobile ? 12 : "unset",
+        height: isMobile ? "calc(100vh - 200px)" : "60vh",
+        width: isMobile ? "100%" : "unset",
       }}
     >
       {(isLoading ? loadingMessages : messages).map(
