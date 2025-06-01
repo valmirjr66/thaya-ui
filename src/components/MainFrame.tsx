@@ -79,7 +79,6 @@ export default function MainFrame({
 
   const { setContent: injectPrompt } = useUserPromptStore();
 
-  console.log(messages);
   return !isLoading && messages.length === 0 ? (
     <div
       className="messagesList"
