@@ -3,6 +3,7 @@ import { isMobile } from "react-device-detect";
 import Skeleton from "react-loading-skeleton";
 import { v4 as uuidv4 } from "uuid";
 import dotsGif from "../imgs/dots.gif";
+import { useUserPromptStore } from "../store";
 import { Reference } from "../types";
 import MessageBalloon from "./MessageBalloon";
 
@@ -70,7 +71,45 @@ export default function MainFrame({
     },
   ];
 
-  return (
+  const promptSuggestions = [
+    "Check the temperature and help me choose a perfume",
+    "Retrieve my month's agenda",
+    "What's the probability of raining today?",
+  ];
+
+  const { setContent: injectPrompt } = useUserPromptStore();
+
+  console.log(messages)
+  return !isLoading && messages.length === 0 ? (
+    <div
+      className="messagesList"
+      style={{
+        fontSize: isMobile ? 14 : "unset",
+        height: isMobile ? "70vh" : "60vh",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <span style={{ marginLeft: 16 }}>Prompt ideas</span>
+      <hr style={{ marginLeft: 16, marginRight: 16 }} />
+      <ul>
+        {promptSuggestions.map((prompt, index) => (
+          <li
+            key={index}
+            className="promptSuggestion"
+            style={{ marginBottom: 8 }}
+            onClick={() => {
+              injectPrompt(prompt);
+            }}
+          >
+            {`${prompt}`}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : (
     <ul
       id="list-of-messages"
       className="messagesList"

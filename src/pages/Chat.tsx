@@ -5,14 +5,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import ActionPanelContent from "../components/ActionPanelContent";
 import AssistantChatInput from "../components/AssistantChatInput";
 import CalendarPanelContent from "../components/CalendarPanelContent";
 import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
-import { useActionPanelStore, useAgendaPanelStore } from "../store";
+import { useAgendaPanelStore } from "../store";
 import { Message } from "../types";
 
 export default function Chat() {
@@ -68,7 +67,6 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [waitingAnswer, setWaitingAnswer] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const [intputContent, setIntputContent] = useState("");
 
   const { triggerToast } = useToaster({ type: "error" });
 
@@ -78,7 +76,7 @@ export default function Chat() {
     try {
       const { data } = await httpCallers.get(`assistant/chat`);
 
-      const chatMessages = data.messages || [];
+      const chatMessages = data.items || [];
 
       setMessages(chatMessages);
     } catch {
@@ -122,23 +120,11 @@ export default function Chat() {
     }
   };
 
-  const actionPanelStore = useActionPanelStore();
   const agendaPanelStore = useAgendaPanelStore();
 
   return (
     <main className="app">
       <ToastContainer />
-      <Popover
-        open={actionPanelStore.isOpen}
-        anchorEl={actionPanelStore.anchorElement}
-        onClose={actionPanelStore.handleClose}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-      >
-        <ActionPanelContent
-          closePanel={actionPanelStore.handleClose}
-          insertPrompt={(value) => setIntputContent(value)}
-        />
-      </Popover>
       <Popover
         open={agendaPanelStore.isOpen}
         anchorEl={agendaPanelStore.anchorElement}
@@ -148,7 +134,7 @@ export default function Chat() {
         <CalendarPanelContent closePanel={agendaPanelStore.handleClose} />
       </Popover>
       <Header
-        buttonsToRender={["actions", "calendar", "settings"]}
+        buttonsToRender={["calendar", "settings"]}
         sharedIconsStyle={{ marginRight: 25 }}
       />
       <div className="appWrapper">
@@ -164,15 +150,13 @@ export default function Chat() {
             <div className="appInner">
               <MainFrame
                 isLoading={isLoadingMessages}
-                messages={messages?.length === 0 ? [] : messages}
+                messages={messages}
                 waitingAnswer={waitingAnswer}
                 onSendMessage={onSendMessage}
               />
             </div>
             <AssistantChatInput
               placeholder="Ask me anything"
-              content={intputContent}
-              setContent={setIntputContent}
               onSubmit={onSendMessage}
               waitingAnswer={waitingAnswer}
             />

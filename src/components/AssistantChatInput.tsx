@@ -2,17 +2,18 @@ import { TextField } from "@mui/material";
 import { useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import sendIcon from "../imgs/ic-send.svg";
+import { useUserPromptStore } from "../store";
 
 type AssistantChatInputProps = {
   onSubmit: (msg: string) => void;
-  content: string;
-  setContent: (msg: string) => void;
   waitingAnswer: boolean;
   placeholder: string;
 };
 
 export default function AssistantChatInput(props: AssistantChatInputProps) {
-  const { onSubmit, waitingAnswer, content, setContent, placeholder } = props;
+  const { onSubmit, waitingAnswer, placeholder } = props;
+
+  const { content, setContent } = useUserPromptStore();
 
   function onChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

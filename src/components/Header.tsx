@@ -1,13 +1,12 @@
-import BoltIcon from "@mui/icons-material/Bolt";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ChatIcon from "@mui/icons-material/Chat";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router";
-import { useActionPanelStore, useAgendaPanelStore } from "../store";
+import { useAgendaPanelStore } from "../store";
 
 export type HeaderProps = {
-  buttonsToRender: ("actions" | "settings" | "chat" | "calendar")[];
+  buttonsToRender: ("settings" | "chat" | "calendar")[];
   sharedIconsStyle: React.CSSProperties;
 };
 
@@ -17,7 +16,6 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
 
-  const actionPanelStore = useActionPanelStore();
   const agendaPanelStore = useAgendaPanelStore();
 
   return (
@@ -29,18 +27,6 @@ export default function Header({
     >
       {buttonsToRender.map((item) => {
         switch (item) {
-          case "actions":
-            return (
-              <Box onClick={actionPanelStore.handleOpen}>
-                <BoltIcon
-                  fontSize="medium"
-                  style={sharedIconsStyle}
-                  className={`actionsIcon ${
-                    actionPanelStore.isOpen ? "active" : ""
-                  }`}
-                />
-              </Box>
-            );
           case "settings":
             return (
               <Box onClick={() => navigate("/settings")}>

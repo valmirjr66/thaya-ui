@@ -219,20 +219,6 @@
   transform: rotate(10deg);
 }
 
-.actionsIcon {
-  cursor: pointer;
-}
-
-.actionsIcon.active {
-  filter: invert(50%) sepia(100%) saturate(800%) hue-rotate(200deg)
-    brightness(100%) contrast(100%);
-}
-
-.actionsIcon:hover {
-  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
-    brightness(80%) contrast(100%);
-}
-
 .closeIcon {
   cursor: pointer;
 }
