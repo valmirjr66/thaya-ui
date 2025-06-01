@@ -16,15 +16,15 @@ export default function ActionPanelContent({
   ];
 
   return (
-    <div className="sidePanelWrapper">
-      <div className="sidePanelHeader">
+    <div className="panelWrapper">
+      <div className="panelHeader">
         <span style={{ marginLeft: 16 }}>Actions</span>
         <img
           src={closeIcon}
           className="closeIcon"
           alt="Close actions"
           width={20}
-          style={{ cursor: "pointer", marginRight: 16 }}
+          style={{ marginRight: 16 }}
           onClick={closePanel}
         />
       </div>

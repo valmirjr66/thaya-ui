@@ -7,11 +7,12 @@ import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import ActionPanelContent from "../components/ActionPanelContent";
 import AssistantChatInput from "../components/AssistantChatInput";
+import CalendarPanelContent from "../components/CalendarPanelContent";
 import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
-import { useActionPanelStore } from "../store";
+import { useActionPanelStore, useAgendaPanelStore } from "../store";
 import { Message } from "../types";
 
 export default function Chat() {
@@ -122,6 +123,7 @@ export default function Chat() {
   };
 
   const actionPanelStore = useActionPanelStore();
+  const agendaPanelStore = useAgendaPanelStore();
 
   return (
     <main className="app">
@@ -136,6 +138,14 @@ export default function Chat() {
           closePanel={actionPanelStore.handleClose}
           insertPrompt={(value) => setIntputContent(value)}
         />
+      </Popover>
+      <Popover
+        open={agendaPanelStore.isOpen}
+        anchorEl={agendaPanelStore.anchorElement}
+        onClose={agendaPanelStore.handleClose}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+      >
+        <CalendarPanelContent closePanel={agendaPanelStore.handleClose} />
       </Popover>
       <Header
         buttonsToRender={["actions", "calendar", "settings"]}

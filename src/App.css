@@ -102,16 +102,7 @@
   text-decoration: underline;
 }
 
-.closeIcon {
-  cursor: "pointer";
-}
-
-.closeIcon:hover {
-  filter: invert(25%) sepia(86%) saturate(6165%) hue-rotate(357deg)
-    brightness(94%) contrast(130%);
-}
-
-.sidePanelWrapper {
+.panelWrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -119,7 +110,7 @@
   border-radius: 8px;
 }
 
-.sidePanelHeader {
+.panelHeader {
   color: white;
   background-color: #525252;
   width: 100%;
