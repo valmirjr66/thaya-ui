@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 import Header from "../components/Header";
 import useToaster from "../hooks/useToaster";
+import defaultAvatar from "../imgs/ic-me.svg";
 import loadingIcon from "../imgs/loading.gif";
 import httpCallers from "../service";
 import { User } from "../types";
@@ -21,9 +22,11 @@ export default function Settings() {
   const { triggerToast: triggerToastError } = useToaster({ type: "error" });
   const { triggerToast: triggerToastSuccess } = useToaster({ type: "success" });
 
+  const profilePicsBaseAddress = import.meta.env
+    .VITE_PROFILE_PICS_STORAGE_BASE_ADDRESS;
+
   const loadUser = useCallback(async () => {
     try {
-      const email = localStorage.getItem("userEmail");
       const { data } = await httpCallers.get(`user/info`);
 
       const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
@@ -33,7 +36,8 @@ export default function Settings() {
       setUser({
         fullname: data.fullname,
         nickname: data.nickname,
-        email: data.email || email || "",
+        email: data.email,
+        profilePicFileName: data.profilePicFileName,
         birthdate: new Date(birdateYear, birthdateMonth - 1, birthdateDay),
       });
     } catch {
@@ -92,6 +96,15 @@ export default function Settings() {
               <img src={loadingIcon} width={30} />
             ) : (
               <form onSubmit={submitForm} className="settingsPanel">
+                <img
+                  width={100}
+                  src={
+                    user.profilePicFileName
+                      ? `${profilePicsBaseAddress}/${user.profilePicFileName}`
+                      : defaultAvatar
+                  }
+                  className="profilePic"
+                />
                 <TextField
                   label="Fullname"
                   value={user.fullname}

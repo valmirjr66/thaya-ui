@@ -11,7 +11,7 @@ import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
-import { useAgendaPanelStore } from "../store";
+import { useAgendaPanelStore, useUserInfoStore } from "../store";
 import { Message } from "../types";
 
 export default function Chat() {
@@ -88,9 +88,24 @@ export default function Chat() {
     }
   }, [triggerToast]);
 
+  const fetchUserInfo = useCallback(async () => {
+    try {
+      const { data } = await httpCallers.get(`user/info`);
+
+      userInfoStore.setData({
+        fullname: data.fullname,
+        nickname: data.nickname,
+        profilePicFileName: data.profilePicFileName,
+      });
+    } catch {
+      triggerToast();
+    }
+  }, [triggerToast]);
+
   useEffect(() => {
+    fetchUserInfo();
     fetchMessages();
-  }, [fetchMessages]);
+  }, [fetchMessages, fetchUserInfo]);
 
   useEffect(() => {
     const element = document.getElementById("end_of_chat_anchor");
@@ -121,6 +136,7 @@ export default function Chat() {
   };
 
   const agendaPanelStore = useAgendaPanelStore();
+  const userInfoStore = useUserInfoStore();
 
   return (
     <main className="app">

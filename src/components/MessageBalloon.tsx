@@ -6,21 +6,7 @@ import downloadIcon from "../imgs/ic-download.svg";
 import myAvatar from "../imgs/ic-me.svg";
 import aiAvatar from "../imgs/logo.svg";
 import { Reference } from "../types";
-
-const members = {
-  user: {
-    id: "1",
-    clientData: {
-      username: "ME",
-    },
-  },
-  assistant: {
-    id: "2",
-    clientData: {
-      username: "THAYA",
-    },
-  },
-};
+import { useUserInfoStore } from "../store";
 
 interface MessageBalloonProps {
   id: string;
@@ -43,12 +29,31 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
   previousPromptAnchorId,
   onSendMessage,
 }) => {
-  const member = members[role];
+  const { data: userInfoData } = useUserInfoStore();
+  const profilePicsBaseAddress = import.meta.env
+    .VITE_PROFILE_PICS_STORAGE_BASE_ADDRESS;
+
+  const member = {
+    user: {
+      id: "1",
+      clientData: {
+        username: userInfoData.nickname || "Me",
+        profilePic: userInfoData.profilePicFileName
+          ? `${profilePicsBaseAddress}/${userInfoData.profilePicFileName}`
+          : myAvatar,
+      },
+    },
+    assistant: {
+      id: "2",
+      clientData: {
+        username: "Thaya",
+        profilePic: aiAvatar,
+      },
+    },
+  }[role];
 
   const className =
-    member.id === members.user.id
-      ? "messagesMessage currentMember"
-      : "messagesMessage";
+    role === "user" ? "messagesMessage currentMember" : "messagesMessage";
 
   return (
     <>
@@ -60,7 +65,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
         <img
           className="avatar"
           alt={member.clientData.username}
-          src={role === "user" ? myAvatar : aiAvatar}
+          src={member.clientData.profilePic}
         />
         <div
           className="messageContent"

@@ -287,7 +287,7 @@
   align-items: center;
   min-width: 300px;
   min-height: 300px;
-  height: 50%;
+  height: calc(50% + 50px);
 }
 
 .settingsContent {
@@ -327,4 +327,12 @@
 .previousPromptArrow:hover {
   filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(100deg)
     brightness(80%) contrast(100%);
+}
+
+.profilePic {
+  object-fit: cover;
+  border-radius: 50%;
+  margin-top: -75px;
+  border: 2px solid white;
+  cursor: pointer;
 }

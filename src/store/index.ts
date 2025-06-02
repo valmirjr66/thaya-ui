@@ -1,5 +1,6 @@
 import { MouseEvent } from "react";
 import { create } from "zustand";
+import { User } from "../types";
 
 interface AgendaPanelState {
   isOpen: boolean;
@@ -11,6 +12,11 @@ interface AgendaPanelState {
 interface UserPrompt {
   content: string;
   setContent: (newContent: string) => void;
+}
+
+interface UserInfo {
+  data: Omit<User, "birthdate" | "email">;
+  setData: (newData: Omit<User, "birthdate" | "email">) => void;
 }
 
 const useUserPromptStore = create<UserPrompt>((set) => ({
@@ -26,4 +32,12 @@ const useAgendaPanelStore = create<AgendaPanelState>((set) => ({
   handleClose: () => set(() => ({ anchorElement: null, isOpen: false })),
 }));
 
-export { useAgendaPanelStore, useUserPromptStore };
+const useUserInfoStore = create<UserInfo>((set) => ({
+  data: {
+    fullname: "",
+    profilePicFileName: "",
+  },
+  setData: (newData) => set(() => ({ data: newData })),
+}));
+
+export { useAgendaPanelStore, useUserInfoStore, useUserPromptStore };

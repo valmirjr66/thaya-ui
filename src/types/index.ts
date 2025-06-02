@@ -16,6 +16,7 @@ export type Message = {
 export type User = {
   fullname: string;
   nickname?: string;
+  profilePicFileName?: string;
   email: string;
   birthdate: Date;
 };
