@@ -10,7 +10,7 @@ import CalendarPanelContent from "../components/CalendarPanelContent";
 import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
-import httpCallers from "../service";
+import httpCallers, { DEFAULT_HTTP_CONFIG } from "../service";
 import { useAgendaPanelStore, useUserInfoStore } from "../store";
 import { Message } from "../types";
 
@@ -20,7 +20,7 @@ export default function Chat() {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(`${import.meta.env.VITE_WS_URL}`, {
-        extraHeaders: { "x-user-email": localStorage.getItem("userEmail")! },
+        extraHeaders: { ...DEFAULT_HTTP_CONFIG.headers },
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,

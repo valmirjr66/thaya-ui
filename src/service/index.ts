@@ -2,27 +2,30 @@ import axios from "axios";
 
 const API_ADDRESS = import.meta.env.VITE_API_URL;
 
+export const DEFAULT_HTTP_CONFIG = {
+  headers: {
+    "x-user-email": localStorage.getItem("userEmail"),
+    "x-user-chat-origin": "ui",
+  },
+};
+
 const axiosInstance = axios.create({ baseURL: API_ADDRESS });
-
-const userEmail = localStorage.getItem("userEmail");
-
-const defaultConfig = { headers: { "x-user-email": userEmail } };
 
 const httpCallers = {
   get: async (path: string) => {
-    return await axiosInstance.get(path, defaultConfig);
+    return await axiosInstance.get(path, DEFAULT_HTTP_CONFIG);
   },
   post: async <T>(path: string, data?: T) => {
-    return await axiosInstance.post(path, data, defaultConfig);
+    return await axiosInstance.post(path, data, DEFAULT_HTTP_CONFIG);
   },
   put: async <T>(path: string, data?: T) => {
-    return await axiosInstance.put(path, data, defaultConfig);
+    return await axiosInstance.put(path, data, DEFAULT_HTTP_CONFIG);
   },
   patch: async <T>(path: string, data?: T) => {
-    return await axiosInstance.patch(path, data, defaultConfig);
+    return await axiosInstance.patch(path, data, DEFAULT_HTTP_CONFIG);
   },
   delete: async (path: string) => {
-    return await axiosInstance.delete(path, defaultConfig);
+    return await axiosInstance.delete(path, DEFAULT_HTTP_CONFIG);
   },
 };
 
