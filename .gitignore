@@ -26,3 +26,6 @@ yarn-error.log*
 
 # build
 dist
+
+# credentials
+gcp-credentials.json
