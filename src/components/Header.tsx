@@ -30,7 +30,7 @@ export default function Header({
         switch (item) {
           case "settings":
             return (
-              <Box onClick={() => navigate("/settings")}>
+              <Box onClick={() => navigate("/settings")} key="settings">
                 <SettingsIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
@@ -40,7 +40,7 @@ export default function Header({
             );
           case "chat":
             return (
-              <Box onClick={() => navigate("/")}>
+              <Box onClick={() => navigate("/")} key="chat">
                 <ChatIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
@@ -50,7 +50,7 @@ export default function Header({
             );
           case "calendar":
             return (
-              <Box onClick={agendaPanelStore.handleOpen}>
+              <Box onClick={agendaPanelStore.handleOpen} key="calendar">
                 <CalendarMonthIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
@@ -67,6 +67,7 @@ export default function Header({
                   localStorage.removeItem("userEmail");
                   document.location.reload();
                 }}
+                key="logout"
               >
                 <LogoutIcon
                   fontSize="medium"
