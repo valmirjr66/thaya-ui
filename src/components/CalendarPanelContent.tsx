@@ -9,20 +9,17 @@ import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
+import { CalendarOccurrence } from "../types";
 import { mapMonthNumberToItsAbbreviation } from "../util/DateHelper";
+import { CalendarDayDetails } from "./CalendarDayDetails";
 
 interface CalendarPanelProps {
   closePanel: () => void;
 }
 
-type Occurrence = {
-  datetime: string;
-  description: string;
-};
-
 function ServerDay(
   props: PickersDayProps & {
-    occurrences?: Occurrence[];
+    occurrences?: CalendarOccurrence[];
     setSelectedDay: (day: number) => void;
   }
 ) {
@@ -59,50 +56,12 @@ function ServerDay(
   );
 }
 
-function DayDetails(props: { dayOccurences: Occurrence[] }) {
-  const { dayOccurences } = props;
-
-  if (dayOccurences.length) {
-    return (
-      <ul>
-        {dayOccurences.map((item) => {
-          const date = new Date(item.datetime);
-          const year = String(date.getUTCFullYear()).slice(-2);
-          const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-          const day = String(date.getUTCDate()).padStart(2, "0");
-          const hours = String(date.getUTCHours()).padStart(2, "0");
-          const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-
-          const formattedDatetime = `${day}/${month}/${year} ${hours}h${minutes}`;
-
-          return (
-            <li
-              key={item.datetime}
-              style={{ margin: 8, width: 300, fontSize: 12 }}
-            >
-              {`(${formattedDatetime}) ${item.description}`}
-            </li>
-          );
-        })}
-      </ul>
-    );
-  } else {
-    return (
-      <span
-        style={{ width: 300, margin: 32, textAlign: "center", fontSize: 12 }}
-      >
-        Nothing to show
-      </span>
-    );
-  }
-}
-
 export default function CalendarPanelContent({
   closePanel,
 }: CalendarPanelProps) {
   const requestAbortController = useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [occurrences, setOccurrences] = useState<Occurrence[]>([]);
+  const [occurrences, setOccurrences] = useState<CalendarOccurrence[]>([]);
   const [selectedDay, setSelectedDay] = useState<number>();
 
   const fetchHighlightedDays = async (date: Dayjs) => {
@@ -161,10 +120,11 @@ export default function CalendarPanelContent({
         />
       </div>
       {selectedDay ? (
-        <DayDetails
+        <CalendarDayDetails
           dayOccurences={occurrences.filter(
             (item) => new Date(item.datetime).getUTCDate() === selectedDay
           )}
+          onClickBackCallback={() => setSelectedDay(null)}
         />
       ) : (
         <DateCalendar

@@ -20,3 +20,8 @@ export type User = {
   email: string;
   birthdate: Date;
 };
+
+export type CalendarOccurrence = {
+  datetime: string;
+  description: string;
+};
