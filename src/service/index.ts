@@ -1,8 +1,6 @@
 import axios from "axios";
 
 const API_ADDRESS = import.meta.env.VITE_API_URL;
-console.log("API_ADDRESS", API_ADDRESS);
-console.log("API_ADDRESS1", process.env.VITE_API_URL);
 
 export const DEFAULT_HTTP_CONFIG = {
   headers: {
