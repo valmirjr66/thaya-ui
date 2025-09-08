@@ -9,6 +9,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
+import { mapMonthNumberToItsAbbreviation } from "../util/DateHelper";
 
 interface CalendarPanelProps {
   closePanel: () => void;
@@ -116,7 +117,7 @@ export default function CalendarPanelContent({
       };
 
       const yearToFetch = date.year();
-      const monthToFetch = date.month();
+      const monthToFetch = mapMonthNumberToItsAbbreviation(date.month() + 1);
 
       const { data } = await httpCallers.get(
         `/user/calendar?year=${yearToFetch}&month=${monthToFetch}`
