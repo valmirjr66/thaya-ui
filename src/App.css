@@ -348,6 +348,15 @@
 }
 
 .backToCalendarButton:hover {
-  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(100deg)
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
+    brightness(80%) contrast(100%);
+}
+
+.addCalendarOccurrenceButton {
+  cursor: pointer;
+}
+
+.addCalendarOccurrenceButton:hover {
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
     brightness(80%) contrast(100%);
 }

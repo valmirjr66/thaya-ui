@@ -6,7 +6,7 @@ import {
   PickersDayProps,
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
 import { CalendarOccurrence } from "../types";
@@ -65,7 +65,7 @@ export default function CalendarPanelContent({
   const requestAbortController = useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [occurrences, setOccurrences] = useState<CalendarOccurrence[]>([]);
-  const [selectedDay, setSelectedDay] = useState<number>();
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [{ month, year }, setCurrentMonthYear] = useState<{
     month: number;
     year: number;
@@ -73,6 +73,16 @@ export default function CalendarPanelContent({
     month: dayjs().month(),
     year: dayjs().year(),
   });
+
+  const selectedDate = useMemo<Dayjs | null>(
+    () =>
+      (selectedDay &&
+        month &&
+        year &&
+        dayjs().year(year).month(month).date(selectedDay)) ||
+      null,
+    [selectedDay, month, year]
+  );
 
   const fetchHighlightedDays = async (date: Dayjs) => {
     setIsLoading(true);
@@ -117,6 +127,22 @@ export default function CalendarPanelContent({
     fetchHighlightedDays(date);
   };
 
+  const insertOccurrenceCallback = async (time: Dayjs, description: string) => {
+    const composedDate = selectedDate
+      .hour(time.hour())
+      .minute(time.minute())
+      .second(0)
+      .millisecond(0);
+
+    await httpCallers.post("/user/calendar", {
+      datetime: composedDate.toISOString(),
+      description,
+    });
+
+    fetchHighlightedDays(selectedDate);
+    setSelectedDay(null);
+  };
+
   return (
     <div className="panelWrapper">
       <div className="panelHeader">
@@ -140,10 +166,11 @@ export default function CalendarPanelContent({
       </div>
       {selectedDay ? (
         <CalendarDayDetails
-          dayOccurences={occurrences.filter(
+          insertOccurrenceCallback={insertOccurrenceCallback}
+          dateOccurences={occurrences.filter(
             (item) => new Date(item.datetime).getUTCDate() === selectedDay
           )}
-          onClickBackCallback={() => setSelectedDay(null)}
+          onClickReturnCallback={() => setSelectedDay(null)}
         />
       ) : (
         <DateCalendar

@@ -1,28 +1,125 @@
+import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Button, TextField } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers";
+import { Dayjs } from "dayjs";
+import { useState } from "react";
 import { CalendarOccurrence } from "../types";
 
-const BackToCalendarPanel = ({
-  onClickCallback,
+const CalendarFooter = ({
+  onClickReturnCallback,
+  onClickAddCallback,
 }: {
-  onClickCallback: () => void;
+  onClickReturnCallback: () => void;
+  onClickAddCallback: () => void;
 }) => (
-  <div className="backToCalendarButton" onClick={onClickCallback}>
-    <ArrowBackIcon style={{ marginRight: 6 }} fontSize="small" /> Back
+  <div
+    style={{
+      width: 300,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "0 16px",
+    }}
+  >
+    <div className="backToCalendarButton" onClick={onClickReturnCallback}>
+      <ArrowBackIcon style={{ marginRight: 6 }} fontSize="small" /> Back
+    </div>
+    <AddIcon
+      className="addCalendarOccurrenceButton"
+      onClick={onClickAddCallback}
+    />
   </div>
 );
 
 export function CalendarDayDetails({
-  dayOccurences,
-  onClickBackCallback,
+  dateOccurences,
+  onClickReturnCallback,
+  insertOccurrenceCallback,
 }: {
-  dayOccurences: CalendarOccurrence[];
-  onClickBackCallback: () => void;
+  dateOccurences: CalendarOccurrence[];
+  onClickReturnCallback: () => void;
+  insertOccurrenceCallback: (time: Dayjs, description: string) => Promise<void>;
 }) {
-  if (dayOccurences.length) {
+  const [insertMode, setInsertMode] = useState(false);
+  const [{ time, description }, setOccurrenceToBeInserted] = useState<{
+    time?: Dayjs;
+    description?: string;
+  }>({});
+
+  const toggleInsertMode = () => {
+    setInsertMode((prevState) => !prevState);
+  };
+
+  if (insertMode) {
+    return (
+      <div style={{ width: 300, padding: 16 }}>
+        <TextField
+          label="Description"
+          fullWidth
+          multiline
+          required
+          rows={2}
+          value={description}
+          onChange={(e) =>
+            setOccurrenceToBeInserted((prevState) => ({
+              ...prevState,
+              description: e.target.value,
+            }))
+          }
+          style={{ marginBottom: 8 }}
+        />
+        <TimePicker
+          label="Time"
+          onChange={(value) =>
+            setOccurrenceToBeInserted((prevState) => ({
+              ...prevState,
+              time: value,
+            }))
+          }
+          value={time}
+          slotProps={{
+            textField: {
+              required: true,
+              fullWidth: true,
+              style: { marginTop: 16 },
+            },
+          }}
+        />
+        <div style={{ float: "right", marginTop: 24 }}>
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
+            style={{ marginRight: 16 }}
+            onClick={() => {
+              toggleInsertMode();
+              setOccurrenceToBeInserted({});
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            disabled={!time || !description}
+            onClick={async () => {
+              await insertOccurrenceCallback(time!, description!);
+              toggleInsertMode();
+            }}
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (dateOccurences.length) {
     return (
       <>
         <ul>
-          {dayOccurences.map((item) => {
+          {dateOccurences.map((item) => {
             const date = new Date(item.datetime);
             const year = String(date.getUTCFullYear()).slice(-2);
             const month = String(date.getUTCMonth() + 1).padStart(2, "0");
@@ -42,7 +139,10 @@ export function CalendarDayDetails({
             );
           })}
         </ul>
-        <BackToCalendarPanel onClickCallback={onClickBackCallback} />
+        <CalendarFooter
+          onClickReturnCallback={onClickReturnCallback}
+          onClickAddCallback={toggleInsertMode}
+        />
       </>
     );
   } else {
@@ -53,7 +153,10 @@ export function CalendarDayDetails({
         >
           Nothing to show
         </span>
-        <BackToCalendarPanel onClickCallback={onClickBackCallback} />
+        <CalendarFooter
+          onClickReturnCallback={onClickReturnCallback}
+          onClickAddCallback={toggleInsertMode}
+        />
       </>
     );
   }
