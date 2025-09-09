@@ -4,7 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button, TextField } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
@@ -40,24 +40,27 @@ export function CalendarDayDetails({
   refetchDateOccurrences,
   onClickReturnCallback,
   insertOccurrenceCallback,
+  updateOccurrenceCallback,
 }: {
   dateOccurences: CalendarOccurrence[];
   refetchDateOccurrences: () => Promise<void>;
   onClickReturnCallback: () => void;
   insertOccurrenceCallback: (time: Dayjs, description: string) => Promise<void>;
+  updateOccurrenceCallback: (
+    id: string,
+    time: Dayjs,
+    description: string
+  ) => Promise<void>;
 }) {
-  const [insertMode, setInsertMode] = useState(false);
-  const [{ time, description }, setOccurrenceToBeInserted] = useState<{
+  const [status, setStatus] = useState<"idle" | "update" | "insert">();
+  const [occurrenceBeingManaged, setOccurrenceBeingManaged] = useState<{
+    id?: string;
     time?: Dayjs;
     description?: string;
   }>({});
 
   const { triggerToast: triggerErrorToast } = useToaster({ type: "error" });
   const { triggerToast: triggerSuccessToast } = useToaster({ type: "success" });
-
-  const toggleInsertMode = () => {
-    setInsertMode((prevState) => !prevState);
-  };
 
   const deleteOccurrence = useCallback(async (id: string) => {
     try {
@@ -69,7 +72,7 @@ export function CalendarDayDetails({
     }
   }, []);
 
-  if (insertMode) {
+  if (status === "insert" || status === "update") {
     return (
       <div style={{ width: 300, padding: 16 }}>
         <TextField
@@ -78,9 +81,9 @@ export function CalendarDayDetails({
           multiline
           required
           rows={2}
-          value={description}
+          value={occurrenceBeingManaged.description}
           onChange={(e) =>
-            setOccurrenceToBeInserted((prevState) => ({
+            setOccurrenceBeingManaged((prevState) => ({
               ...prevState,
               description: e.target.value,
             }))
@@ -90,12 +93,12 @@ export function CalendarDayDetails({
         <TimePicker
           label="Time"
           onChange={(value) =>
-            setOccurrenceToBeInserted((prevState) => ({
+            setOccurrenceBeingManaged((prevState) => ({
               ...prevState,
               time: value,
             }))
           }
-          value={time}
+          value={occurrenceBeingManaged.time}
           slotProps={{
             textField: {
               required: true,
@@ -112,8 +115,8 @@ export function CalendarDayDetails({
             style={{ marginRight: 16 }}
             onClick={async () => {
               await refetchDateOccurrences();
-              toggleInsertMode();
-              setOccurrenceToBeInserted({});
+              setStatus("idle");
+              setOccurrenceBeingManaged({});
             }}
           >
             Cancel
@@ -121,10 +124,22 @@ export function CalendarDayDetails({
           <Button
             variant="contained"
             size="small"
-            disabled={!time || !description}
+            disabled={
+              !occurrenceBeingManaged.time ||
+              !occurrenceBeingManaged.description
+            }
             onClick={async () => {
-              await insertOccurrenceCallback(time!, description!);
-              toggleInsertMode();
+              status === "insert"
+                ? await insertOccurrenceCallback(
+                    occurrenceBeingManaged.time!,
+                    occurrenceBeingManaged.description!
+                  )
+                : await updateOccurrenceCallback(
+                    occurrenceBeingManaged.id!,
+                    occurrenceBeingManaged.time!,
+                    occurrenceBeingManaged.description!
+                  );
+              setStatus("idle");
             }}
           >
             Save
@@ -182,7 +197,14 @@ export function CalendarDayDetails({
                   <EditIcon
                     style={{ marginRight: 4, fontSize: 16 }}
                     className="editIcon"
-                    onClick={() => console.log(item.id)}
+                    onClick={() => {
+                      setOccurrenceBeingManaged({
+                        id: item.id,
+                        time: dayjs(item.datetime),
+                        description: item.description,
+                      });
+                      setStatus("update");
+                    }}
                   />
                   <div style={{ marginLeft: 4 }}>({formattedDatetime})</div>
                   <div style={{ marginLeft: 8 }}>{item.description}</div>
@@ -193,7 +215,7 @@ export function CalendarDayDetails({
         </div>
         <CalendarFooter
           onClickReturnCallback={onClickReturnCallback}
-          onClickAddCallback={toggleInsertMode}
+          onClickAddCallback={() => setStatus("insert")}
         />
       </div>
     );
@@ -224,7 +246,7 @@ export function CalendarDayDetails({
         </div>
         <CalendarFooter
           onClickReturnCallback={onClickReturnCallback}
-          onClickAddCallback={toggleInsertMode}
+          onClickAddCallback={() => setStatus("insert")}
         />
       </div>
     );

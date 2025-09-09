@@ -6,7 +6,7 @@ import {
   PickersDayProps,
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useToaster from "../hooks/useToaster";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
@@ -130,25 +130,65 @@ export default function CalendarPanelContent({
     fetchHighlightedDays(date);
   };
 
-  const insertOccurrenceCallback = async (time: Dayjs, description: string) => {
-    const composedDate = selectedDate
-      .hour(time.hour())
-      .minute(time.minute())
-      .second(0)
-      .millisecond(0);
+  const getComposedDate = useCallback(
+    (time: Dayjs) =>
+      selectedDate
+        .hour(time.hour())
+        .minute(time.minute())
+        .second(0)
+        .millisecond(0),
+    [selectedDate]
+  );
 
-    try {
-      await httpCallers.post("/calendar/occurrences", {
-        datetime: composedDate.toISOString(),
-        description,
-      });
+  const insertOccurrenceCallback = useCallback(
+    async (time: Dayjs, description: string) => {
+      const composedDate = getComposedDate(time);
 
-      fetchHighlightedDays(selectedDate);
-      setSelectedDay(null);
-    } catch {
-      triggerToast();
-    }
-  };
+      try {
+        await httpCallers.post("/calendar/occurrences", {
+          datetime: composedDate.toISOString(),
+          description,
+        });
+
+        fetchHighlightedDays(selectedDate);
+        setSelectedDay(null);
+      } catch {
+        triggerToast();
+      }
+    },
+    [
+      selectedDate,
+      triggerToast,
+      fetchHighlightedDays,
+      setSelectedDay,
+      getComposedDate,
+    ]
+  );
+
+  const updateOccurrenceCallback = useCallback(
+    async (id: string, time: Dayjs, description: string) => {
+      const composedDate = getComposedDate(time);
+
+      try {
+        await httpCallers.put(`/calendar/occurrences/${id}`, {
+          datetime: composedDate.toISOString(),
+          description,
+        });
+
+        fetchHighlightedDays(selectedDate);
+        setSelectedDay(null);
+      } catch {
+        triggerToast();
+      }
+    },
+    [
+      selectedDate,
+      triggerToast,
+      fetchHighlightedDays,
+      setSelectedDay,
+      getComposedDate,
+    ]
+  );
 
   return (
     <div className="panelWrapper">
@@ -174,6 +214,7 @@ export default function CalendarPanelContent({
       {selectedDay ? (
         <CalendarDayDetails
           insertOccurrenceCallback={insertOccurrenceCallback}
+          updateOccurrenceCallback={updateOccurrenceCallback}
           dateOccurences={occurrences.filter(
             (item) => new Date(item.datetime).getUTCDate() === selectedDay
           )}
