@@ -96,7 +96,7 @@ export default function CalendarPanelContent({
       };
 
       const yearToFetch = date.year();
-      const monthToFetch = mapMonthNumberToAbbreviation(date.month() + 1);
+      const monthToFetch = mapMonthNumberToAbbreviation(date.month());
 
       const { data } = await httpCallers.get(
         `/user/calendar?year=${yearToFetch}&month=${monthToFetch}`
