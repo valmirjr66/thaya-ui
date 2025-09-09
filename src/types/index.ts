@@ -22,6 +22,7 @@ export type User = {
 };
 
 export type CalendarOccurrence = {
+  id: string;
   datetime: string;
   description: string;
 };

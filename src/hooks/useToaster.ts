@@ -1,6 +1,9 @@
 import { useCallback } from "react";
 import { toast, TypeOptions } from "react-toastify";
 
+const DEFAULT_ERROR_MESSAGE = "Something wen't wrong, please try again 😟";
+const SUCCESS_MESSAGE = "Action completed! 🎉";
+
 interface UseToasterProps {
   defaultMessage?: string;
   type: TypeOptions;
@@ -8,8 +11,18 @@ interface UseToasterProps {
 
 export default function useToaster({
   type,
-  defaultMessage = "Something wen't wrong, please try again 😟",
+  defaultMessage: externalDefaultMessage,
 }: UseToasterProps) {
+  let defaultMessage = externalDefaultMessage;
+
+  if (!externalDefaultMessage) {
+    if (type === "error") {
+      defaultMessage = DEFAULT_ERROR_MESSAGE;
+    } else {
+      defaultMessage = SUCCESS_MESSAGE;
+    }
+  }
+
   const triggerToast = useCallback(
     (message?: string) => {
       toast(message || defaultMessage, {

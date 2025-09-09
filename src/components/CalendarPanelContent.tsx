@@ -178,6 +178,7 @@ export default function CalendarPanelContent({
             (item) => new Date(item.datetime).getUTCDate() === selectedDay
           )}
           onClickReturnCallback={() => setSelectedDay(null)}
+          refetchDateOccurrences={() => fetchHighlightedDays(selectedDate!)}
         />
       ) : (
         <DateCalendar
