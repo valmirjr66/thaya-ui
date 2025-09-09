@@ -7,6 +7,7 @@ import {
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useMemo, useRef, useState } from "react";
+import useToaster from "../hooks/useToaster";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
 import { CalendarOccurrence } from "../types";
@@ -74,6 +75,8 @@ export default function CalendarPanelContent({
     year: dayjs().year(),
   });
 
+  const { triggerToast } = useToaster({ type: "error" });
+
   const selectedDate = useMemo<Dayjs | null>(
     () =>
       (selectedDay &&
@@ -134,13 +137,17 @@ export default function CalendarPanelContent({
       .second(0)
       .millisecond(0);
 
-    await httpCallers.post("/calendar/occurrences", {
-      datetime: composedDate.toISOString(),
-      description,
-    });
+    try {
+      await httpCallers.post("/calendar/occurrences", {
+        datetime: composedDate.toISOString(),
+        description,
+      });
 
-    fetchHighlightedDays(selectedDate);
-    setSelectedDay(null);
+      fetchHighlightedDays(selectedDate);
+      setSelectedDay(null);
+    } catch {
+      triggerToast();
+    }
   };
 
   return (
