@@ -1,4 +1,4 @@
-export const mapMonthNumberToItsAbbreviation = (month: number): string => {
+export const mapMonthNumberToAbbreviation = (month: number): string => {
   const monthNames = [
     "jan",
     "feb",
@@ -16,3 +16,9 @@ export const mapMonthNumberToItsAbbreviation = (month: number): string => {
 
   return monthNames[month];
 };
+
+export const mapMonthNumberToCapitalizedAbbreviation = (
+  month: number
+): string =>
+  mapMonthNumberToAbbreviation(month).charAt(0).toUpperCase() +
+  mapMonthNumberToAbbreviation(month).slice(1);

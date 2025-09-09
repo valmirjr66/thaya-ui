@@ -10,7 +10,10 @@ import { useEffect, useRef, useState } from "react";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
 import { CalendarOccurrence } from "../types";
-import { mapMonthNumberToItsAbbreviation } from "../util/DateHelper";
+import {
+  mapMonthNumberToAbbreviation,
+  mapMonthNumberToCapitalizedAbbreviation,
+} from "../util/DateHelper";
 import { CalendarDayDetails } from "./CalendarDayDetails";
 
 interface CalendarPanelProps {
@@ -63,6 +66,13 @@ export default function CalendarPanelContent({
   const [isLoading, setIsLoading] = useState(false);
   const [occurrences, setOccurrences] = useState<CalendarOccurrence[]>([]);
   const [selectedDay, setSelectedDay] = useState<number>();
+  const [{ month, year }, setCurrentMonthYear] = useState<{
+    month: number;
+    year: number;
+  }>({
+    month: dayjs().month(),
+    year: dayjs().year(),
+  });
 
   const fetchHighlightedDays = async (date: Dayjs) => {
     setIsLoading(true);
@@ -76,7 +86,7 @@ export default function CalendarPanelContent({
       };
 
       const yearToFetch = date.year();
-      const monthToFetch = mapMonthNumberToItsAbbreviation(date.month() + 1);
+      const monthToFetch = mapMonthNumberToAbbreviation(date.month() + 1);
 
       const { data } = await httpCallers.get(
         `/user/calendar?year=${yearToFetch}&month=${monthToFetch}`
@@ -103,13 +113,22 @@ export default function CalendarPanelContent({
       requestAbortController.current.abort();
     }
 
+    setCurrentMonthYear({ month: date.month(), year: date.year() });
     fetchHighlightedDays(date);
   };
 
   return (
     <div className="panelWrapper">
       <div className="panelHeader">
-        <span style={{ marginLeft: 16 }}>Calendar</span>
+        <div>
+          <span style={{ marginLeft: 16 }}>Calendar</span>
+          <span style={{ fontSize: 12, marginLeft: 4, color: "#efefef" }}>
+            {selectedDay &&
+              ` (${mapMonthNumberToCapitalizedAbbreviation(
+                month
+              )} ${selectedDay}, ${year.toString()})`}
+          </span>
+        </div>
         <img
           src={closeIcon}
           className="closeIcon"
