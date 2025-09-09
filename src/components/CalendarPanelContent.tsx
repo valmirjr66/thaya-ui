@@ -99,7 +99,7 @@ export default function CalendarPanelContent({
       const monthToFetch = mapMonthNumberToAbbreviation(date.month());
 
       const { data } = await httpCallers.get(
-        `/user/calendar?year=${yearToFetch}&month=${monthToFetch}`
+        `/calendar/occurrences?year=${yearToFetch}&month=${monthToFetch}`
       );
 
       setOccurrences(data.items || []);
@@ -134,7 +134,7 @@ export default function CalendarPanelContent({
       .second(0)
       .millisecond(0);
 
-    await httpCallers.post("/user/calendar", {
+    await httpCallers.post("/calendar/occurrences", {
       datetime: composedDate.toISOString(),
       description,
     });
