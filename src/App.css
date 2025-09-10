@@ -329,12 +329,38 @@
     brightness(80%) contrast(100%);
 }
 
-.profilePic {
-  object-fit: cover;
+.profilePicContainer {
+  position: relative;
+}
+
+.profilePicImg {
+  box-sizing: border-box;
+  width: 100px;
+  display: block;
   border-radius: 50%;
   margin-top: -75px;
   border: 2px solid white;
   cursor: pointer;
+}
+
+.profilePicOverlay {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100px;
+  transition: 0.5s ease;
+  opacity: 0;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profilePicContainer:hover .profilePicOverlay {
+  opacity: 1;
 }
 
 .backToCalendarButton {

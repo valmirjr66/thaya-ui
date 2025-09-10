@@ -1,8 +1,10 @@
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { TextField } from "@mui/material";
+import { Box, Button, Modal, styled, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 import Header from "../components/Header";
@@ -11,6 +13,18 @@ import defaultAvatar from "../imgs/ic-me.svg";
 import loadingIcon from "../imgs/loading.gif";
 import httpCallers from "../service";
 import { User } from "../types";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export default function Settings() {
   const [user, setUser] = useState<User | null>(null);
@@ -79,8 +93,81 @@ export default function Settings() {
     setLoading(false);
   };
 
+  const [isProfilePicDialogOpen, setIsProfilePicDialogOpen] = useState(false);
+
+  const openProfilePicDialog = () => setIsProfilePicDialogOpen(true);
+
+  const closeProfilePicDialog = () => setIsProfilePicDialogOpen(false);
+
+  const replaceProfilePic = async (event: ChangeEvent<HTMLInputElement>) => {
+    const formData = new FormData();
+    formData.append("profilePicture", event.target.files[0]);
+
+    await httpCallers.put("/user/profile-picture", formData, {
+      "Content-Type": "multipart/form-data",
+    });
+
+    await loadUser();
+    triggerToastSuccess("Profile picture updated successfully!");
+    closeProfilePicDialog();
+  };
+
+  const removeProfilePic = async () => {
+    await httpCallers.delete("/user/profile-picture");
+    await loadUser();
+    closeProfilePicDialog();
+  };
+
   return (
     <>
+      <Modal open={isProfilePicDialogOpen} onClose={closeProfilePicDialog}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "#323232",
+            boxShadow: 24,
+            p: 4,
+            color: "white",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            borderRadius: 2,
+          }}
+        >
+          <span style={{ marginBottom: 20, display: "block", fontSize: 14 }}>
+            What you want to do with your profile picture?
+          </span>
+          <div>
+            <Button
+              component="label"
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+              style={{ marginRight: 24 }}
+            >
+              Replace
+              <VisuallyHiddenInput
+                type="file"
+                onChange={replaceProfilePic}
+                multiple
+              />
+            </Button>
+            <Button
+              component="label"
+              variant="contained"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={removeProfilePic}
+            >
+              Remove
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+
       <ToastContainer />
       <ChangePasswordModal
         isOpen={passwordModalIsOpen}
@@ -97,15 +184,23 @@ export default function Settings() {
               <img src={loadingIcon} width={30} />
             ) : (
               <form onSubmit={submitForm} className="settingsPanel">
-                <img
-                  width={100}
-                  src={
-                    user.profilePicFileName
-                      ? `${profilePicsBaseAddress}/${user.profilePicFileName}`
-                      : defaultAvatar
-                  }
-                  className="profilePic"
-                />
+                <div
+                  className="profilePicContainer"
+                  onClick={openProfilePicDialog}
+                >
+                  <img
+                    src={
+                      user.profilePicFileName
+                        ? `${profilePicsBaseAddress}/${user.profilePicFileName}`
+                        : defaultAvatar
+                    }
+                    alt="Avatar"
+                    className="profilePicImg"
+                  />
+                  <div className="profilePicOverlay">
+                    <EditIcon style={{ color: "white" }} />
+                  </div>
+                </div>
                 <TextField
                   label="Fullname"
                   value={user.fullname}
