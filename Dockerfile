@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm cache clean --force
-RUN npm install
+RUN npm install --registry=https://registry.npmjs.org/
 
 COPY . .
 RUN npm run build
