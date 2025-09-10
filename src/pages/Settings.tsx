@@ -39,6 +39,7 @@ export default function Settings() {
         email: data.email,
         profilePicFileName: data.profilePicFileName,
         birthdate: new Date(birdateYear, birthdateMonth - 1, birthdateDay),
+        phoneNumber: data.phoneNumber,
       });
     } catch {
       triggerToastError(
@@ -119,19 +120,20 @@ export default function Settings() {
                   }
                 />
                 <div style={{ display: "flex" }}>
-                  <TextField
-                    label="Nickname"
-                    value={user.nickname}
-                    fullWidth
-                    disabled={!editMode}
-                    onChange={(e) =>
-                      setUser((prevState) => ({
-                        ...prevState,
-                        nickname: e.target.value,
-                      }))
-                    }
-                    style={{ marginRight: 20 }}
-                  />
+                  <div style={{ marginRight: 20 }}>
+                    <TextField
+                      label="Nickname"
+                      value={user.nickname}
+                      fullWidth
+                      disabled={!editMode}
+                      onChange={(e) =>
+                        setUser((prevState) => ({
+                          ...prevState,
+                          nickname: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
                   <DatePicker
                     label="Birthdate"
                     value={dayjs(new Date(user.birthdate))}

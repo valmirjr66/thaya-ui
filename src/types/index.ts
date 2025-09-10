@@ -19,6 +19,7 @@ export type User = {
   profilePicFileName?: string;
   email: string;
   birthdate: Date;
+  phoneNumber: string;
 };
 
 export type CalendarOccurrence = {
