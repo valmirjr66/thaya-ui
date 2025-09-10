@@ -32,6 +32,16 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
     onSubmit(content);
   }
 
+  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      if (!isButtonDisabled) {
+        setContent("");
+        onSubmit(content);
+      }
+    }
+  }
+
   const isButtonDisabled = useMemo(
     () => content?.length === 0 || waitingAnswer,
     [content, waitingAnswer]
@@ -42,14 +52,14 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
       style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}
     >
       <form
-        onSubmit={(e) => onSubmitInternal(e)}
+        onSubmit={onSubmitInternal}
         style={{ width: isMobile ? "90%" : "75%", display: "flex" }}
       >
         <TextField
           label={placeholder}
           multiline
           maxRows={3}
-          onChange={(e) => onChange(e)}
+          onChange={onChange}
           value={content}
           autoFocus
           spellCheck={false}
@@ -58,6 +68,7 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
           slotProps={{
             input: { style: { fontSize: isMobile ? 12 : "unset" } },
           }}
+          onKeyDown={onKeyDown}
         />
         <button className="send" disabled={isButtonDisabled}>
           <img
