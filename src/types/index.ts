@@ -14,6 +14,7 @@ export type Message = {
 };
 
 export type User = {
+  id: string;
   fullname: string;
   nickname?: string;
   profilePicFileName?: string;

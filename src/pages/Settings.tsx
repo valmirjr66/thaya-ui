@@ -49,6 +49,7 @@ export default function Settings() {
         .map((x: string) => Number(x));
 
       setUser({
+        id: data.id,
         fullname: data.fullname,
         nickname: data.nickname,
         email: data.email,

@@ -74,7 +74,9 @@ export default function Chat() {
     setIsLoadingMessages(true);
 
     try {
-      const { data } = await httpCallers.get(`assistant/chat`);
+      const { data } = await httpCallers.get(
+        `assistant/chat?userId=${userInfoStore.data.id}`
+      );
 
       const chatMessages = data.items || [];
 
@@ -90,13 +92,16 @@ export default function Chat() {
 
   const fetchUserInfo = useCallback(async () => {
     try {
-      const { data } = await httpCallers.get(`user/info`);
+      const { data } = await httpCallers.get(
+        `users/${userInfoStore.data.id}/info`
+      );
 
       userInfoStore.setData({
+        id: data.id,
+        email: data.email,
         fullname: data.fullname,
         nickname: data.nickname,
         profilePicFileName: data.profilePicFileName,
-        phoneNumber: data.phoneNumber,
       });
     } catch {
       triggerToast();
@@ -127,6 +132,7 @@ export default function Chat() {
 
     try {
       socketRef.current?.send({
+        userId: userInfoStore.data.id,
         content: message,
       });
     } catch {

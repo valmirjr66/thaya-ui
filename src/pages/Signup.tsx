@@ -13,17 +13,11 @@ import { User } from "../types";
 
 export default function Signup() {
   const [
-    {
-      fullname,
-      nickname,
-      birthdate,
-      email,
-      password,
-      confirmPassword,
-      phoneNumber,
-    },
+    { fullname, nickname, birthdate, email, password, confirmPassword },
     setUser,
-  ] = useState<User & { password: string; confirmPassword: string }>({
+  ] = useState<
+    Omit<User, "id"> & { password: string; confirmPassword: string }
+  >({
     fullname: "",
     birthdate: null,
     email: "",

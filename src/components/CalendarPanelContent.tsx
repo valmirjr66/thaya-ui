@@ -16,6 +16,7 @@ import {
   mapMonthNumberToCapitalizedAbbreviation,
 } from "../util/DateHelper";
 import { CalendarDayDetails } from "./CalendarDayDetails";
+import { useUserInfoStore } from "../store";
 
 interface CalendarPanelProps {
   closePanel: () => void;
@@ -77,6 +78,8 @@ export default function CalendarPanelContent({
 
   const { triggerToast } = useToaster({ type: "error" });
 
+  const userInfoStore = useUserInfoStore();
+
   const selectedDate = useMemo<Dayjs | null>(
     () =>
       (selectedDay &&
@@ -102,7 +105,7 @@ export default function CalendarPanelContent({
       const monthToFetch = mapMonthNumberToAbbreviation(date.month());
 
       const { data } = await httpCallers.get(
-        `/calendar/occurrences?year=${yearToFetch}&month=${monthToFetch}`
+        `/calendar/occurrences?userId=${userInfoStore.data.id}&year=${yearToFetch}&month=${monthToFetch}`
       );
 
       setOccurrences(data.items || []);
@@ -146,6 +149,7 @@ export default function CalendarPanelContent({
 
       try {
         await httpCallers.post("/calendar/occurrences", {
+          userId: userInfoStore.data.id,
           datetime: composedDate.toISOString(),
           description,
         });
@@ -171,6 +175,7 @@ export default function CalendarPanelContent({
 
       try {
         await httpCallers.put(`/calendar/occurrences/${id}`, {
+          userId: userInfoStore.data.id,
           datetime: composedDate.toISOString(),
           description,
         });

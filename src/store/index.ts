@@ -15,8 +15,8 @@ interface UserPrompt {
 }
 
 interface UserInfo {
-  data: Omit<User, "birthdate" | "email">;
-  setData: (newData: Omit<User, "birthdate" | "email">) => void;
+  data: Omit<User, "birthdate" | "phoneNumber">;
+  setData: (newData: Omit<User, "birthdate" | "phoneNumber">) => void;
 }
 
 const useUserPromptStore = create<UserPrompt>((set) => ({
@@ -34,6 +34,8 @@ const useAgendaPanelStore = create<AgendaPanelState>((set) => ({
 
 const useUserInfoStore = create<UserInfo>((set) => ({
   data: {
+    id: "",
+    email: "",
     fullname: "",
     profilePicFileName: "",
   },

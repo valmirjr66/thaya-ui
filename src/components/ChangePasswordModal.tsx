@@ -2,6 +2,7 @@ import { Modal, TextField } from "@mui/material";
 import { useState } from "react";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
+import { useUserInfoStore } from "../store";
 
 export type ChangePasswordModalProps = {
   isOpen: boolean;
@@ -17,10 +18,13 @@ export default function ChangePasswordModal({
 
   const { triggerToast: triggerToastError } = useToaster({ type: "error" });
   const { triggerToast: triggerToastSuccess } = useToaster({ type: "success" });
+  const userInfoStore = useUserInfoStore();
 
   const submitForm = async () => {
     try {
-      await httpCallers.post(`/users/change-password?newPassword=${password}`);
+      await httpCallers.post(
+        `/users/change-password?userEmail=${userInfoStore.data.email}&newPassword=${password}`
+      );
       triggerToastSuccess("Password updated successfully!");
     } catch {
       triggerToastError();
