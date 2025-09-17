@@ -21,12 +21,12 @@ export default function Login() {
 
     async function validateCredentials() {
       try {
-        await httpCallers.post("user/authenticate", {
+        const { data } = await httpCallers.post("users/authenticate", {
           email,
           password,
         });
 
-        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userId", data.id);
 
         document.location.reload();
       } catch (err) {
@@ -46,7 +46,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("userEmail")) {
+    if (localStorage.getItem("userId")) {
       navigate("/");
     }
   }, []);

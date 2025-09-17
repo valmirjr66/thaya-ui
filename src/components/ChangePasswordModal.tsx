@@ -20,7 +20,7 @@ export default function ChangePasswordModal({
 
   const submitForm = async () => {
     try {
-      await httpCallers.post(`/user/change-password?newPassword=${password}`);
+      await httpCallers.post(`/users/change-password?newPassword=${password}`);
       triggerToastSuccess("Password updated successfully!");
     } catch {
       triggerToastError();

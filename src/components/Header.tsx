@@ -64,7 +64,7 @@ export default function Header({
             return (
               <Box
                 onClick={() => {
-                  localStorage.removeItem("userEmail");
+                  localStorage.removeItem("userId");
                   document.location.reload();
                 }}
                 key="logout"

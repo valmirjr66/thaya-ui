@@ -3,7 +3,6 @@ import axios from "axios";
 const API_ADDRESS = import.meta.env.VITE_API_URL;
 
 export const DEFAULT_HTTP_HEADERS = {
-  "x-user-email": localStorage.getItem("userEmail"),
   "x-user-chat-origin": "ui",
 };
 

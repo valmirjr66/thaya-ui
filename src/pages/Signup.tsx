@@ -13,7 +13,15 @@ import { User } from "../types";
 
 export default function Signup() {
   const [
-    { fullname, nickname, birthdate, email, password, confirmPassword },
+    {
+      fullname,
+      nickname,
+      birthdate,
+      email,
+      password,
+      confirmPassword,
+      phoneNumber,
+    },
     setUser,
   ] = useState<User & { password: string; confirmPassword: string }>({
     fullname: "",
@@ -21,6 +29,7 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
+    phoneNumber: "",
   });
 
   const [signupSuccess, setSignupSuccess] = useState<boolean>(false);
@@ -34,7 +43,7 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      await httpCallers.post("/user", {
+      await httpCallers.post("/users", {
         fullname,
         email,
         password,

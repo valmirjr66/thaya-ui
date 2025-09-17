@@ -41,7 +41,8 @@ export default function Settings() {
 
   const loadUser = useCallback(async () => {
     try {
-      const { data } = await httpCallers.get(`user/info`);
+      const userId = localStorage.getItem("userId");
+      const { data } = await httpCallers.get(`users/${userId}`);
 
       const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
         .split("-")
@@ -72,7 +73,9 @@ export default function Settings() {
     e.preventDefault();
 
     try {
-      await httpCallers.put("/user/info", {
+      const userId = localStorage.getItem("userId");
+      await httpCallers.put(`/users/${userId}`, {
+        email: user.email,
         fullname: user.fullname,
         nickname: user.nickname,
         birthdate: user.birthdate.toISOString().split("T")[0],
@@ -103,7 +106,8 @@ export default function Settings() {
     const formData = new FormData();
     formData.append("profilePicture", event.target.files[0]);
 
-    await httpCallers.put("/user/profile-picture", formData, {
+    const userId = localStorage.getItem("userId");
+    await httpCallers.put(`/users/${userId}/profile-picture`, formData, {
       "Content-Type": "multipart/form-data",
     });
 
@@ -113,7 +117,8 @@ export default function Settings() {
   };
 
   const removeProfilePic = async () => {
-    await httpCallers.delete("/user/profile-picture");
+    const userId = localStorage.getItem("userId");
+    await httpCallers.delete(`/users/${userId}/profile-picture`);
     await loadUser();
     closeProfilePicDialog();
   };
