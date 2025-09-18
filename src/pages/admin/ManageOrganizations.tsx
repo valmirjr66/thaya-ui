@@ -51,6 +51,11 @@ const ManageOrganizations: React.FC = () => {
     collaborators: [],
   });
 
+  const [editingOrgId, setEditingOrgId] = useState<string | null>(null);
+  const [editingOrgData, setEditingOrgData] =
+    useState<OrganizationFormData | null>(null);
+  const [deletingOrgId, setDeletingOrgId] = useState<string | null>(null);
+
   const openDoctorModal = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
     setDoctorModalOpen(true);
@@ -234,6 +239,62 @@ const ManageOrganizations: React.FC = () => {
     }
   };
 
+  const startEditOrg = (org: Organization) => {
+    setEditingOrgId(org.id);
+    setEditingOrgData({
+      name: org.name,
+      phoneNumber: org.phoneNumber,
+      address: org.address,
+      timezoneOffset: org.timezoneOffset,
+      collaborators: org.collaborators,
+    });
+  };
+
+  const cancelEditOrg = () => {
+    setEditingOrgId(null);
+    setEditingOrgData(null);
+  };
+
+  const handleEditOrgChange = (
+    field: keyof OrganizationFormData,
+    value: any
+  ) => {
+    setEditingOrgData((prev) => (prev ? { ...prev, [field]: value } : prev));
+  };
+
+  const saveEditOrg = async (orgId: string) => {
+    if (!editingOrgData) return;
+    try {
+      await httpCallers.put(`organizations/${orgId}`, {
+        ...editingOrgData,
+        timezoneOffset: editingOrgData.timezoneOffset || 0,
+      });
+      setEditingOrgId(null);
+      setEditingOrgData(null);
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to update organization.");
+    }
+  };
+
+  const startDeleteOrg = (orgId: string) => {
+    setDeletingOrgId(orgId);
+  };
+
+  const cancelDeleteOrg = () => {
+    setDeletingOrgId(null);
+  };
+
+  const confirmDeleteOrg = async (orgId: string) => {
+    try {
+      await httpCallers.delete(`organizations/${orgId}`);
+      setDeletingOrgId(null);
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to delete organization.");
+    }
+  };
+
   return (
     <div style={{ padding: 20, fontSize: 14 }}>
       <h1>Manage Organizations</h1>
@@ -271,131 +332,292 @@ const ManageOrganizations: React.FC = () => {
               <th style={{ border: "1px solid #ddd", padding: 8, width: 150 }}>
                 Timezone Offset
               </th>
+              <th style={{ border: "1px solid #ddd", padding: 8, width: 120 }}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
-            {organizations.map((org) => (
-              <tr key={org.id}>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: 8,
-                    textAlign: "center",
-                  }}
-                >
-                  {org.id}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: 8,
-                    textAlign: "center",
-                  }}
-                >
-                  {org.name}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: 8 }}>
-                  {loadingCollaboratorsOrgIds.includes(org.id) ? (
-                    <span>Loading collaborator...</span>
-                  ) : org.doctors?.length > 0 || org.supports?.length > 0 ? (
-                    <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-                      {org.doctors?.map((doctor) => (
-                        <li key={doctor.id} style={{ marginBottom: 8 }}>
+            {organizations.map((org) => {
+              const isEditing = editingOrgId === org.id;
+              const isDeleting = deletingOrgId === org.id;
+              return (
+                <tr key={org.id}>
+                  <td
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {org.id}
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editingOrgData?.name ?? ""}
+                        onChange={(e) =>
+                          handleEditOrgChange("name", e.target.value)
+                        }
+                        style={{ width: "90%" }}
+                      />
+                    ) : (
+                      org.name
+                    )}
+                  </td>
+                  <td style={{ border: "1px solid #ddd", padding: 8 }}>
+                    {loadingCollaboratorsOrgIds.includes(org.id) ? (
+                      <span>Loading collaborator...</span>
+                    ) : org.doctors?.length > 0 || org.supports?.length > 0 ? (
+                      <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                        {org.doctors?.map((doctor) => (
+                          <li key={doctor.id} style={{ marginBottom: 8 }}>
+                            <button
+                              style={{
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                color: "#007bff",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                fontSize: "inherit",
+                              }}
+                              onClick={() => openDoctorModal(doctor)}
+                            >
+                              {doctor.fullname}
+                            </button>{" "}
+                            ({doctor.email})
+                          </li>
+                        ))}
+                        {org.supports?.map((support) => (
+                          <li key={support.id} style={{ marginBottom: 8 }}>
+                            <button
+                              style={{
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                color: "#007bff",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                fontSize: "inherit",
+                              }}
+                              onClick={() => openSupportModal(support)}
+                            >
+                              {support.fullname}
+                            </button>{" "}
+                            ({support.email})
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      org.collaborators.map(({ id }) => id).join(", ")
+                    )}
+                    <div style={{ marginTop: 8, display: "flex" }}>
+                      <button
+                        style={{
+                          marginRight: 8,
+                          padding: "4px 8px",
+                          fontSize: 12,
+                          cursor: "pointer",
+                        }}
+                        className="primary"
+                        onClick={() => openAddDoctorModal(org.id)}
+                        disabled={isEditing || isDeleting}
+                      >
+                        + Add Doctor
+                      </button>
+                      <button
+                        style={{
+                          padding: "4px 8px",
+                          fontSize: 12,
+                          cursor: "pointer",
+                        }}
+                        className="primary"
+                        onClick={() => openAddSupportModal(org.id)}
+                        disabled={isEditing || isDeleting}
+                      >
+                        + Add Support
+                      </button>
+                    </div>
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editingOrgData?.phoneNumber ?? ""}
+                        onChange={(e) =>
+                          handleEditOrgChange("phoneNumber", e.target.value)
+                        }
+                        style={{ width: "90%" }}
+                      />
+                    ) : (
+                      org.phoneNumber
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editingOrgData?.address ?? ""}
+                        onChange={(e) =>
+                          handleEditOrgChange("address", e.target.value)
+                        }
+                        style={{ width: "90%" }}
+                      />
+                    ) : (
+                      org.address
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        value={editingOrgData?.timezoneOffset ?? 0}
+                        onChange={(e) =>
+                          handleEditOrgChange(
+                            "timezoneOffset",
+                            Number(e.target.value)
+                          )
+                        }
+                        style={{ width: "90%" }}
+                      />
+                    ) : (
+                      org.timezoneOffset
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {isEditing ? (
+                      <>
+                        <button
+                          style={{
+                            marginRight: 8,
+                            padding: "4px 8px",
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                          className="primary"
+                          onClick={() => saveEditOrg(org.id)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          style={{
+                            padding: "4px 8px",
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                          onClick={cancelEditOrg}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : isDeleting ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <span style={{ fontSize: 12 }}>Confirm delete?</span>
+                        <div style={{ display: "flex" }}>
                           <button
                             style={{
-                              background: "none",
-                              border: "none",
-                              padding: 0,
-                              color: "#007bff",
+                              padding: "4px 8px",
+                              fontSize: 12,
                               cursor: "pointer",
-                              textDecoration: "underline",
-                              fontSize: "inherit",
+                              background: "#dc3545",
+                              color: "#fff",
+                              border: "none",
                             }}
-                            onClick={() => openDoctorModal(doctor)}
+                            onClick={() => confirmDeleteOrg(org.id)}
                           >
-                            {doctor.fullname}
-                          </button>{" "}
-                          ({doctor.email})
-                        </li>
-                      ))}
-                      {org.supports?.map((support) => (
-                        <li key={support.id} style={{ marginBottom: 8 }}>
+                            Yes
+                          </button>
                           <button
                             style={{
-                              background: "none",
-                              border: "none",
-                              padding: 0,
-                              color: "#007bff",
+                              marginLeft: 8,
+                              padding: "4px 8px",
+                              fontSize: 12,
                               cursor: "pointer",
-                              textDecoration: "underline",
-                              fontSize: "inherit",
                             }}
-                            onClick={() => openSupportModal(support)}
+                            onClick={cancelDeleteOrg}
                           >
-                            {support.fullname}
-                          </button>{" "}
-                          ({support.email})
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    org.collaborators.map(({ id }) => id).join(", ")
-                  )}
-                  <div style={{ marginTop: 8, display: "flex" }}>
-                    <button
-                      style={{
-                        marginRight: 8,
-                        padding: "4px 8px",
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                      className="primary"
-                      onClick={() => openAddDoctorModal(org.id)}
-                    >
-                      + Add Doctor
-                    </button>
-                    <button
-                      style={{
-                        padding: "4px 8px",
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                      className="primary"
-                      onClick={() => openAddSupportModal(org.id)}
-                    >
-                      + Add Support
-                    </button>
-                  </div>
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: 8,
-                    textAlign: "center",
-                  }}
-                >
-                  {org.phoneNumber}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: 8,
-                    textAlign: "center",
-                  }}
-                >
-                  {org.address}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: 8,
-                    textAlign: "center",
-                  }}
-                >
-                  {org.timezoneOffset}
-                </td>
-              </tr>
-            ))}
+                            No
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button
+                          style={{
+                            marginRight: 8,
+                            padding: "4px 8px",
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                          className="primary"
+                          onClick={() => startEditOrg(org)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          style={{
+                            padding: "4px 8px",
+                            fontSize: 12,
+                            cursor: "pointer",
+                            background: "#dc3545",
+                            color: "#fff",
+                            border: "none",
+                          }}
+                          onClick={() => startDeleteOrg(org.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}
