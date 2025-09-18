@@ -282,7 +282,9 @@ const ManageOrganizations: React.FC = () => {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th style={{ border: "1px solid #ddd", padding: 8 }}>ID</th>
+              <th style={{ border: "1px solid #ddd", padding: 8, width: 150 }}>
+                ID
+              </th>
               <th style={{ border: "1px solid #ddd", padding: 8 }}>Name</th>
               <th style={{ border: "1px solid #ddd", padding: 8 }}>
                 Collaborators
@@ -291,7 +293,7 @@ const ManageOrganizations: React.FC = () => {
                 Phone Number
               </th>
               <th style={{ border: "1px solid #ddd", padding: 8 }}>Address</th>
-              <th style={{ border: "1px solid #ddd", padding: 8 }}>
+              <th style={{ border: "1px solid #ddd", padding: 8, width: 150 }}>
                 Timezone Offset
               </th>
             </tr>
@@ -299,10 +301,22 @@ const ManageOrganizations: React.FC = () => {
           <tbody>
             {organizations.map((org) => (
               <tr key={org.id}>
-                <td style={{ border: "1px solid #ddd", padding: 8 }}>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: 8,
+                    textAlign: "center",
+                  }}
+                >
                   {org.id}
                 </td>
-                <td style={{ border: "1px solid #ddd", padding: 8 }}>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: 8,
+                    textAlign: "center",
+                  }}
+                >
                   {org.name}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: 8 }}>
@@ -353,13 +367,31 @@ const ManageOrganizations: React.FC = () => {
                     org.collaborators.map(({ id }) => id).join(", ")
                   )}
                 </td>
-                <td style={{ border: "1px solid #ddd", padding: 8 }}>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: 8,
+                    textAlign: "center",
+                  }}
+                >
                   {org.phoneNumber}
                 </td>
-                <td style={{ border: "1px solid #ddd", padding: 8 }}>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: 8,
+                    textAlign: "center",
+                  }}
+                >
                   {org.address}
                 </td>
-                <td style={{ border: "1px solid #ddd", padding: 8 }}>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: 8,
+                    textAlign: "center",
+                  }}
+                >
                   {org.timezoneOffset}
                 </td>
               </tr>
