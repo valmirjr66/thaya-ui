@@ -12,9 +12,9 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import "./index.css";
-import Chat from "./pages/Chat";
+import ManageOrganizations from "./pages/admin/ManageOrganizations";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Settings from "./pages/Settings";
 import Signup from "./pages/Signup";
 import reportWebVitals from "./reportWebVitals";
 import RestrictWrapper from "./RestrictWrapper";
@@ -70,12 +70,15 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <BrowserRouter>
                 <Routes>
-                  <Route element={<RestrictWrapper />}>
-                    <Route path="/" element={<Chat />} />
-                    <Route path="/settings" element={<Settings />} />
-                  </Route>
-                  <Route path="/login" element={<Login />} />
+                  <Route index element={<Home />} />
                   <Route path="/signup" element={<Signup />} />
+                  <Route path="/admin-login" element={<Login role="admin" />} />
+                  <Route
+                    path="/admin"
+                    element={<RestrictWrapper role="admin" />}
+                  >
+                    <Route index element={<ManageOrganizations />} />
+                  </Route>
                 </Routes>
               </BrowserRouter>
             </LocalizationProvider>

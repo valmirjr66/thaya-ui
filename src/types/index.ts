@@ -28,3 +28,5 @@ export type CalendarOccurrence = {
   datetime: string;
   description: string;
 };
+
+export type UserRoles = 'admin' | 'doctor' | 'support' | 'patient';

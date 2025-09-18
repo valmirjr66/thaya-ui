@@ -5,8 +5,12 @@ import { TypeAnimation } from "react-type-animation";
 import useToaster from "../hooks/useToaster";
 import loadingIcon from "../imgs/loading.gif";
 import httpCallers from "../service";
+import { UserRoles } from "../types";
 
-export default function Login() {
+export default function Login(props: {
+  role: UserRoles;
+  shouldShowSignup?: boolean;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authenticating, setAuthenticating] = useState(false);
@@ -21,14 +25,17 @@ export default function Login() {
 
     async function validateCredentials() {
       try {
-        const { data } = await httpCallers.post("users/authenticate", {
-          email,
-          password,
-        });
+        const { data } = await httpCallers.post(
+          `${props.role}-users/authenticate`,
+          {
+            email,
+            password,
+          }
+        );
 
         localStorage.setItem("userId", data.id);
 
-        document.location.reload();
+        navigate(`/${props.role}`);
       } catch (err) {
         setEmail("");
         setPassword("");
@@ -47,7 +54,7 @@ export default function Login() {
 
   useEffect(() => {
     if (localStorage.getItem("userId")) {
-      navigate("/");
+      navigate(`/${props.role}`);
     }
   }, []);
 
@@ -102,17 +109,19 @@ export default function Login() {
               Login
             </button>
           )}
-          <div
-            style={{
-              marginTop: 16,
-              fontSize: 12,
-              width: "100%",
-              textAlign: "center",
-            }}
-          >
-            <hr style={{ width: "100%" }} />
-            <span>No account?</span> <Link to="/signup">Click here!</Link>
-          </div>
+          {props.shouldShowSignup && (
+            <div
+              style={{
+                marginTop: 16,
+                fontSize: 12,
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              <hr style={{ width: "100%" }} />
+              <span>No account?</span> <Link to="/signup">Click here!</Link>
+            </div>
+          )}
         </form>
       </main>
     </>
