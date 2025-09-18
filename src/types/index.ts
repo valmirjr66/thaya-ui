@@ -23,10 +23,36 @@ export type User = {
   phoneNumber: string;
 };
 
+export type Doctor = {
+  id: string;
+  fullname: string;
+  email: string;
+  phoneNumber: string;
+  birthdate: string;
+  profilePicFileName?: string;
+};
+
+export type Support = {
+  id: string;
+  fullname: string;
+  email: string;
+};
+
+export type Organization = {
+  id: string;
+  name: string;
+  collaborators: { id: string; role: "doctor" | "support" }[];
+  phoneNumber: string;
+  address: string;
+  timezoneOffset: number;
+  doctors?: Doctor[];
+  supports?: Support[];
+};
+
 export type CalendarOccurrence = {
   id: string;
   datetime: string;
   description: string;
 };
 
-export type UserRoles = 'admin' | 'doctor' | 'support' | 'patient';
+export type UserRoles = "admin" | "doctor" | "support" | "patient";
