@@ -37,7 +37,6 @@ const useUserInfoStore = create<UserInfo>((set) => ({
     id: "",
     email: "",
     fullname: "",
-    profilePicFileName: "",
   },
   setData: (newData) => set(() => ({ data: newData })),
 }));

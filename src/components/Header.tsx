@@ -30,7 +30,7 @@ export default function Header({
         switch (item) {
           case "settings":
             return (
-              <Box onClick={() => navigate("/settings")} key="settings">
+              <Box onClick={() => navigate("settings")} key="settings">
                 <SettingsIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
@@ -40,7 +40,7 @@ export default function Header({
             );
           case "chat":
             return (
-              <Box onClick={() => navigate("/")} key="chat">
+              <Box onClick={() => navigate("/doctor")} key="chat">
                 <ChatIcon
                   fontSize="medium"
                   style={sharedIconsStyle}

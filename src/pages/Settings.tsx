@@ -12,7 +12,7 @@ import useToaster from "../hooks/useToaster";
 import defaultAvatar from "../imgs/ic-me.svg";
 import loadingIcon from "../imgs/loading.gif";
 import httpCallers from "../service";
-import { User } from "../types";
+import { User, UserRoles } from "../types";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -26,7 +26,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export default function Settings() {
+export default function Settings({ role }: { role: UserRoles }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [passwordModalIsOpen, setPasswordModalIsOpen] =
@@ -42,7 +42,7 @@ export default function Settings() {
   const loadUser = useCallback(async () => {
     try {
       const userId = localStorage.getItem("userId");
-      const { data } = await httpCallers.get(`users/${userId}`);
+      const { data } = await httpCallers.get(`${role}-users/${userId}`);
 
       const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
         .split("-")
@@ -221,20 +221,22 @@ export default function Settings() {
                   }
                 />
                 <div style={{ display: "flex" }}>
-                  <div style={{ marginRight: 20 }}>
-                    <TextField
-                      label="Nickname"
-                      value={user.nickname}
-                      fullWidth
-                      disabled={!editMode}
-                      onChange={(e) =>
-                        setUser((prevState) => ({
-                          ...prevState,
-                          nickname: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
+                  {role === "patient" && (
+                    <div style={{ marginRight: 20 }}>
+                      <TextField
+                        label="Nickname"
+                        value={user.nickname}
+                        fullWidth
+                        disabled={!editMode}
+                        onChange={(e) =>
+                          setUser((prevState) => ({
+                            ...prevState,
+                            nickname: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+                  )}
                   <DatePicker
                     label="Birthdate"
                     value={dayjs(new Date(user.birthdate))}
@@ -254,6 +256,19 @@ export default function Settings() {
                   disabled
                   required
                   fullWidth
+                />
+                <TextField
+                  label="Phone Number"
+                  value={user.phoneNumber}
+                  fullWidth
+                  disabled={!editMode}
+                  required
+                  onChange={(e) =>
+                    setUser((prevState) => ({
+                      ...prevState,
+                      phoneNumber: e.target.value,
+                    }))
+                  }
                 />
                 {!editMode && (
                   <a

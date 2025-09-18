@@ -72,9 +72,9 @@ export default function MainFrame({
   ];
 
   const promptSuggestions = [
-    "Check the temperature and help me choose a perfume",
+    "Summarize the latest medical research on diabetes",
     "Retrieve my month's agenda",
-    "What's the probability of raining today?",
+    "What are the symptoms of hypertension?",
   ];
 
   const { setContent: injectPrompt } = useUserPromptStore();

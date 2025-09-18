@@ -75,7 +75,7 @@ export default function Chat() {
 
     try {
       const { data } = await httpCallers.get(
-        `assistant/chat?userId=${userInfoStore.data.id}`
+        `assistant/chat?userId=${localStorage.getItem("userId")}`
       );
 
       const chatMessages = data.items || [];
@@ -93,7 +93,7 @@ export default function Chat() {
   const fetchUserInfo = useCallback(async () => {
     try {
       const { data } = await httpCallers.get(
-        `users/${userInfoStore.data.id}/info`
+        `doctor-users/${localStorage.getItem("userId")}`
       );
 
       userInfoStore.setData({
