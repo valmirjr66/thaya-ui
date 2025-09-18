@@ -37,6 +37,19 @@ const SupportModal: React.FC<{
   onClose: () => void;
 }> = ({ support, open, onClose }) => {
   const [deleting, setDeleting] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [form, setForm] = useState<{ fullname: string; email: string }>({
+    fullname: "",
+    email: "",
+  });
+  const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    if (support) {
+      setForm({ fullname: support.fullname, email: support.email });
+      setEditMode(false);
+    }
+  }, [support]);
 
   const handleDelete = useCallback(async () => {
     if (!support) return;
@@ -48,7 +61,22 @@ const SupportModal: React.FC<{
       setDeleting(false);
       alert("Failed to delete support user.");
     }
-  }, [support, setDeleting]);
+  }, [support]);
+
+  const handleUpdate = useCallback(async () => {
+    if (!support) return;
+    setUpdating(true);
+    try {
+      await httpCallers.put(`support-users/${support.id}`, {
+        fullname: form.fullname,
+        email: form.email,
+      });
+      window.location.reload();
+    } catch {
+      setUpdating(false);
+      alert("Failed to update support user.");
+    }
+  }, [support, form]);
 
   if (!open || !support) return null;
 
@@ -93,9 +121,60 @@ const SupportModal: React.FC<{
           ×
         </button>
         <div style={{ marginBottom: 16 }}>
-          <strong style={{ fontSize: 18 }}>{support.fullname}</strong>
-          <div>{support.email}</div>
+          {editMode ? (
+            <>
+              <input
+                type="text"
+                value={form.fullname}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, fullname: e.target.value }))
+                }
+                style={{ fontSize: 18, marginBottom: 8, width: "100%" }}
+                placeholder="Full name"
+              />
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, email: e.target.value }))
+                }
+                style={{ marginBottom: 8, width: "100%" }}
+                placeholder="Email"
+              />
+            </>
+          ) : (
+            <>
+              <strong style={{ fontSize: 18 }}>{support.fullname}</strong>
+              <div>{support.email}</div>
+            </>
+          )}
         </div>
+        {editMode ? (
+          <button
+            style={{
+              marginTop: 16,
+              width: "100%",
+              opacity: updating ? 0.7 : 1,
+              borderRadius: 4,
+            }}
+            className={!updating && "primary"}
+            onClick={handleUpdate}
+            disabled={updating}
+          >
+            {updating ? "Updating..." : "Save"}
+          </button>
+        ) : (
+          <button
+            style={{
+              marginTop: 8,
+              width: "100%",
+              borderRadius: 4,
+            }}
+            onClick={() => setEditMode(true)}
+          >
+            Edit
+          </button>
+        )}
         <button
           style={{
             marginTop: 16,
@@ -120,6 +199,31 @@ const DoctorModal: React.FC<{
   onClose: () => void;
 }> = ({ doctor, open, onClose }) => {
   const [deleting, setDeleting] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [form, setForm] = useState<{
+    fullname: string;
+    email: string;
+    phoneNumber: string;
+    birthdate: string;
+  }>({
+    fullname: "",
+    email: "",
+    phoneNumber: "",
+    birthdate: "",
+  });
+  const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    if (doctor) {
+      setForm({
+        fullname: doctor.fullname,
+        email: doctor.email,
+        phoneNumber: doctor.phoneNumber,
+        birthdate: doctor.birthdate,
+      });
+      setEditMode(false);
+    }
+  }, [doctor]);
 
   const handleDelete = useCallback(async () => {
     if (!doctor) return;
@@ -131,7 +235,24 @@ const DoctorModal: React.FC<{
       setDeleting(false);
       alert("Failed to delete doctor user.");
     }
-  }, [doctor, setDeleting]);
+  }, [doctor]);
+
+  const handleUpdate = useCallback(async () => {
+    if (!doctor) return;
+    setUpdating(true);
+    try {
+      await httpCallers.put(`doctor-users/${doctor.id}`, {
+        fullname: form.fullname,
+        email: form.email,
+        phoneNumber: form.phoneNumber,
+        birthdate: form.birthdate,
+      });
+      window.location.reload();
+    } catch {
+      setUpdating(false);
+      alert("Failed to update doctor user.");
+    }
+  }, [doctor, form]);
 
   if (!open || !doctor) return null;
 
@@ -190,19 +311,99 @@ const DoctorModal: React.FC<{
               }}
             />
           )}
-          <div>
-            <strong style={{ fontSize: 18 }}>{doctor.fullname}</strong>
-            <div>{doctor.email}</div>
+          <div style={{ flex: 1 }}>
+            {editMode ? (
+              <>
+                <input
+                  type="text"
+                  value={form.fullname}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, fullname: e.target.value }))
+                  }
+                  style={{ fontSize: 18, marginBottom: 8, width: "100%" }}
+                  placeholder="Full name"
+                />
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                  style={{ marginBottom: 8, width: "100%" }}
+                  placeholder="Email"
+                />
+              </>
+            ) : (
+              <>
+                <strong style={{ fontSize: 18 }}>{doctor.fullname}</strong>
+                <div>{doctor.email}</div>
+              </>
+            )}
           </div>
         </div>
         <div>
-          <div>
-            <strong>Phone:</strong> {doctor.phoneNumber}
-          </div>
-          <div>
-            <strong>Birthdate:</strong> {doctor.birthdate}
-          </div>
+          {editMode ? (
+            <>
+              <div>
+                <input
+                  type="text"
+                  value={form.phoneNumber}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, phoneNumber: e.target.value }))
+                  }
+                  style={{ marginBottom: 8, width: "100%" }}
+                  placeholder="Phone number"
+                />
+              </div>
+              <div>
+                <input
+                  type="date"
+                  value={form.birthdate}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, birthdate: e.target.value }))
+                  }
+                  style={{ marginBottom: 8, width: "100%" }}
+                  placeholder="Birthdate"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <strong>Phone:</strong> {doctor.phoneNumber}
+              </div>
+              <div>
+                <strong>Birthdate:</strong> {doctor.birthdate}
+              </div>
+            </>
+          )}
         </div>
+        {editMode ? (
+          <button
+            style={{
+              marginTop: 16,
+              width: "100%",
+              opacity: updating ? 0.7 : 1,
+              borderRadius: 4,
+            }}
+            className={!updating && "primary"}
+            onClick={handleUpdate}
+            disabled={updating}
+          >
+            {updating ? "Updating..." : "Save"}
+          </button>
+        ) : (
+          <button
+            style={{
+              marginTop: 8,
+              width: "100%",
+              borderRadius: 4,
+            }}
+            onClick={() => setEditMode(true)}
+          >
+            Edit
+          </button>
+        )}
         <button
           style={{
             marginTop: 16,
@@ -214,7 +415,7 @@ const DoctorModal: React.FC<{
           onClick={handleDelete}
           disabled={deleting}
         >
-          {deleting ? "Deleting..." : "Delete Support"}
+          {deleting ? "Deleting..." : "Delete Doctor"}
         </button>
       </div>
     </div>
