@@ -2,8 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import useToaster from "../../hooks/useToaster";
 import httpCallers from "../../service";
 import { Doctor, Organization, Support } from "../../types";
+import DoctorInsertionModal from "./components/DoctorInsertionModal";
 import DoctorModal from "./components/DoctorModal";
+import SupportInsertionModal from "./components/InsertionSupportModal";
 import SupportModal from "./components/SupportModal";
+
+export type DoctorFormData = Omit<Doctor, "id"> & { password: string };
+export type SupportFormData = Omit<Support, "id"> & { password: string };
 
 const ManageOrganizations: React.FC = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -11,6 +16,12 @@ const ManageOrganizations: React.FC = () => {
   const [loadingCollaboratorsOrgIds, setLoadingCollaboratorsOrgIds] = useState<
     string[]
   >([]);
+  const [addingDoctorOrgId, setAddingDoctorOrgId] = useState<string | null>(
+    null
+  );
+  const [addingSupportOrgId, setAddingSupportOrgId] = useState<string | null>(
+    null
+  );
 
   const { triggerToast } = useToaster({ type: "error" });
 
@@ -18,6 +29,12 @@ const ManageOrganizations: React.FC = () => {
   const [selectedSupport, setSelectedSupport] = useState<Support | null>(null);
   const [doctorModalOpen, setDoctorModalOpen] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
+
+  const [addDoctorModalOpen, setAddDoctorModalOpen] = useState(false);
+  const [addSupportModalOpen, setAddSupportModalOpen] = useState(false);
+
+  const [newDoctor, setNewDoctor] = useState<DoctorFormData | null>(null);
+  const [newSupport, setNewSupport] = useState<SupportFormData | null>(null);
 
   const openDoctorModal = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
@@ -36,7 +53,37 @@ const ManageOrganizations: React.FC = () => {
 
   const closeSupportModal = () => {
     setSupportModalOpen(false);
-    setSelectedDoctor(null);
+    setSelectedSupport(null);
+  };
+
+  const openAddDoctorModal = (orgId: string) => {
+    setAddingDoctorOrgId(orgId);
+    setAddDoctorModalOpen(true);
+    setNewDoctor({
+      fullname: "",
+      email: "",
+      phoneNumber: "",
+      birthdate: "",
+      password: "",
+    });
+  };
+
+  const closeAddDoctorModal = () => {
+    setAddDoctorModalOpen(false);
+    setAddingDoctorOrgId(null);
+    setNewDoctor(null);
+  };
+
+  const openAddSupportModal = (orgId: string) => {
+    setAddingSupportOrgId(orgId);
+    setAddSupportModalOpen(true);
+    setNewSupport({ fullname: "", email: "", password: "" });
+  };
+
+  const closeAddSupportModal = () => {
+    setAddSupportModalOpen(false);
+    setAddingSupportOrgId(null);
+    setNewSupport(null);
   };
 
   const fetchDoctor = async (id: string): Promise<Doctor | null> => {
@@ -64,7 +111,6 @@ const ManageOrganizations: React.FC = () => {
       const orgs: Organization[] = data.items || [];
       setOrganizations(orgs);
 
-      // Start loading doctors for each organization
       orgs.forEach(async (org) => {
         setLoadingCollaboratorsOrgIds((ids) => [...ids, org.id]);
 
@@ -82,7 +128,7 @@ const ManageOrganizations: React.FC = () => {
 
         setOrganizations((prevOrgs) =>
           prevOrgs.map((prevOrg) =>
-            prevOrg.id === prevOrg.id
+            prevOrg.id === org.id
               ? {
                   ...prevOrg,
                   doctors: doctors.filter(Boolean) as Doctor[],
@@ -108,6 +154,34 @@ const ManageOrganizations: React.FC = () => {
   useEffect(() => {
     fetchOrganizations();
   }, [fetchOrganizations]);
+
+  const handleAddDoctor = async () => {
+    if (!addingDoctorOrgId || !newDoctor) return;
+    try {
+      await httpCallers.post("doctor-users", {
+        organizationId: addingDoctorOrgId,
+        ...newDoctor,
+      });
+      closeAddDoctorModal();
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to add doctor user.");
+    }
+  };
+
+  const handleAddSupport = async () => {
+    if (!addingSupportOrgId || !newSupport) return;
+    try {
+      await httpCallers.post("support-users", {
+        organizationId: addingSupportOrgId,
+        ...newSupport,
+      });
+      closeAddSupportModal();
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to add support user.");
+    }
+  };
 
   return (
     <div style={{ padding: 20, fontSize: 14 }}>
@@ -160,9 +234,9 @@ const ManageOrganizations: React.FC = () => {
                 <td style={{ border: "1px solid #ddd", padding: 8 }}>
                   {loadingCollaboratorsOrgIds.includes(org.id) ? (
                     <span>Loading collaborator...</span>
-                  ) : org.doctors?.length > 0 ? (
+                  ) : org.doctors?.length > 0 || org.supports?.length > 0 ? (
                     <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-                      {org.doctors.map((doctor) => (
+                      {org.doctors?.map((doctor) => (
                         <li key={doctor.id} style={{ marginBottom: 8 }}>
                           <button
                             style={{
@@ -181,7 +255,7 @@ const ManageOrganizations: React.FC = () => {
                           ({doctor.email})
                         </li>
                       ))}
-                      {org.supports.map((support) => (
+                      {org.supports?.map((support) => (
                         <li key={support.id} style={{ marginBottom: 8 }}>
                           <button
                             style={{
@@ -204,6 +278,31 @@ const ManageOrganizations: React.FC = () => {
                   ) : (
                     org.collaborators.map(({ id }) => id).join(", ")
                   )}
+                  <div style={{ marginTop: 8, display: "flex" }}>
+                    <button
+                      style={{
+                        marginRight: 8,
+                        padding: "4px 8px",
+                        fontSize: 12,
+                        cursor: "pointer",
+                      }}
+                      className="primary"
+                      onClick={() => openAddDoctorModal(org.id)}
+                    >
+                      + Add Doctor
+                    </button>
+                    <button
+                      style={{
+                        padding: "4px 8px",
+                        fontSize: 12,
+                        cursor: "pointer",
+                      }}
+                      className="primary"
+                      onClick={() => openAddSupportModal(org.id)}
+                    >
+                      + Add Support
+                    </button>
+                  </div>
                 </td>
                 <td
                   style={{
@@ -247,6 +346,24 @@ const ManageOrganizations: React.FC = () => {
         open={supportModalOpen}
         onClose={closeSupportModal}
       />
+
+      {addDoctorModalOpen && (
+        <DoctorInsertionModal
+          newDoctor={newDoctor}
+          setNewDoctor={setNewDoctor}
+          handleAddDoctor={handleAddDoctor}
+          closeAddDoctorModal={closeAddDoctorModal}
+        />
+      )}
+
+      {addSupportModalOpen && (
+        <SupportInsertionModal
+          newSupport={newSupport}
+          setNewSupport={setNewSupport}
+          handleAddSupport={handleAddSupport}
+          closeAddSupportModal={closeAddSupportModal}
+        />
+      )}
     </div>
   );
 };
