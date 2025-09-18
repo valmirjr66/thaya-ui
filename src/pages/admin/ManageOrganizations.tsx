@@ -4,11 +4,16 @@ import httpCallers from "../../service";
 import { Doctor, Organization, Support } from "../../types";
 import DoctorInsertionModal from "./components/DoctorInsertionModal";
 import DoctorModal from "./components/DoctorModal";
-import SupportInsertionModal from "./components/InsertionSupportModal";
+import OrganizationInsertionModal from "./components/OrganizationInsertionModal";
+import SupportInsertionModal from "./components/SupportInsertionModal";
 import SupportModal from "./components/SupportModal";
 
 export type DoctorFormData = Omit<Doctor, "id"> & { password: string };
 export type SupportFormData = Omit<Support, "id"> & { password: string };
+export type OrganizationFormData = Omit<
+  Organization,
+  "id" | "doctors" | "supports"
+>;
 
 const ManageOrganizations: React.FC = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -35,6 +40,16 @@ const ManageOrganizations: React.FC = () => {
 
   const [newDoctor, setNewDoctor] = useState<DoctorFormData | null>(null);
   const [newSupport, setNewSupport] = useState<SupportFormData | null>(null);
+
+  // New organization modal state
+  const [addOrgModalOpen, setAddOrgModalOpen] = useState(false);
+  const [newOrg, setNewOrg] = useState<OrganizationFormData>({
+    name: "",
+    phoneNumber: "",
+    address: "",
+    timezoneOffset: 0,
+    collaborators: [],
+  });
 
   const openDoctorModal = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
@@ -84,6 +99,29 @@ const ManageOrganizations: React.FC = () => {
     setAddSupportModalOpen(false);
     setAddingSupportOrgId(null);
     setNewSupport(null);
+  };
+
+  // Organization modal handlers
+  const openAddOrgModal = () => {
+    setAddOrgModalOpen(true);
+    setNewOrg({
+      name: "",
+      phoneNumber: "",
+      address: "",
+      timezoneOffset: 0,
+      collaborators: [],
+    });
+  };
+
+  const closeAddOrgModal = () => {
+    setAddOrgModalOpen(false);
+    setNewOrg({
+      name: "",
+      phoneNumber: "",
+      address: "",
+      timezoneOffset: 0,
+      collaborators: [],
+    });
   };
 
   const fetchDoctor = async (id: string): Promise<Doctor | null> => {
@@ -183,9 +221,34 @@ const ManageOrganizations: React.FC = () => {
     }
   };
 
+  const handleAddOrganization = async () => {
+    try {
+      await httpCallers.post("organizations", {
+        ...newOrg,
+        timezoneOffset: newOrg.timezoneOffset || 0,
+      });
+      closeAddOrgModal();
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to add organization.");
+    }
+  };
+
   return (
     <div style={{ padding: 20, fontSize: 14 }}>
       <h1>Manage Organizations</h1>
+      <button
+        style={{
+          marginBottom: 16,
+          padding: "6px 12px",
+          fontSize: 14,
+          cursor: "pointer",
+        }}
+        className="primary"
+        onClick={openAddOrgModal}
+      >
+        + Add Organization
+      </button>
       {loadingOrgs ? (
         <p>Loading organizations...</p>
       ) : organizations.length === 0 ? (
@@ -362,6 +425,15 @@ const ManageOrganizations: React.FC = () => {
           setNewSupport={setNewSupport}
           handleAddSupport={handleAddSupport}
           closeAddSupportModal={closeAddSupportModal}
+        />
+      )}
+
+      {addOrgModalOpen && (
+        <OrganizationInsertionModal
+          newOrganization={newOrg}
+          setNewOrganization={setNewOrg}
+          handleAddOrganization={handleAddOrganization}
+          closeAddOrganizationModal={closeAddOrgModal}
         />
       )}
     </div>
