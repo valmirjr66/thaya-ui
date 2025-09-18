@@ -36,6 +36,20 @@ const SupportModal: React.FC<{
   open: boolean;
   onClose: () => void;
 }> = ({ support, open, onClose }) => {
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = useCallback(async () => {
+    if (!support) return;
+    setDeleting(true);
+    try {
+      await httpCallers.delete(`support-users/${support.id}`);
+      window.location.reload();
+    } catch {
+      setDeleting(false);
+      alert("Failed to delete support user.");
+    }
+  }, [support, setDeleting]);
+
   if (!open || !support) return null;
 
   return (
@@ -82,6 +96,19 @@ const SupportModal: React.FC<{
           <strong style={{ fontSize: 18 }}>{support.fullname}</strong>
           <div>{support.email}</div>
         </div>
+        <button
+          style={{
+            marginTop: 16,
+            width: "100%",
+            opacity: deleting ? 0.7 : 1,
+            borderRadius: 4,
+          }}
+          className="cancel"
+          onClick={handleDelete}
+          disabled={deleting}
+        >
+          {deleting ? "Deleting..." : "Delete Support"}
+        </button>
       </div>
     </div>
   );
@@ -92,6 +119,20 @@ const DoctorModal: React.FC<{
   open: boolean;
   onClose: () => void;
 }> = ({ doctor, open, onClose }) => {
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = useCallback(async () => {
+    if (!doctor) return;
+    setDeleting(true);
+    try {
+      await httpCallers.delete(`doctor-users/${doctor.id}`);
+      window.location.reload();
+    } catch {
+      setDeleting(false);
+      alert("Failed to delete doctor user.");
+    }
+  }, [doctor, setDeleting]);
+
   if (!open || !doctor) return null;
 
   return (
@@ -162,6 +203,19 @@ const DoctorModal: React.FC<{
             <strong>Birthdate:</strong> {doctor.birthdate}
           </div>
         </div>
+        <button
+          style={{
+            marginTop: 16,
+            width: "100%",
+            opacity: deleting ? 0.7 : 1,
+            borderRadius: 4,
+          }}
+          className="cancel"
+          onClick={handleDelete}
+          disabled={deleting}
+        >
+          {deleting ? "Deleting..." : "Delete Support"}
+        </button>
       </div>
     </div>
   );
