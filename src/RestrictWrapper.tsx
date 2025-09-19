@@ -66,6 +66,7 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
         nickname: userData.nickname,
         profilePicFileName: userData.profilePicFileName,
         role: props.role,
+        doctorsId: userData.doctorsId,
       });
     } catch {
       triggerToast();

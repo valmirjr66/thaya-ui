@@ -17,8 +17,8 @@ import Chat from "./pages/Chat";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import OrganizationCalendar from "./pages/OrganizationCalendar";
+import PatientCalendar from "./pages/PatientCalendar";
 import Settings from "./pages/Settings";
-import Signup from "./pages/Signup";
 import reportWebVitals from "./reportWebVitals";
 import RestrictWrapper from "./RestrictWrapper";
 
@@ -74,7 +74,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <BrowserRouter>
                 <Routes>
                   <Route index element={<Home />} />
-                  <Route path="/signup" element={<Signup />} />
                   <Route path="/admin-login" element={<Login role="admin" />} />
                   <Route
                     path="/doctor-login"
@@ -83,6 +82,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route
                     path="/support-login"
                     element={<Login role="support" />}
+                  />
+                  <Route
+                    path="/patient-login"
+                    element={<Login role="patient" />}
                   />
                   <Route
                     path="/admin"
@@ -108,6 +111,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     <Route
                       path="settings"
                       element={<Settings role="support" />}
+                    />
+                  </Route>
+                  <Route
+                    path="/patient"
+                    element={<RestrictWrapper role="patient" />}
+                  >
+                    <Route index element={<PatientCalendar />} />
+                    <Route
+                      path="settings"
+                      element={<Settings role="patient" />}
                     />
                   </Route>
                   <Route path="*" element={<div>404 Not Found</div>} />

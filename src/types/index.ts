@@ -21,6 +21,7 @@ export type User = {
   email: string;
   birthdate: Date;
   phoneNumber: string;
+  doctorsId?: string[];
 };
 
 export type Doctor = {
