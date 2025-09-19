@@ -51,6 +51,7 @@ export type Organization = {
 
 export type CalendarOccurrence = {
   id: string;
+  userId: string;
   datetime: string;
   description: string;
 };

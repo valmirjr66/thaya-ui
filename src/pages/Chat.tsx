@@ -90,28 +90,9 @@ export default function Chat() {
     }
   }, [triggerToast]);
 
-  const fetchUserInfo = useCallback(async () => {
-    try {
-      const { data } = await httpCallers.get(
-        `doctor-users/${localStorage.getItem("userId")}`
-      );
-
-      userInfoStore.setData({
-        id: data.id,
-        email: data.email,
-        fullname: data.fullname,
-        nickname: data.nickname,
-        profilePicFileName: data.profilePicFileName,
-      });
-    } catch {
-      triggerToast();
-    }
-  }, [triggerToast]);
-
   useEffect(() => {
-    fetchUserInfo();
     fetchMessages();
-  }, [fetchMessages, fetchUserInfo]);
+  }, [fetchMessages]);
 
   useEffect(() => {
     const element = document.getElementById("end_of_chat_anchor");
@@ -154,7 +135,10 @@ export default function Chat() {
         onClose={agendaPanelStore.handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        <CalendarPanelContent closePanel={agendaPanelStore.handleClose} />
+        <CalendarPanelContent
+          closePanel={agendaPanelStore.handleClose}
+          userIds={[userInfoStore.data.id]}
+        />
       </Popover>
       <Header
         buttonsToRender={["calendar", "settings"]}

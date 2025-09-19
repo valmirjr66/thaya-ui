@@ -1,6 +1,6 @@
 import { MouseEvent } from "react";
 import { create } from "zustand";
-import { User } from "../types";
+import { Organization, User, UserRoles } from "../types";
 
 interface AgendaPanelState {
   isOpen: boolean;
@@ -15,8 +15,15 @@ interface UserPrompt {
 }
 
 interface UserInfo {
-  data: Omit<User, "birthdate" | "phoneNumber">;
-  setData: (newData: Omit<User, "birthdate" | "phoneNumber">) => void;
+  data: Omit<User, "birthdate" | "phoneNumber"> & { role: UserRoles };
+  setData: (
+    newData: Omit<User, "birthdate" | "phoneNumber"> & { role: UserRoles }
+  ) => void;
+}
+
+interface OrganizationInfo {
+  data: Omit<Organization, "supports">;
+  setData: (newData: Omit<Organization, "supports">) => void;
 }
 
 const useUserPromptStore = create<UserPrompt>((set) => ({
@@ -37,8 +44,25 @@ const useUserInfoStore = create<UserInfo>((set) => ({
     id: "",
     email: "",
     fullname: "",
+    role: "doctor",
   },
   setData: (newData) => set(() => ({ data: newData })),
 }));
 
-export { useAgendaPanelStore, useUserInfoStore, useUserPromptStore };
+const useOrganizationInfoStore = create<OrganizationInfo>((set) => ({
+  data: {
+    id: "",
+    address: "",
+    name: "",
+    phoneNumber: "",
+    collaborators: [],
+    timezoneOffset: 0,
+  },
+  setData: (newData) => set(() => ({ data: newData })),
+}));
+
+export {
+  useAgendaPanelStore, useOrganizationInfoStore, useUserInfoStore,
+  useUserPromptStore
+};
+
