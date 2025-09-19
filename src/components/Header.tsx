@@ -7,7 +7,13 @@ import { useAgendaPanelStore } from "../store";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 export type HeaderProps = {
-  buttonsToRender: ("settings" | "chat" | "calendar" | "logout")[];
+  buttonsToRender: (
+    | "settings"
+    | "chat"
+    | "calendar"
+    | "logout"
+    | "organization-calendar"
+  )[];
   sharedIconsStyle: React.CSSProperties;
 };
 
@@ -45,6 +51,18 @@ export default function Header({
                   fontSize="medium"
                   style={sharedIconsStyle}
                   className="chatIcon"
+                />
+              </Box>
+            );
+          case "organization-calendar":
+            return (
+              <Box onClick={() => navigate("/support")} key="calendar">
+                <CalendarMonthIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className={`calendarIcon ${
+                    agendaPanelStore.isOpen ? "active" : ""
+                  }`}
                 />
               </Box>
             );

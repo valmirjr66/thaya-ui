@@ -32,6 +32,10 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
               `/doctor-users/${collaborator.id}`
             );
 
+            const { data: linkedPatients } = await httpCallers.get(
+              `/doctor-users/${collaborator.id}/linked-patients`
+            );
+
             organizationDoctors.push({
               id: doctorData.id,
               fullname: doctorData.fullname,
@@ -39,6 +43,7 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
               email: doctorData.email,
               profilePicFileName: doctorData.profilePicFileName,
               phoneNumber: doctorData.phoneNumber,
+              patients: linkedPatients.items,
             });
           }
         }

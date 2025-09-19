@@ -30,6 +30,7 @@ export type Doctor = {
   phoneNumber: string;
   birthdate: string;
   profilePicFileName?: string;
+  patients?: { id: string; fullname: string; nickname?: string }[];
 };
 
 export type Support = {

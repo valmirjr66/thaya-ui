@@ -2,12 +2,13 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Button, TextField } from "@mui/material";
+import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useState } from "react";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
+import { useOrganizationInfoStore, useUserInfoStore } from "../store";
 import { CalendarOccurrence } from "../types";
 
 const CalendarFooter = ({
@@ -45,16 +46,27 @@ export function CalendarDayDetails({
   dateOccurences: CalendarOccurrence[];
   refetchDateOccurrences: () => Promise<void>;
   onClickReturnCallback: () => void;
-  insertOccurrenceCallback: (time: Dayjs, description: string) => Promise<void>;
+  insertOccurrenceCallback: (
+    doctorId: string,
+    patientId: string,
+    time: Dayjs,
+    description: string
+  ) => Promise<void>;
   updateOccurrenceCallback: (
+    doctorId: string,
     id: string,
     time: Dayjs,
     description: string
   ) => Promise<void>;
 }) {
+  const userInfoStore = useUserInfoStore();
+  const organizationInfoStore = useOrganizationInfoStore();
+
   const [status, setStatus] = useState<"idle" | "update" | "insert">();
   const [occurrenceBeingManaged, setOccurrenceBeingManaged] = useState<{
     id?: string;
+    doctorId?: string;
+    patientId?: string;
     time?: Dayjs;
     description?: string;
   }>({});
@@ -75,6 +87,69 @@ export function CalendarDayDetails({
   if (status === "insert" || status === "update") {
     return (
       <div style={{ width: 300, padding: 16 }}>
+        {userInfoStore.data.role === "support" && (
+          <>
+            <InputLabel id="doctor-select-label">Doctor</InputLabel>
+            <Select
+              labelId="doctor-select-label"
+              value={occurrenceBeingManaged.doctorId || ""}
+              label="Doctor"
+              onChange={(e) =>
+                setOccurrenceBeingManaged((prevState) => ({
+                  ...prevState,
+                  doctorId: e.target.value,
+                }))
+              }
+              required
+              fullWidth
+              style={{ marginBottom: 16 }}
+            >
+              {organizationInfoStore.data.doctors?.map((doctor) => (
+                <MenuItem key={doctor.id} value={doctor.id}>
+                  {doctor.fullname}
+                </MenuItem>
+              ))}
+            </Select>
+          </>
+        )}
+        <InputLabel id="patient-select-label">Patient</InputLabel>
+        <Select
+          disabled={
+            userInfoStore.data.role === "support" &&
+            !occurrenceBeingManaged.doctorId
+          }
+          labelId="patient-select-label"
+          value={occurrenceBeingManaged.patientId || ""}
+          label="Patient"
+          onChange={(e) =>
+            setOccurrenceBeingManaged((prevState) => ({
+              ...prevState,
+              patientId: e.target.value,
+            }))
+          }
+          required
+          fullWidth
+          style={{ marginBottom: 16 }}
+        >
+          {organizationInfoStore.data.doctors
+            .filter((item) =>
+              userInfoStore.data.role === "doctor"
+                ? item.id === userInfoStore.data.id
+                : item.id === occurrenceBeingManaged.doctorId
+            )
+            .reduce(
+              (acc, doctor) => {
+                acc.push(...doctor.patients);
+                return acc;
+              },
+              [] as { id: string; fullname: string }[]
+            )
+            ?.map((patient) => (
+              <MenuItem key={patient.id} value={patient.id}>
+                {patient.fullname}
+              </MenuItem>
+            ))}
+        </Select>
         <TextField
           label="Description"
           fullWidth
@@ -126,15 +201,26 @@ export function CalendarDayDetails({
             size="small"
             disabled={
               !occurrenceBeingManaged.time ||
-              !occurrenceBeingManaged.description
+              !occurrenceBeingManaged.description ||
+              (userInfoStore.data.role === "support" &&
+                !occurrenceBeingManaged.doctorId) ||
+              !occurrenceBeingManaged.patientId ||
+              (status === "update" && !occurrenceBeingManaged.id)
             }
             onClick={async () => {
               status === "insert"
                 ? await insertOccurrenceCallback(
+                    userInfoStore.data.role === "support"
+                      ? occurrenceBeingManaged.doctorId!
+                      : userInfoStore.data.id,
+                    occurrenceBeingManaged.patientId!,
                     occurrenceBeingManaged.time!,
                     occurrenceBeingManaged.description!
                   )
                 : await updateOccurrenceCallback(
+                    userInfoStore.data.role === "support"
+                      ? occurrenceBeingManaged.doctorId!
+                      : userInfoStore.data.id,
                     occurrenceBeingManaged.id!,
                     occurrenceBeingManaged.time!,
                     occurrenceBeingManaged.description!
@@ -200,6 +286,7 @@ export function CalendarDayDetails({
                     onClick={() => {
                       setOccurrenceBeingManaged({
                         id: item.id,
+                        doctorId: item.userId,
                         time: dayjs(item.datetime),
                         description: item.description,
                       });

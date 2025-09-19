@@ -13,8 +13,11 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import "./index.css";
 import ManageOrganizations from "./pages/admin/ManageOrganizations";
+import Chat from "./pages/Chat";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import OrganizationCalendar from "./pages/OrganizationCalendar";
+import Settings from "./pages/Settings";
 import Signup from "./pages/Signup";
 import reportWebVitals from "./reportWebVitals";
 import RestrictWrapper from "./RestrictWrapper";
@@ -74,11 +77,40 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/admin-login" element={<Login role="admin" />} />
                   <Route
+                    path="/doctor-login"
+                    element={<Login role="doctor" />}
+                  />
+                  <Route
+                    path="/support-login"
+                    element={<Login role="support" />}
+                  />
+                  <Route
                     path="/admin"
                     element={<RestrictWrapper role="admin" />}
                   >
                     <Route index element={<ManageOrganizations />} />
                   </Route>
+                  <Route
+                    path="/doctor"
+                    element={<RestrictWrapper role="doctor" />}
+                  >
+                    <Route index element={<Chat />} />
+                    <Route
+                      path="settings"
+                      element={<Settings role="doctor" />}
+                    />
+                  </Route>
+                  <Route
+                    path="/support"
+                    element={<RestrictWrapper role="support" />}
+                  >
+                    <Route index element={<OrganizationCalendar />} />
+                    <Route
+                      path="settings"
+                      element={<Settings role="support" />}
+                    />
+                  </Route>
+                  <Route path="*" element={<div>404 Not Found</div>} />
                 </Routes>
               </BrowserRouter>
             </LocalizationProvider>

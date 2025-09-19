@@ -44,9 +44,15 @@ export default function Settings({ role }: { role: UserRoles }) {
       const userId = localStorage.getItem("userId");
       const { data } = await httpCallers.get(`${role}-users/${userId}`);
 
-      const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
-        .split("-")
-        .map((x: string) => Number(x));
+      let birthdate: Date;
+
+      if (data.birthdate) {
+        const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
+          .split("-")
+          .map((x: string) => Number(x));
+
+        birthdate = new Date(birdateYear, birthdateMonth - 1, birthdateDay);
+      }
 
       setUser({
         id: data.id,
@@ -54,7 +60,7 @@ export default function Settings({ role }: { role: UserRoles }) {
         nickname: data.nickname,
         email: data.email,
         profilePicFileName: data.profilePicFileName,
-        birthdate: new Date(birdateYear, birthdateMonth - 1, birthdateDay),
+        birthdate: birthdate,
         phoneNumber: data.phoneNumber,
       });
     } catch {
@@ -124,6 +130,22 @@ export default function Settings({ role }: { role: UserRoles }) {
     closeProfilePicDialog();
   };
 
+  if (user === null) {
+    return (
+      <main className="app">
+        <Header
+          buttonsToRender={["organization-calendar", "logout"]}
+          sharedIconsStyle={{ marginRight: 25 }}
+        />
+        <div className="appWrapper">
+          <section className="settingsContent">
+            <img src={loadingIcon} width={30} />
+          </section>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <>
       <Modal open={isProfilePicDialogOpen} onClose={closeProfilePicDialog}>
@@ -181,7 +203,7 @@ export default function Settings({ role }: { role: UserRoles }) {
       />
       <main className="app">
         <Header
-          buttonsToRender={["chat", "logout"]}
+          buttonsToRender={["organization-calendar", "logout"]}
           sharedIconsStyle={{ marginRight: 25 }}
         />
         <div className="appWrapper">
@@ -237,18 +259,21 @@ export default function Settings({ role }: { role: UserRoles }) {
                       />
                     </div>
                   )}
-                  <DatePicker
-                    label="Birthdate"
-                    value={dayjs(new Date(user.birthdate))}
-                    disabled={!editMode}
-                    slotProps={{ textField: { required: true } }}
-                    onChange={(e) =>
-                      setUser((prevState) => ({
-                        ...prevState,
-                        birthdate: new Date(e.toISOString()),
-                      }))
-                    }
-                  />
+                  {role === "patient" ||
+                    (role === "doctor" && (
+                      <DatePicker
+                        label="Birthdate"
+                        value={dayjs(new Date(user.birthdate))}
+                        disabled={!editMode}
+                        slotProps={{ textField: { required: true } }}
+                        onChange={(e) =>
+                          setUser((prevState) => ({
+                            ...prevState,
+                            birthdate: new Date(e.toISOString()),
+                          }))
+                        }
+                      />
+                    ))}
                 </div>
                 <TextField
                   label="E-mail"

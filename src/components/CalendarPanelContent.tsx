@@ -16,10 +16,10 @@ import {
   mapMonthNumberToCapitalizedAbbreviation,
 } from "../util/DateHelper";
 import { CalendarDayDetails } from "./CalendarDayDetails";
-import { useUserInfoStore } from "../store";
 
 interface CalendarPanelProps {
-  closePanel: () => void;
+  closePanel?: () => void;
+  userIds: string[];
 }
 
 function ServerDay(
@@ -63,6 +63,7 @@ function ServerDay(
 
 export default function CalendarPanelContent({
   closePanel,
+  userIds,
 }: CalendarPanelProps) {
   const requestAbortController = useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,8 +78,6 @@ export default function CalendarPanelContent({
   });
 
   const { triggerToast } = useToaster({ type: "error" });
-
-  const userInfoStore = useUserInfoStore();
 
   const selectedDate = useMemo<Dayjs | null>(
     () =>
@@ -104,11 +103,17 @@ export default function CalendarPanelContent({
       const yearToFetch = date.year();
       const monthToFetch = mapMonthNumberToAbbreviation(date.month());
 
-      const { data } = await httpCallers.get(
-        `/calendar/occurrences?userId=${userInfoStore.data.id}&year=${yearToFetch}&month=${monthToFetch}`
-      );
+      let fetchedOccurrences: CalendarOccurrence[] = [];
 
-      setOccurrences(data.items || []);
+      for (const userId of userIds) {
+        const { data } = await httpCallers.get(
+          `/calendar/occurrences?userId=${userId}&year=${yearToFetch}&month=${monthToFetch}`
+        );
+
+        fetchedOccurrences = [...fetchedOccurrences, ...(data.items || [])];
+      }
+
+      setOccurrences(fetchedOccurrences);
       setIsLoading(false);
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -122,7 +127,7 @@ export default function CalendarPanelContent({
   useEffect(() => {
     fetchHighlightedDays(dayjs());
     return () => requestAbortController.current?.abort();
-  }, []);
+  }, [userIds]);
 
   const handleMonthChange = (date: Dayjs) => {
     if (requestAbortController.current) {
@@ -144,14 +149,20 @@ export default function CalendarPanelContent({
   );
 
   const insertOccurrenceCallback = useCallback(
-    async (time: Dayjs, description: string) => {
+    async (
+      userId: string,
+      patientId: string,
+      time: Dayjs,
+      description: string
+    ) => {
       const composedDate = getComposedDate(time);
 
       try {
         await httpCallers.post("/calendar/occurrences", {
-          userId: userInfoStore.data.id,
           datetime: composedDate.toISOString(),
           description,
+          userId,
+          patientId,
         });
 
         fetchHighlightedDays(selectedDate);
@@ -170,14 +181,14 @@ export default function CalendarPanelContent({
   );
 
   const updateOccurrenceCallback = useCallback(
-    async (id: string, time: Dayjs, description: string) => {
+    async (userId: string, id: string, time: Dayjs, description: string) => {
       const composedDate = getComposedDate(time);
 
       try {
         await httpCallers.put(`/calendar/occurrences/${id}`, {
-          userId: userInfoStore.data.id,
           datetime: composedDate.toISOString(),
           description,
+          userId,
         });
 
         fetchHighlightedDays(selectedDate);
@@ -207,14 +218,16 @@ export default function CalendarPanelContent({
               )} ${selectedDay}, ${year.toString()})`}
           </span>
         </div>
-        <img
-          src={closeIcon}
-          className="closeIcon"
-          alt="Close calendar"
-          width={20}
-          style={{ marginRight: 16 }}
-          onClick={closePanel}
-        />
+        {closePanel && (
+          <img
+            src={closeIcon}
+            className="closeIcon"
+            alt="Close calendar"
+            width={20}
+            style={{ marginRight: 16 }}
+            onClick={closePanel}
+          />
+        )}
       </div>
       {selectedDay ? (
         <CalendarDayDetails
