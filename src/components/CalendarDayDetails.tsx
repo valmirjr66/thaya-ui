@@ -296,6 +296,19 @@ export function CalendarDayDetails({
                   <div style={{ marginLeft: 4 }}>({formattedDatetime})</div>
                   <div style={{ marginLeft: 8 }}>{item.description}</div>
                 </div>
+                <div style={{ textAlign: "right", color: "#cacaca" }}>
+                  Patient:{item.patientName}
+                </div>
+                {userInfoStore.data.role === "support" && (
+                  <div style={{ textAlign: "right", color: "#cacaca" }}>
+                    Doctor:
+                    {
+                      organizationInfoStore.data.doctors.find(
+                        (doctor) => doctor.id === item.userId
+                      ).fullname
+                    }
+                  </div>
+                )}
               </div>
             );
           })}

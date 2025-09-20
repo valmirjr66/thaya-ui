@@ -56,6 +56,8 @@ export type CalendarOccurrence = {
   userId: string;
   datetime: string;
   description: string;
+  patientId: string;
+  patientName: string;
 };
 
 export type UserRoles = "admin" | "doctor" | "support" | "patient";

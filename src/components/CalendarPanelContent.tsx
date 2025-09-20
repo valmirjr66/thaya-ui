@@ -110,7 +110,10 @@ export default function CalendarPanelContent({
           `/calendar/occurrences?userId=${userId}&year=${yearToFetch}&month=${monthToFetch}`
         );
 
-        fetchedOccurrences = [...fetchedOccurrences, ...(data.items || [])];
+        fetchedOccurrences = [
+          ...fetchedOccurrences,
+          ...(data.items.map((item) => ({ ...item, userId })) || []),
+        ];
       }
 
       setOccurrences(fetchedOccurrences);
