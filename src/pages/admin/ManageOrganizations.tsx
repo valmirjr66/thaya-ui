@@ -8,6 +8,7 @@ import OrganizationInsertionModal from "./components/OrganizationInsertionModal"
 import OrganizationTable from "./components/OrganizationTable";
 import SupportInsertionModal from "./components/SupportInsertionModal";
 import SupportModal from "./components/SupportModal";
+import PatientManagementModal from "./components/PatientManagementModal";
 
 export type DoctorFormData = Omit<Doctor, "id"> & { password: string };
 export type SupportFormData = Omit<Support, "id"> & { password: string };
@@ -274,80 +275,103 @@ const ManageOrganizations: React.FC = () => {
     }
   };
 
+  const [isManagingPatients, setIsManagingPatients] = useState(false);
+  const [managingPatientDoctorIds, setManagingPatientDoctorIds] = useState<
+    string[]
+  >([]);
+
+  const openDoctorPatientManagement = (doctorIds: string[]) => {
+    setManagingPatientDoctorIds(doctorIds);
+    setIsManagingPatients(true);
+  };
+
+  const closeDoctorPatientManagement = () => {
+    setIsManagingPatients(false);
+    setManagingPatientDoctorIds([]);
+  };
+
   return (
-    <div style={{ padding: 20, fontSize: 14 }}>
-      <h1>Manage Organizations</h1>
-      <button
-        style={{
-          marginBottom: 16,
-          padding: "6px 12px",
-          fontSize: 14,
-          cursor: "pointer",
-        }}
-        className="primary"
-        onClick={openAddOrgModal}
-      >
-        + Add Organization
-      </button>
-      {loadingOrgs ? (
-        <p>Loading organizations...</p>
-      ) : organizations.length === 0 ? (
-        <p>No organizations found.</p>
-      ) : (
-        <OrganizationTable
-          organizations={organizations}
-          loadingCollaboratorsOrgIds={loadingCollaboratorsOrgIds}
-          editingOrgId={editingOrgId}
-          editingOrgData={editingOrgData}
-          deletingOrgId={deletingOrgId}
-          openDoctorModal={openDoctorModal}
-          openSupportModal={openSupportModal}
-          openAddDoctorModal={openAddDoctorModal}
-          openAddSupportModal={openAddSupportModal}
-          handleEditOrgChange={handleEditOrgChange}
-          saveEditOrg={saveEditOrg}
-          cancelEditOrg={cancelEditOrg}
-          startEditOrg={startEditOrg}
-          startDeleteOrg={startDeleteOrg}
-          cancelDeleteOrg={cancelDeleteOrg}
-          confirmDeleteOrg={confirmDeleteOrg}
-        />
-      )}
-      <DoctorModal
-        doctor={selectedDoctor}
-        open={doctorModalOpen}
-        onClose={closeDoctorModal}
+    <>
+      <PatientManagementModal
+        doctorIds={managingPatientDoctorIds}
+        onClose={closeDoctorPatientManagement}
+        visible={isManagingPatients}
       />
-      <SupportModal
-        support={selectedSupport}
-        open={supportModalOpen}
-        onClose={closeSupportModal}
-      />
-      {addDoctorModalOpen && (
-        <DoctorInsertionModal
-          newDoctor={newDoctor}
-          setNewDoctor={setNewDoctor}
-          handleAddDoctor={handleAddDoctor}
-          closeAddDoctorModal={closeAddDoctorModal}
+      <div style={{ padding: 20, fontSize: 14 }}>
+        <h1>Manage Organizations</h1>
+        <button
+          style={{
+            marginBottom: 16,
+            padding: "6px 12px",
+            fontSize: 14,
+            cursor: "pointer",
+          }}
+          className="primary"
+          onClick={openAddOrgModal}
+        >
+          + Add Organization
+        </button>
+        {loadingOrgs ? (
+          <p>Loading organizations...</p>
+        ) : organizations.length === 0 ? (
+          <p>No organizations found.</p>
+        ) : (
+          <OrganizationTable
+            organizations={organizations}
+            loadingCollaboratorsOrgIds={loadingCollaboratorsOrgIds}
+            editingOrgId={editingOrgId}
+            editingOrgData={editingOrgData}
+            deletingOrgId={deletingOrgId}
+            openDoctorModal={openDoctorModal}
+            openSupportModal={openSupportModal}
+            openAddDoctorModal={openAddDoctorModal}
+            openAddSupportModal={openAddSupportModal}
+            handleEditOrgChange={handleEditOrgChange}
+            saveEditOrg={saveEditOrg}
+            cancelEditOrg={cancelEditOrg}
+            startEditOrg={startEditOrg}
+            startDeleteOrg={startDeleteOrg}
+            cancelDeleteOrg={cancelDeleteOrg}
+            confirmDeleteOrg={confirmDeleteOrg}
+            openDoctorPatientManagement={openDoctorPatientManagement}
+          />
+        )}
+        <DoctorModal
+          doctor={selectedDoctor}
+          open={doctorModalOpen}
+          onClose={closeDoctorModal}
         />
-      )}
-      {addSupportModalOpen && (
-        <SupportInsertionModal
-          newSupport={newSupport}
-          setNewSupport={setNewSupport}
-          handleAddSupport={handleAddSupport}
-          closeAddSupportModal={closeAddSupportModal}
+        <SupportModal
+          support={selectedSupport}
+          open={supportModalOpen}
+          onClose={closeSupportModal}
         />
-      )}
-      {addOrgModalOpen && (
-        <OrganizationInsertionModal
-          newOrganization={newOrg}
-          setNewOrganization={setNewOrg}
-          handleAddOrganization={handleAddOrganization}
-          closeAddOrganizationModal={closeAddOrgModal}
-        />
-      )}
-    </div>
+        {addDoctorModalOpen && (
+          <DoctorInsertionModal
+            newDoctor={newDoctor}
+            setNewDoctor={setNewDoctor}
+            handleAddDoctor={handleAddDoctor}
+            closeAddDoctorModal={closeAddDoctorModal}
+          />
+        )}
+        {addSupportModalOpen && (
+          <SupportInsertionModal
+            newSupport={newSupport}
+            setNewSupport={setNewSupport}
+            handleAddSupport={handleAddSupport}
+            closeAddSupportModal={closeAddSupportModal}
+          />
+        )}
+        {addOrgModalOpen && (
+          <OrganizationInsertionModal
+            newOrganization={newOrg}
+            setNewOrganization={setNewOrg}
+            handleAddOrganization={handleAddOrganization}
+            closeAddOrganizationModal={closeAddOrgModal}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

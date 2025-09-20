@@ -18,6 +18,7 @@ const OrganizationTable: React.FC<{
   startDeleteOrg: (orgId: string) => void;
   cancelDeleteOrg: () => void;
   confirmDeleteOrg: (orgId: string) => void;
+  openDoctorPatientManagement: (doctorIds: string[]) => void;
 }> = ({
   organizations,
   loadingCollaboratorsOrgIds,
@@ -35,6 +36,7 @@ const OrganizationTable: React.FC<{
   startDeleteOrg,
   cancelDeleteOrg,
   confirmDeleteOrg,
+  openDoctorPatientManagement,
 }) => {
   const ActionButtons = ({
     isEditing,
@@ -113,39 +115,55 @@ const OrganizationTable: React.FC<{
       );
     } else
       return (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <>
           <button
             style={{
-              marginRight: 8,
+              marginBottom: 8,
               padding: "4px 8px",
               fontSize: 12,
               cursor: "pointer",
             }}
             className="primary"
-            onClick={() => startEditOrg(org)}
+            onClick={() =>
+              openDoctorPatientManagement(org.doctors.map((d) => d.id))
+            }
           >
-            Edit
+            Manage Patients
           </button>
-          <button
+          <div
             style={{
-              padding: "4px 8px",
-              fontSize: 12,
-              cursor: "pointer",
-              background: "#dc3545",
-              color: "#fff",
-              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            onClick={() => startDeleteOrg(org.id)}
           >
-            Delete
-          </button>
-        </div>
+            <button
+              style={{
+                marginRight: 8,
+                padding: "4px 8px",
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+              className="secondary"
+              onClick={() => startEditOrg(org)}
+            >
+              Edit
+            </button>
+            <button
+              style={{
+                padding: "4px 8px",
+                fontSize: 12,
+                cursor: "pointer",
+                background: "#dc3545",
+                color: "#fff",
+                border: "none",
+              }}
+              onClick={() => startDeleteOrg(org.id)}
+            >
+              Delete
+            </button>
+          </div>
+        </>
       );
   };
 
