@@ -14,9 +14,11 @@ import { CalendarOccurrence } from "../types";
 const CalendarFooter = ({
   onClickReturnCallback,
   onClickAddCallback,
+  showAddButton,
 }: {
   onClickReturnCallback: () => void;
   onClickAddCallback: () => void;
+  showAddButton?: boolean;
 }) => (
   <div
     style={{
@@ -29,10 +31,12 @@ const CalendarFooter = ({
     <div className="backToCalendarButton" onClick={onClickReturnCallback}>
       <ArrowBackIcon style={{ marginRight: 6 }} fontSize="small" /> Back
     </div>
-    <AddIcon
-      className="addCalendarOccurrenceButton"
-      onClick={onClickAddCallback}
-    />
+    {showAddButton && (
+      <AddIcon
+        className="addCalendarOccurrenceButton"
+        onClick={onClickAddCallback}
+      />
+    )}
   </div>
 );
 
@@ -59,7 +63,7 @@ export function CalendarDayDetails({
     description: string
   ) => Promise<void>;
 }) {
-  const userInfoStore = useUserInfoStore();
+  const { data: userInfoData } = useUserInfoStore();
   const organizationInfoStore = useOrganizationInfoStore();
 
   const [status, setStatus] = useState<"idle" | "update" | "insert">();
@@ -87,7 +91,7 @@ export function CalendarDayDetails({
   if (status === "insert" || status === "update") {
     return (
       <div style={{ width: 300, padding: 16 }}>
-        {userInfoStore.data.role === "support" && (
+        {userInfoData.role === "support" && (
           <>
             <InputLabel id="doctor-select-label">Doctor</InputLabel>
             <Select
@@ -131,8 +135,8 @@ export function CalendarDayDetails({
         >
           {organizationInfoStore.data.doctors
             .filter((item) =>
-              userInfoStore.data.role === "doctor"
-                ? item.id === userInfoStore.data.id
+              userInfoData.role === "doctor"
+                ? item.id === userInfoData.id
                 : item.id === occurrenceBeingManaged.doctorId
             )
             .reduce(
@@ -200,7 +204,7 @@ export function CalendarDayDetails({
             disabled={
               !occurrenceBeingManaged.time ||
               !occurrenceBeingManaged.description ||
-              (userInfoStore.data.role === "support" &&
+              (userInfoData.role === "support" &&
                 !occurrenceBeingManaged.doctorId) ||
               !occurrenceBeingManaged.patientId ||
               (status === "update" && !occurrenceBeingManaged.id)
@@ -208,17 +212,17 @@ export function CalendarDayDetails({
             onClick={async () => {
               status === "insert"
                 ? await insertOccurrenceCallback(
-                    userInfoStore.data.role === "support"
+                    userInfoData.role === "support"
                       ? occurrenceBeingManaged.doctorId!
-                      : userInfoStore.data.id,
+                      : userInfoData.id,
                     occurrenceBeingManaged.patientId!,
                     occurrenceBeingManaged.time!,
                     occurrenceBeingManaged.description!
                   )
                 : await updateOccurrenceCallback(
-                    userInfoStore.data.role === "support"
+                    userInfoData.role === "support"
                       ? occurrenceBeingManaged.doctorId!
-                      : userInfoStore.data.id,
+                      : userInfoData.id,
                     occurrenceBeingManaged.id!,
                     occurrenceBeingManaged.time!,
                     occurrenceBeingManaged.description!
@@ -295,14 +299,26 @@ export function CalendarDayDetails({
                   <div style={{ marginLeft: 4 }}>({formattedDatetime})</div>
                   <div style={{ marginLeft: 8 }}>{item.description}</div>
                 </div>
-                <div style={{ textAlign: "right", color: "#cacaca" }}>
-                  Patient:{item.patientName}
-                </div>
-                {userInfoStore.data.role === "support" && (
+                {userInfoData.role !== "patient" && (
+                  <div style={{ textAlign: "right", color: "#cacaca" }}>
+                    Patient: {item.patientName}
+                  </div>
+                )}
+                {userInfoData.role === "support" && (
                   <div style={{ textAlign: "right", color: "#cacaca" }}>
                     Doctor:
                     {
                       organizationInfoStore.data.doctors.find(
+                        (doctor) => doctor.id === item.userId
+                      ).fullname
+                    }
+                  </div>
+                )}
+                {userInfoData.role === "patient" && (
+                  <div style={{ textAlign: "right", color: "#cacaca" }}>
+                    Doctor:
+                    {
+                      userInfoData.doctors.find(
                         (doctor) => doctor.id === item.userId
                       ).fullname
                     }
@@ -315,6 +331,7 @@ export function CalendarDayDetails({
         <CalendarFooter
           onClickReturnCallback={onClickReturnCallback}
           onClickAddCallback={() => setStatus("insert")}
+          showAddButton={userInfoData.role !== "patient"}
         />
       </div>
     );

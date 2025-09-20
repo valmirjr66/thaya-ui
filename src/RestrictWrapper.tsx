@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router";
 import useToaster from "./hooks/useToaster";
 import httpCallers from "./service";
 import { useOrganizationInfoStore, useUserInfoStore } from "./store";
-import { Doctor, UserRoles } from "./types";
+import { Doctor, Organization, UserRoles } from "./types";
 
 export default function RestrictWrapper(props: { role: UserRoles }) {
   const userId = localStorage.getItem("userId");
@@ -13,15 +13,29 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
 
   const { triggerToast } = useToaster({ type: "error" });
 
-  const fetchUserInfo = useCallback(async () => {
-    try {
-      const { data: userData } = await httpCallers.get(
-        `${props.role}-users/${userId}`
-      );
+  const fetchLinkedDoctors = useCallback(
+    async (
+      patientId: string
+    ): Promise<{ id: string; fullname: string; email: string }[]> => {
+      try {
+        const { data } = await httpCallers.get(
+          `/patient-users/${patientId}/linked-doctors`
+        );
 
-      if (props.role === "doctor" || props.role === "support") {
+        return data.items;
+      } catch {
+        triggerToast();
+        return [];
+      }
+    },
+    [triggerToast]
+  );
+
+  const fetchOrganizationInfoAndSetStore = useCallback(
+    async (organizationId: string): Promise<Omit<Organization, "supports">> => {
+      try {
         const { data: organizationData } = await httpCallers.get(
-          `/organizations/${userData.organizationId}`
+          `/organizations/${organizationId}`
         );
 
         const organizationDoctors: Doctor[] = [];
@@ -48,7 +62,7 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
           }
         }
 
-        organizationInfoStore.setData({
+        const response: Omit<Organization, "supports"> = {
           id: organizationData.id,
           name: organizationData.name,
           address: organizationData.address,
@@ -56,18 +70,73 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
           collaborators: organizationData.collaborators,
           timezoneOffset: organizationData.timezoneOffset,
           doctors: organizationDoctors,
-        });
-      }
+        };
 
-      userInfoStore.setData({
+        organizationInfoStore.setData(response);
+
+        return response;
+      } catch {
+        triggerToast();
+      }
+    },
+    [triggerToast]
+  );
+
+  const fetchUserInfo = useCallback(async () => {
+    try {
+      const { data: userData } = await httpCallers.get(
+        `${props.role}-users/${userId}`
+      );
+
+      const defaultUserData = {
         id: userData.id,
         email: userData.email,
         fullname: userData.fullname,
-        nickname: userData.nickname,
-        profilePicFileName: userData.profilePicFileName,
-        role: props.role,
-        doctorsId: userData.doctorsId,
-      });
+      };
+
+      if (props.role === "doctor") {
+        const { doctors } = await fetchOrganizationInfoAndSetStore(
+          userData.organizationId
+        );
+
+        userInfoStore.setData({
+          ...defaultUserData,
+          role: "doctor",
+          organizationId: userData.organizationId,
+          profilePicFileName: userData.profilePicFileName,
+          birthdate: userData.birthdate,
+          phoneNumber: userData.phoneNumber,
+          patients: doctors.filter((doctor) => doctor.id === userData.id)[0]
+            ?.patients,
+        });
+      } else if (props.role === "support") {
+        await fetchOrganizationInfoAndSetStore(userData.organizationId);
+
+        userInfoStore.setData({
+          ...defaultUserData,
+          role: "support",
+          organizationId: userData.organizationId,
+          profilePicFileName: userData.profilePicFileName,
+        });
+      } else if (props.role === "patient") {
+        const doctors = await fetchLinkedDoctors(userData.id);
+
+        userInfoStore.setData({
+          ...defaultUserData,
+          role: "patient",
+          nickname: userData.nickname,
+          profilePicFileName: userData.profilePicFileName,
+          birthdate: userData.birthdate,
+          phoneNumber: userData.phoneNumber,
+          doctorsId: userData.doctorsId,
+          doctors,
+        });
+      } else {
+        userInfoStore.setData({
+          role: "admin",
+          ...defaultUserData,
+        });
+      }
     } catch {
       triggerToast();
     }
