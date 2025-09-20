@@ -91,6 +91,7 @@ export function CalendarDayDetails({
           <>
             <InputLabel id="doctor-select-label">Doctor</InputLabel>
             <Select
+              disabled={status === "update"}
               labelId="doctor-select-label"
               value={occurrenceBeingManaged.doctorId || ""}
               label="Doctor"
@@ -114,10 +115,7 @@ export function CalendarDayDetails({
         )}
         <InputLabel id="patient-select-label">Patient</InputLabel>
         <Select
-          disabled={
-            userInfoStore.data.role === "support" &&
-            !occurrenceBeingManaged.doctorId
-          }
+          disabled={status === "update"}
           labelId="patient-select-label"
           value={occurrenceBeingManaged.patientId || ""}
           label="Patient"
