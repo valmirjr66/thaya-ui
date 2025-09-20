@@ -62,21 +62,25 @@ export default function Login(props: {
     <>
       <ToastContainer />
       <main className="loginWrapper">
-        <p>
-          <TypeAnimation
-            sequence={[
-              "I'm here to help you answer your questions",
-              5000,
-              "I'm here to help you automate your tasks",
-              5000,
-              "I'm here to help you manage your time",
-              5000,
-            ]}
-            speed={70}
-            wrapper="span"
-            repeat={Infinity}
-          />
-        </p>
+        {props.role === "doctor" && (
+          <p>
+            <TypeAnimation
+              sequence={[
+                "I'm here to help you manage your appointments efficiently",
+                5000,
+                "I'm here to help you access patient records securely",
+                5000,
+                "I'm here to help you find medical reference material quickly",
+                5000,
+                "I'm here to help you streamline your daily workflow",
+                5000,
+              ]}
+              speed={70}
+              wrapper="span"
+              repeat={Infinity}
+            />
+          </p>
+        )}
         <form className="loginContainer" onSubmit={submitCallback}>
           <div className="fieldWrapper">
             <label htmlFor="email">E-mail</label>
