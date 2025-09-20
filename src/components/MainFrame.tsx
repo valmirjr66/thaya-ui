@@ -3,7 +3,7 @@ import { isMobile } from "react-device-detect";
 import Skeleton from "react-loading-skeleton";
 import { v4 as uuidv4 } from "uuid";
 import dotsGif from "../imgs/dots.gif";
-import { useUserPromptStore } from "../store";
+import { useUserInfoStore, useUserPromptStore } from "../store";
 import { Reference } from "../types";
 import MessageBalloon from "./MessageBalloon";
 
@@ -27,6 +27,8 @@ export default function MainFrame({
   onSendMessage,
   isLoading,
 }: MainFrameProps) {
+  const { data: userInfoData } = useUserInfoStore();
+
   const LoadingDots = () => <img src={dotsGif} width={50} alt="Loading" />;
 
   const loadingMessages: Message[] = [1, 2, 3, 4].map((i) => ({
@@ -118,6 +120,9 @@ export default function MainFrame({
           isLastMessage
           key={`loading_msg_${uuidv4()}`}
           onSendMessage={onSendMessage}
+          profilePicFileName={
+            userInfoData.role === "doctor" && userInfoData?.profilePicFileName
+          }
         />
       )}
     </ul>

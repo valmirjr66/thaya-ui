@@ -136,7 +136,7 @@ export default function Chat() {
       >
         <CalendarPanelContent
           closePanel={agendaPanelStore.handleClose}
-          userIds={[userInfoStore.data.id]}
+          userIds={userInfoStore.data ? [userInfoStore.data.id] : []}
         />
       </Popover>
       <Header

@@ -6,7 +6,6 @@ import downloadIcon from "../imgs/ic-download.svg";
 import myAvatar from "../imgs/ic-me.svg";
 import aiAvatar from "../imgs/logo.svg";
 import { Reference } from "../types";
-import { useUserInfoStore } from "../store";
 
 interface MessageBalloonProps {
   id: string;
@@ -16,6 +15,7 @@ interface MessageBalloonProps {
   references?: Reference[];
   isLastMessage?: boolean;
   previousPromptAnchorId?: string;
+  profilePicFileName?: string;
   onSendMessage?: (msg: string) => void;
 }
 
@@ -27,9 +27,9 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
   references,
   isLastMessage,
   previousPromptAnchorId,
+  profilePicFileName,
   onSendMessage,
 }) => {
-  const { data: userInfoData } = useUserInfoStore();
   const profilePicsBaseAddress = import.meta.env
     .VITE_PROFILE_PICS_STORAGE_BASE_ADDRESS;
 
@@ -37,9 +37,9 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
     user: {
       id: "1",
       clientData: {
-        username: userInfoData.nickname || "Me",
-        profilePic: userInfoData.profilePicFileName
-          ? `${profilePicsBaseAddress}/${userInfoData.profilePicFileName}`
+        username: "Me",
+        profilePic: profilePicFileName
+          ? `${profilePicsBaseAddress}/${profilePicFileName}`
           : myAvatar,
       },
     },
