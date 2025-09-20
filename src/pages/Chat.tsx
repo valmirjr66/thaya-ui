@@ -10,7 +10,7 @@ import CalendarPanelContent from "../components/CalendarPanelContent";
 import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
 import useToaster from "../hooks/useToaster";
-import httpCallers, { DEFAULT_HTTP_HEADERS } from "../service";
+import httpCallers from "../service";
 import { useAgendaPanelStore, useUserInfoStore } from "../store";
 import { Message } from "../types";
 
