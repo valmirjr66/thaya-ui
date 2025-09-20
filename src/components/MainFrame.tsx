@@ -91,7 +91,7 @@ export default function MainFrame({
         width: isMobile ? "100%" : "unset",
       }}
     >
-      {(true ? loadingMessages : messages).map(
+      {(isLoading ? loadingMessages : messages).map(
         (message, index, array) =>
           message && (
             <MessageBalloon
