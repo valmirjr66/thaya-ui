@@ -81,11 +81,11 @@ export default function Settings({ role }: { role: UserRoles }) {
 
     try {
       const userId = localStorage.getItem("userId");
-      await httpCallers.put(`/users/${userId}`, {
+      await httpCallers.put(`/${role}-users/${userId}`, {
         email: user.email,
         fullname: user.fullname,
         nickname: user.nickname,
-        birthdate: user.birthdate.toISOString().split("T")[0],
+        birthdate: user.birthdate?.toISOString().split("T")[0],
       });
 
       triggerToastSuccess("Informations updated successfully!");
@@ -114,9 +114,13 @@ export default function Settings({ role }: { role: UserRoles }) {
     formData.append("profilePicture", event.target.files[0]);
 
     const userId = localStorage.getItem("userId");
-    await httpCallers.put(`/users/${userId}/profile-picture`, formData, {
-      "Content-Type": "multipart/form-data",
-    });
+    await httpCallers.put(
+      `/${role}-users/${userId}/profile-picture`,
+      formData,
+      {
+        "Content-Type": "multipart/form-data",
+      }
+    );
 
     await loadUser();
     triggerToastSuccess("Profile picture updated successfully!");
@@ -125,7 +129,7 @@ export default function Settings({ role }: { role: UserRoles }) {
 
   const removeProfilePic = async () => {
     const userId = localStorage.getItem("userId");
-    await httpCallers.delete(`/users/${userId}/profile-picture`);
+    await httpCallers.delete(`/${role}-users/${userId}/profile-picture`);
     await loadUser();
     closeProfilePicDialog();
   };
@@ -254,39 +258,41 @@ export default function Settings({ role }: { role: UserRoles }) {
                     }))
                   }
                 />
-                <div style={{ display: "flex" }}>
-                  {role === "patient" && (
-                    <div style={{ marginRight: 20 }}>
-                      <TextField
-                        label="Nickname"
-                        value={user.nickname}
-                        fullWidth
-                        disabled={!editMode}
-                        onChange={(e) =>
-                          setUser((prevState) => ({
-                            ...prevState,
-                            nickname: e.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                  )}
-                  {role === "patient" ||
-                    (role === "doctor" && (
-                      <DatePicker
-                        label="Birthdate"
-                        value={dayjs(new Date(user.birthdate))}
-                        disabled={!editMode}
-                        slotProps={{ textField: { required: true } }}
-                        onChange={(e) =>
-                          setUser((prevState) => ({
-                            ...prevState,
-                            birthdate: new Date(e.toISOString()),
-                          }))
-                        }
-                      />
-                    ))}
-                </div>
+                {(role === "patient" || role === "doctor") && (
+                  <div style={{ display: "flex" }}>
+                    {role === "patient" && (
+                      <div style={{ marginRight: 20 }}>
+                        <TextField
+                          label="Nickname"
+                          value={user.nickname}
+                          fullWidth
+                          disabled={!editMode}
+                          onChange={(e) =>
+                            setUser((prevState) => ({
+                              ...prevState,
+                              nickname: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                    )}
+                    {role === "patient" ||
+                      (role === "doctor" && (
+                        <DatePicker
+                          label="Birthdate"
+                          value={dayjs(new Date(user.birthdate))}
+                          disabled={!editMode}
+                          slotProps={{ textField: { required: true } }}
+                          onChange={(e) =>
+                            setUser((prevState) => ({
+                              ...prevState,
+                              birthdate: new Date(e.toISOString()),
+                            }))
+                          }
+                        />
+                      ))}
+                  </div>
+                )}
                 <TextField
                   label="E-mail"
                   value={user.email}
