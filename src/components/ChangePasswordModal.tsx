@@ -1,4 +1,4 @@
-import { Modal, TextField } from "@mui/material";
+import { Button, Modal, TextField } from "@mui/material";
 import { useState } from "react";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
@@ -13,6 +13,8 @@ export default function ChangePasswordModal({
   isOpen,
   handleClose,
 }: ChangePasswordModalProps) {
+  const { data: userInfoData } = useUserInfoStore();
+
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
@@ -23,7 +25,7 @@ export default function ChangePasswordModal({
   const submitForm = async () => {
     try {
       await httpCallers.post(
-        `/users/change-password?userEmail=${userInfoStore.data.email}&newPassword=${password}`
+        `/${userInfoData.role}-users/change-password?userEmail=${userInfoStore.data.email}&newPassword=${password}`
       );
       triggerToastSuccess("Password updated successfully!");
     } catch {
@@ -64,17 +66,16 @@ export default function ChangePasswordModal({
             password !== confirmPassword &&
             "Passwords don't match"}
         </span>
-        <button
-          type="submit"
-          className="primary"
-          style={{ width: 150 }}
+        <Button
+          variant="contained"
+          color="success"
           onClick={submitForm}
           disabled={
             !password || !confirmPassword || password !== confirmPassword
           }
         >
           Update
-        </button>
+        </Button>
       </div>
     </Modal>
   );

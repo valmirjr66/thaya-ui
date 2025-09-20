@@ -1,4 +1,5 @@
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { Button } from "@mui/material";
 import { isMobile } from "react-device-detect";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -108,13 +109,15 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
               }[action.type];
 
               return (
-                <button
-                  className={className}
+                <Button
+                  variant="contained"
+                  color={action.type === "negative" ? "error" : "primary"}
+                  style={{ marginRight: 16 }}
                   disabled={!isLastMessage}
                   onClick={() => onSendMessage?.(action?.feedbackResponse)}
                 >
                   {action?.feedbackResponse}
-                </button>
+                </Button>
               );
             })}
           </div>

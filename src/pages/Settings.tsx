@@ -339,31 +339,34 @@ export default function Settings({ role }: { role: UserRoles }) {
                 )}
                 {editMode ? (
                   <>
-                    <button
-                      className="primary"
+                    <Button
+                      variant="contained"
+                      color="success"
                       type="submit"
                       style={{ width: 150 }}
                     >
                       Save
-                    </button>
-                    <button
-                      className="cancel"
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
                       style={{ width: 150 }}
                       onClick={cancelUpdate}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </>
                 ) : (
-                  <button
+                  <Button
                     type="button"
-                    className="secondary"
-                    style={{ width: 150, justifyContent: "center" }}
+                    color="primary"
+                    variant="contained"
+                    style={{ width: 150 }}
                     onClick={() => setEditMode(true)}
+                    startIcon={<EditIcon fontSize="small" />}
                   >
-                    <EditIcon fontSize="small" style={{ marginRight: 8 }} />
                     Edit
-                  </button>
+                  </Button>
                 )}
               </form>
             )}

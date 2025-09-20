@@ -1,7 +1,7 @@
-import { TextField } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import { IconButton, TextField } from "@mui/material";
 import { useMemo } from "react";
 import { isMobile } from "react-device-detect";
-import sendIcon from "../imgs/ic-send.svg";
 import { useUserPromptStore } from "../store";
 
 type AssistantChatInputProps = {
@@ -70,14 +70,18 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
           }}
           onKeyDown={onKeyDown}
         />
-        <button className="send" disabled={isButtonDisabled}>
-          <img
-            src={sendIcon}
-            width={35}
-            alt="Send"
-            style={{ opacity: isButtonDisabled ? 0.5 : 1, marginLeft: 10 }}
-          />
-        </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            paddingLeft: 8,
+          }}
+        >
+          <IconButton type="submit" disabled={isButtonDisabled} title="Send">
+            <SendIcon fontSize="large" />
+          </IconButton>
+        </div>
       </form>
     </div>
   );

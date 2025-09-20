@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import Lottie from "lottie-react";
@@ -159,7 +159,7 @@ export default function Signup() {
                 password !== confirmPassword &&
                 "Passwords don't match"}
             </span>
-            <button
+            <Button
               disabled={
                 !fullname ||
                 !birthdate ||
@@ -168,12 +168,11 @@ export default function Signup() {
                 !confirmPassword ||
                 password !== confirmPassword
               }
-              className="primary"
+              variant="contained"
               type="submit"
-              style={{ width: 150 }}
             >
               Save
-            </button>
+            </Button>
           </form>
         )}
       </section>

@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ToastContainer } from "react-toastify";
@@ -104,14 +105,9 @@ export default function Login(props: {
           {authenticating ? (
             <img src={loadingIcon} width={30} />
           ) : (
-            <button
-              type="submit"
-              className="primary"
-              style={{ width: 150 }}
-              disabled={!email || !password}
-            >
+            <Button type="submit" disabled={!email || !password} variant="contained">
               Login
-            </button>
+            </Button>
           )}
           {props.shouldShowSignup && (
             <div

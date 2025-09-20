@@ -6,8 +6,8 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 pre {
@@ -28,86 +28,6 @@ input {
   flex-grow: 1;
   border-radius: 15px;
   font-family: "Overpass Mono";
-}
-
-button {
-  padding: 5px 0px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-family: "Overpass Mono";
-}
-
-button:active:not(:disabled) {
-  transform: translateY(3px) !important;
-}
-
-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
-}
-
-button:disabled {
-  cursor: unset;
-}
-
-button.primary {
-  background-color: #55ad51;
-  color: white;
-  border: none;
-}
-
-button.primary:disabled {
-  background-color: #92bea0;
-}
-
-button.secondary {
-  background-color: #009dff;
-  color: #fff;
-  border: none;
-}
-
-button.secondary:disabled {
-  background-color: #b4e2ff;
-  color: #7f7f7f;
-}
-
-button.send:disabled {
-  cursor: unset !important;
-  transform: unset !important;
-}
-
-button.send {
-  background-color: unset !important;
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: none !important;
-}
-
-button.send:hover {
-  transform: translateY(-2px);
-}
-
-button.send:disabled {
-  background-color: #9292be;
-}
-
-button.cancel {
-  background-color: #c31c1c;
-  color: white;
-  border: none;
-}
-
-button.cancel:disabled {
-  background-color: #b67070;
 }
 
 a:active {
