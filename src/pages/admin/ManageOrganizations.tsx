@@ -6,9 +6,9 @@ import DoctorInsertionModal from "./components/DoctorInsertionModal";
 import DoctorModal from "./components/DoctorModal";
 import OrganizationInsertionModal from "./components/OrganizationInsertionModal";
 import OrganizationTable from "./components/OrganizationTable";
+import PatientManagementModal from "./components/PatientManagementModal";
 import SupportInsertionModal from "./components/SupportInsertionModal";
 import SupportModal from "./components/SupportModal";
-import PatientManagementModal from "./components/PatientManagementModal";
 
 export type DoctorFormData = Omit<Doctor, "id"> & { password: string };
 export type SupportFormData = Omit<Support, "id"> & { password: string };
@@ -276,24 +276,26 @@ const ManageOrganizations: React.FC = () => {
   };
 
   const [isManagingPatients, setIsManagingPatients] = useState(false);
-  const [managingPatientDoctorIds, setManagingPatientDoctorIds] = useState<
-    string[]
+  const [managingPatientDoctors, setManagingPatientDoctors] = useState<
+    { id: string; fullname: string }[]
   >([]);
 
-  const openDoctorPatientManagement = (doctorIds: string[]) => {
-    setManagingPatientDoctorIds(doctorIds);
+  const openDoctorPatientManagement = (
+    doctors: { id: string; fullname: string }[]
+  ) => {
+    setManagingPatientDoctors(doctors);
     setIsManagingPatients(true);
   };
 
   const closeDoctorPatientManagement = () => {
     setIsManagingPatients(false);
-    setManagingPatientDoctorIds([]);
+    setManagingPatientDoctors([]);
   };
 
   return (
     <>
       <PatientManagementModal
-        doctorIds={managingPatientDoctorIds}
+        doctors={managingPatientDoctors}
         onClose={closeDoctorPatientManagement}
         visible={isManagingPatients}
       />

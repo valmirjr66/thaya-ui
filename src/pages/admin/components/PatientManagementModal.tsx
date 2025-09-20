@@ -8,21 +8,23 @@ type Patient = {
 
 type PatientManagementModalProps = {
   visible: boolean;
-  doctorIds: string[];
+  doctors: { id: string; fullname: string }[];
   onClose: () => void;
 };
 
+type PatientsByDoctor = Record<string, Patient[]>;
+
 const fetchPatientsByDoctorIds = async (
   doctorIds: string[]
-): Promise<Patient[]> => {
-  let response: Patient[] = [];
+): Promise<PatientsByDoctor> => {
+  let response: PatientsByDoctor = {};
 
   for (const doctorId of doctorIds) {
     const { data } = await httpCallers.get(
       `/doctor-users/${doctorId}/linked-patients`
     );
 
-    response = response.concat(data.items);
+    response[doctorId] = data.items;
   }
 
   return response;
@@ -54,22 +56,24 @@ const overlayStyle: React.CSSProperties = {
 
 const PatientManagementModal: React.FC<PatientManagementModalProps> = ({
   visible,
-  doctorIds,
+  doctors,
   onClose,
 }) => {
-  const [patients, setPatients] = useState<Patient[]>([]);
+  const [patientsByDoctor, setPatientsByDoctor] = useState<PatientsByDoctor>(
+    {}
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (visible && doctorIds.length > 0) {
+    if (visible && doctors.length > 0) {
       setLoading(true);
-      fetchPatientsByDoctorIds(doctorIds)
-        .then(setPatients)
+      fetchPatientsByDoctorIds(doctors.map((item) => item.id))
+        .then(setPatientsByDoctor)
         .finally(() => setLoading(false));
     } else {
-      setPatients([]);
+      setPatientsByDoctor({});
     }
-  }, [visible, doctorIds]);
+  }, [visible, doctors]);
 
   if (!visible) return null;
 
@@ -80,26 +84,55 @@ const PatientManagementModal: React.FC<PatientManagementModalProps> = ({
         <h2>Patient Management</h2>
         {loading ? (
           <div>Loading...</div>
-        ) : patients.length === 0 ? (
+        ) : Object.keys(patientsByDoctor).length === 0 ? (
           <div>No patients found.</div>
         ) : (
           <>
-            {patients.map((patient) => (
+            {Object.keys(patientsByDoctor).map((doctorId) => (
               <div
                 style={{
                   marginBottom: 16,
                   display: "flex",
                   flexDirection: "column",
+                  borderTop: "1px solid #d4d4d4",
+                  paddingTop: 8,
                 }}
-                key={patient.id}
+                key={doctorId}
               >
-                <span>Name: {patient.fullname}</span>
-                <span style={{ fontSize: 12 }}>ID: {patient.id}</span>
+                Doctor:{" "}
+                {doctors.find((d) => d.id === doctorId)?.fullname || doctorId}
+                {patientsByDoctor[doctorId].map((patient) => (
+                  <div
+                    style={{
+                      paddingLeft: 16,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                    key={patient.id}
+                  >
+                    <span style={{ fontSize: 14 }}>
+                      Name: {patient.fullname}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        margin: "2px 0px 16px 0px",
+                        color: "#555",
+                      }}
+                    >
+                      ID: {patient.id}
+                    </span>
+                  </div>
+                ))}
               </div>
             ))}
           </>
         )}
-        <button onClick={onClose} style={{ marginTop: 16,padding:6 }} className="primary">
+        <button
+          onClick={onClose}
+          style={{ marginTop: 16, padding: 6 }}
+          className="primary"
+        >
           Close
         </button>
       </div>

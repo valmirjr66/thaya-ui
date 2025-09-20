@@ -18,7 +18,9 @@ const OrganizationTable: React.FC<{
   startDeleteOrg: (orgId: string) => void;
   cancelDeleteOrg: () => void;
   confirmDeleteOrg: (orgId: string) => void;
-  openDoctorPatientManagement: (doctorIds: string[]) => void;
+  openDoctorPatientManagement: (
+    doctors: { id: string; fullname: string }[]
+  ) => void;
 }> = ({
   organizations,
   loadingCollaboratorsOrgIds,
@@ -125,7 +127,12 @@ const OrganizationTable: React.FC<{
             }}
             className="primary"
             onClick={() =>
-              openDoctorPatientManagement(org.doctors.map((d) => d.id))
+              openDoctorPatientManagement(
+                org.doctors.map((doctor) => ({
+                  id: doctor.id,
+                  fullname: doctor.fullname,
+                }))
+              )
             }
           >
             Manage Patients
