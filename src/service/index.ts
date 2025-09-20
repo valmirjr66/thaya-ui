@@ -2,9 +2,7 @@ import axios from "axios";
 
 const API_ADDRESS = import.meta.env.VITE_API_URL;
 
-export const DEFAULT_HTTP_HEADERS = {
-  "x-user-chat-origin": "ui",
-};
+export const DEFAULT_HTTP_HEADERS = {};
 
 const axiosInstance = axios.create({ baseURL: API_ADDRESS });
 

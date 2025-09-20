@@ -20,7 +20,6 @@ export default function Chat() {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(`${import.meta.env.VITE_WS_URL}`, {
-        extraHeaders: { ...DEFAULT_HTTP_HEADERS },
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
@@ -75,7 +74,7 @@ export default function Chat() {
 
     try {
       const { data } = await httpCallers.get(
-        `assistant/chat?userId=${localStorage.getItem("userId")}`
+        `assistants/thaya-md/chat?userId=${localStorage.getItem("userId")}`
       );
 
       const chatMessages = data.items || [];
