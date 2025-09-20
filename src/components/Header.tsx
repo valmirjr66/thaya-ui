@@ -6,14 +6,15 @@ import { useNavigate } from "react-router";
 import { useAgendaPanelStore } from "../store";
 import LogoutIcon from "@mui/icons-material/Logout";
 
+export type HeaderButtons =
+  | "settings"
+  | "chat"
+  | "calendar"
+  | "logout"
+  | "organization-calendar";
+
 export type HeaderProps = {
-  buttonsToRender: (
-    | "settings"
-    | "chat"
-    | "calendar"
-    | "logout"
-    | "organization-calendar"
-  )[];
+  buttonsToRender: HeaderButtons[];
   sharedIconsStyle: React.CSSProperties;
 };
 

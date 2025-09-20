@@ -7,7 +7,7 @@ export type Reference = {
 };
 
 export type Message = {
-  _id: string;
+  id: string;
   content: string;
   role: "assistant" | "user";
   references?: Reference[];

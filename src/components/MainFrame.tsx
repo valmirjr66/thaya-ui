@@ -8,7 +8,7 @@ import { Reference } from "../types";
 import MessageBalloon from "./MessageBalloon";
 
 type Message = {
-  _id: string;
+  id: string;
   content: string | ReactElement;
   role: "assistant" | "user";
   references?: Reference[];
@@ -29,47 +29,19 @@ export default function MainFrame({
 }: MainFrameProps) {
   const LoadingDots = () => <img src={dotsGif} width={50} alt="Loading" />;
 
-  const loadingMessages: Message[] = [
-    {
-      _id: "1",
-      role: "user",
-      content: (
-        <Skeleton
-          style={{ display: "block", width: "15vw" }}
-          height={50}
-          baseColor="#57577d"
-          highlightColor="#7d7da3"
-          borderRadius={10}
-        />
-      ),
-    },
-    {
-      _id: "2",
-      role: "assistant",
-      content: (
-        <Skeleton
-          style={{ display: "block", width: "20vw" }}
-          height={200}
-          baseColor="#585858"
-          highlightColor="#7f7f7f"
-          borderRadius={10}
-        />
-      ),
-    },
-    {
-      _id: "3",
-      role: "user",
-      content: (
-        <Skeleton
-          style={{ display: "block", width: "20vw" }}
-          height={50}
-          baseColor="#57577d"
-          highlightColor="#7d7da3"
-          borderRadius={10}
-        />
-      ),
-    },
-  ];
+  const loadingMessages: Message[] = [1, 2, 3, 4].map((i) => ({
+    id: `loading-msg-${i}`,
+    role: i % 2 === 0 ? "assistant" : "user",
+    content: (
+      <Skeleton
+        style={{ display: "block", width: "20vw" }}
+        height={i % 2 === 0 ? 200 : 50}
+        baseColor={i % 2 === 0 ? "#585858" : "#57577d"}
+        highlightColor={i % 2 === 0 ? "#7f7f7f" : "#7d7da3"}
+        borderRadius={10}
+      />
+    ),
+  }));
 
   const promptSuggestions = [
     "Summarize the latest medical research on diabetes",
@@ -119,20 +91,20 @@ export default function MainFrame({
         width: isMobile ? "100%" : "unset",
       }}
     >
-      {(isLoading ? loadingMessages : messages).map(
+      {(true ? loadingMessages : messages).map(
         (message, index, array) =>
           message && (
             <MessageBalloon
-              id={message._id}
+              id={message.id}
               content={message.content}
               role={message.role}
               isLastMessage={messages.length === index + 1}
-              key={message._id}
+              key={message.id}
               onSendMessage={onSendMessage}
               references={message.references}
               previousPromptAnchorId={
                 message.role === "user" && !isLoading && array[index - 2]
-                  ? array[index - 2]._id
+                  ? array[index - 2].id
                   : null
               }
             />

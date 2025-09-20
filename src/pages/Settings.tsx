@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import ChangePasswordModal from "../components/ChangePasswordModal";
-import Header from "../components/Header";
+import Header, { HeaderButtons } from "../components/Header";
 import useToaster from "../hooks/useToaster";
 import defaultAvatar from "../imgs/ic-me.svg";
 import loadingIcon from "../imgs/loading.gif";
@@ -130,11 +130,23 @@ export default function Settings({ role }: { role: UserRoles }) {
     closeProfilePicDialog();
   };
 
+  const getButtonsToRender = (): HeaderButtons[] => {
+    if (role === "support") {
+      return ["logout", "organization-calendar"];
+    }
+
+    if (role === "doctor") {
+      return ["logout", "chat"];
+    }
+
+    return ["logout"];
+  };
+
   if (user === null) {
     return (
       <main className="app">
         <Header
-          buttonsToRender={["organization-calendar", "logout"]}
+          buttonsToRender={getButtonsToRender()}
           sharedIconsStyle={{ marginRight: 25 }}
         />
         <div className="appWrapper">
@@ -203,7 +215,7 @@ export default function Settings({ role }: { role: UserRoles }) {
       />
       <main className="app">
         <Header
-          buttonsToRender={["organization-calendar", "logout"]}
+          buttonsToRender={getButtonsToRender()}
           sharedIconsStyle={{ marginRight: 25 }}
         />
         <div className="appWrapper">
