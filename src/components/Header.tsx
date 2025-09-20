@@ -11,7 +11,8 @@ export type HeaderButtons =
   | "chat"
   | "calendar"
   | "logout"
-  | "organization-calendar";
+  | "organization-calendar"
+  | "patient-calendar";
 
 export type HeaderProps = {
   buttonsToRender: HeaderButtons[];
@@ -52,6 +53,18 @@ export default function Header({
                   fontSize="medium"
                   style={sharedIconsStyle}
                   className="chatIcon"
+                />
+              </Box>
+            );
+          case "patient-calendar":
+            return (
+              <Box onClick={() => navigate("/patient")} key="calendar">
+                <CalendarMonthIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className={`calendarIcon ${
+                    agendaPanelStore.isOpen ? "active" : ""
+                  }`}
                 />
               </Box>
             );

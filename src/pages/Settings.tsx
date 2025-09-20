@@ -143,7 +143,7 @@ export default function Settings({ role }: { role: UserRoles }) {
       return ["logout", "chat"];
     }
 
-    return ["logout"];
+    return ["logout", "patient-calendar"];
   };
 
   if (user === null) {
