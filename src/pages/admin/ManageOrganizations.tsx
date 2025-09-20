@@ -308,7 +308,6 @@ const ManageOrganizations: React.FC = () => {
             fontSize: 14,
             cursor: "pointer",
           }}
-          className="primary"
           onClick={openAddOrgModal}
         >
           + Add Organization

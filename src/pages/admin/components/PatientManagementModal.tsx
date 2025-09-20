@@ -128,11 +128,7 @@ const PatientManagementModal: React.FC<PatientManagementModalProps> = ({
             ))}
           </>
         )}
-        <button
-          onClick={onClose}
-          style={{ marginTop: 16, padding: 6 }}
-          className="primary"
-        >
+        <button onClick={onClose} style={{ marginTop: 16, padding: 6 }}>
           Close
         </button>
       </div>

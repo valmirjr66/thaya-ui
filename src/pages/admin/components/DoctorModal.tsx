@@ -187,7 +187,6 @@ const DoctorModal: React.FC<{
             opacity: updating ? 0.7 : 1,
             borderRadius: 4,
           }}
-          className={!updating && "primary"}
           onClick={handleUpdate}
           disabled={updating}
         >
@@ -212,7 +211,6 @@ const DoctorModal: React.FC<{
           opacity: deleting ? 0.7 : 1,
           borderRadius: 4,
         }}
-        className="cancel"
         onClick={handleDelete}
         disabled={deleting}
       >

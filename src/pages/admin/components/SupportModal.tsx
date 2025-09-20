@@ -102,7 +102,6 @@ const SupportModal: React.FC<{
             opacity: updating ? 0.7 : 1,
             borderRadius: 4,
           }}
-          className={!updating && "primary"}
           onClick={handleUpdate}
           disabled={updating}
         >

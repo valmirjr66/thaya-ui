@@ -59,7 +59,6 @@ const OrganizationTable: React.FC<{
               fontSize: 12,
               cursor: "pointer",
             }}
-            className="primary"
             onClick={() => saveEditOrg(org.id)}
           >
             Save
@@ -125,7 +124,6 @@ const OrganizationTable: React.FC<{
               fontSize: 12,
               cursor: "pointer",
             }}
-            className="primary"
             onClick={() =>
               openDoctorPatientManagement(
                 org.doctors.map((doctor) => ({
@@ -151,7 +149,6 @@ const OrganizationTable: React.FC<{
                 fontSize: 12,
                 cursor: "pointer",
               }}
-              className="secondary"
               onClick={() => startEditOrg(org)}
             >
               Edit
@@ -286,7 +283,6 @@ const OrganizationTable: React.FC<{
                       fontSize: 12,
                       cursor: "pointer",
                     }}
-                    className="primary"
                     onClick={() => openAddDoctorModal(org.id)}
                     disabled={isEditing || isDeleting}
                   >
@@ -298,7 +294,6 @@ const OrganizationTable: React.FC<{
                       fontSize: 12,
                       cursor: "pointer",
                     }}
-                    className="primary"
                     onClick={() => openAddSupportModal(org.id)}
                     disabled={isEditing || isDeleting}
                   >
