@@ -26,14 +26,14 @@ input {
   border: 0;
   outline: none;
   flex-grow: 1;
-  border-radius: 50px;
+  border-radius: 15px;
   font-family: "Overpass Mono";
 }
 
 button {
   padding: 5px 0px;
   font-size: 16px;
-  border-radius: 20px;
+  border-radius: 5px;
   cursor: pointer;
   transition: transform 0.1s ease;
   overflow: hidden;
