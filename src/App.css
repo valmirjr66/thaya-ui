@@ -286,8 +286,6 @@
   justify-content: space-around;
   align-items: center;
   min-width: 300px;
-  min-height: 550px;
-  height: calc(50% + 50px);
 }
 
 .settingsContent {

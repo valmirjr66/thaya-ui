@@ -162,6 +162,15 @@ export default function Settings({ role }: { role: UserRoles }) {
     );
   }
 
+  const SETTINGS_PANEL_STYLE = {
+    support: {
+      minHeight: 350,
+      height: "calc(50% + 50px)",
+    },
+    doctor: { minHeight: 550, height: "calc(50% + 50px)" },
+    patient: { minHeight: 550, height: "calc(50% + 50px)" },
+  };
+
   return (
     <>
       <Modal open={isProfilePicDialogOpen} onClose={closeProfilePicDialog}>
@@ -227,7 +236,11 @@ export default function Settings({ role }: { role: UserRoles }) {
             {loading ? (
               <img src={loadingIcon} width={30} />
             ) : (
-              <form onSubmit={submitForm} className="settingsPanel">
+              <form
+                onSubmit={submitForm}
+                className="settingsPanel"
+                style={SETTINGS_PANEL_STYLE[role]}
+              >
                 <div
                   className="profilePicContainer"
                   onClick={openProfilePicDialog}
@@ -300,19 +313,21 @@ export default function Settings({ role }: { role: UserRoles }) {
                   required
                   fullWidth
                 />
-                <TextField
-                  label="Phone Number"
-                  value={user.phoneNumber}
-                  fullWidth
-                  disabled={!editMode}
-                  required
-                  onChange={(e) =>
-                    setUser((prevState) => ({
-                      ...prevState,
-                      phoneNumber: e.target.value,
-                    }))
-                  }
-                />
+                {role !== "support" && (
+                  <TextField
+                    label="Phone Number"
+                    value={user.phoneNumber}
+                    fullWidth
+                    disabled={!editMode}
+                    required
+                    onChange={(e) =>
+                      setUser((prevState) => ({
+                        ...prevState,
+                        phoneNumber: e.target.value,
+                      }))
+                    }
+                  />
+                )}
                 {!editMode && (
                   <a
                     href="#"
