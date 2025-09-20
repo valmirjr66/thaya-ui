@@ -287,6 +287,7 @@ export function CalendarDayDetails({
                         doctorId: item.userId,
                         time: dayjs(item.datetime),
                         description: item.description,
+                        patientId: item.patientId,
                       });
                       setStatus("update");
                     }}
