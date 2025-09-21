@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import ChangePasswordModal from "../components/ChangePasswordModal";
+import Footer from "../components/Footer";
 import Header, { HeaderButtons } from "../components/Header";
 import useToaster from "../hooks/useToaster";
 import defaultAvatar from "../imgs/ic-me.svg";
@@ -158,6 +159,7 @@ export default function Settings({ role }: { role: UserRoles }) {
             <img src={loadingIcon} width={30} />
           </section>
         </div>
+        <Footer />
       </main>
     );
   }
@@ -372,6 +374,7 @@ export default function Settings({ role }: { role: UserRoles }) {
             )}
           </section>
         </div>
+        <Footer />
       </main>
     </>
   );

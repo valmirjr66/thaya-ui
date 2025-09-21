@@ -7,6 +7,7 @@ import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import AssistantChatInput from "../components/AssistantChatInput";
 import CalendarPanelContent from "../components/CalendarPanelContent";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
 import PatientRecordsPanel from "../components/PatientRecordsPanel";
@@ -182,6 +183,7 @@ export default function Chat() {
           </div>
         </section>
       </div>
+      <Footer />
     </main>
   );
 }

@@ -1,7 +1,8 @@
 import React from "react";
 import CalendarPanelContent from "../components/CalendarPanelContent";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { useOrganizationInfoStore, useUserInfoStore } from "../store";
+import { useUserInfoStore } from "../store";
 
 const PatientCalendar: React.FC = () => {
   const organizationInfoStore = useUserInfoStore();
@@ -20,11 +21,16 @@ const PatientCalendar: React.FC = () => {
         <section className="appContent">
           <div style={{ placeSelf: "center" }}>
             <CalendarPanelContent
-              userIds={organizationInfoStore.data.doctorsId || []}
+              userIds={
+                (organizationInfoStore.data.role === "patient" &&
+                  organizationInfoStore.data.doctorsId) ||
+                []
+              }
             />
           </div>
         </section>
       </div>
+      <Footer />
     </main>
   );
 };

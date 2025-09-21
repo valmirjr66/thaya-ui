@@ -1,5 +1,6 @@
 import React from "react";
 import CalendarPanelContent from "../components/CalendarPanelContent";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useOrganizationInfoStore } from "../store";
 
@@ -27,6 +28,7 @@ const OrganizationCalendar: React.FC = () => {
           </div>
         </section>
       </div>
+      <Footer />
     </main>
   );
 };
