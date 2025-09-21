@@ -1,3 +1,5 @@
+import { SERIES_TYPES, USER_ROLES } from "../constants";
+
 export type Reference = {
   _id: string;
   fileId: string;
@@ -60,4 +62,21 @@ export type CalendarOccurrence = {
   patientName: string;
 };
 
-export type UserRoles = "admin" | "doctor" | "support" | "patient";
+export type UserRoles = (typeof USER_ROLES)[number];
+
+export type SeriesType = (typeof SERIES_TYPES)[number];
+
+export type PatientRecord = {
+  id: string;
+  doctorId: string;
+  doctorName?: string;
+  patientId: string;
+  patientName?: string;
+  summary: string;
+  content: string;
+  series: {
+    title: string;
+    type: SeriesType;
+    records: { datetime: Date; value: number }[];
+  }[];
+};

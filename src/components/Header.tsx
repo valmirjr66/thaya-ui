@@ -1,10 +1,12 @@
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ChatIcon from "@mui/icons-material/Chat";
+import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
+import TopicIcon from "@mui/icons-material/Topic";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useAgendaPanelStore } from "../store";
-import LogoutIcon from "@mui/icons-material/Logout";
+import { usePatientRecordsPanelStore } from "../store/PatientRecordsPanel";
 
 export type HeaderButtons =
   | "settings"
@@ -12,7 +14,8 @@ export type HeaderButtons =
   | "calendar"
   | "logout"
   | "organization-calendar"
-  | "patient-calendar";
+  | "patient-calendar"
+  | "patient-records";
 
 export type HeaderProps = {
   buttonsToRender: HeaderButtons[];
@@ -26,6 +29,7 @@ export default function Header({
   const navigate = useNavigate();
 
   const agendaPanelStore = useAgendaPanelStore();
+  const patientRecordsPanelStore = usePatientRecordsPanelStore();
 
   return (
     <header
@@ -105,6 +109,16 @@ export default function Header({
                   fontSize="medium"
                   style={sharedIconsStyle}
                   className="logoutIcon"
+                />
+              </Box>
+            );
+          case "patient-records":
+            return (
+              <Box onClick={patientRecordsPanelStore.handleOpen} key="records">
+                <TopicIcon
+                  fontSize="medium"
+                  style={sharedIconsStyle}
+                  className="recordsIcon"
                 />
               </Box>
             );

@@ -9,9 +9,11 @@ import AssistantChatInput from "../components/AssistantChatInput";
 import CalendarPanelContent from "../components/CalendarPanelContent";
 import Header from "../components/Header";
 import MainFrame from "../components/MainFrame";
+import PatientRecordsPanel from "../components/PatientRecordsPanel";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
 import { useAgendaPanelStore, useUserInfoStore } from "../store";
+import { usePatientRecordsPanelStore } from "../store/PatientRecordsPanel";
 import { Message } from "../types";
 
 export default function Chat() {
@@ -123,11 +125,20 @@ export default function Chat() {
   };
 
   const agendaPanelStore = useAgendaPanelStore();
+  const patientRecordsPanelStore = usePatientRecordsPanelStore();
   const userInfoStore = useUserInfoStore();
 
   return (
     <main className="app">
       <ToastContainer />
+      <Popover
+        open={patientRecordsPanelStore.isOpen}
+        anchorEl={patientRecordsPanelStore.anchorElement}
+        onClose={patientRecordsPanelStore.handleClose}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+      >
+        <PatientRecordsPanel />
+      </Popover>
       <Popover
         open={agendaPanelStore.isOpen}
         anchorEl={agendaPanelStore.anchorElement}
@@ -140,7 +151,7 @@ export default function Chat() {
         />
       </Popover>
       <Header
-        buttonsToRender={["calendar", "settings"]}
+        buttonsToRender={["patient-records", "calendar", "settings"]}
         sharedIconsStyle={{ marginRight: 25 }}
       />
       <div className="appWrapper">
