@@ -1,4 +1,4 @@
-import { MenuItem, Select } from "@mui/material";
+import { Box, MenuItem, Select, Tab, Tabs } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
@@ -124,10 +124,31 @@ const PatientRecordView = ({
   );
 };
 
+function CustomTabPanel(props: {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
 export default function PatientRecordsPanel() {
   const { data: userInfoStoreData } = useUserInfoStore();
 
   const [records, setRecords] = useState<PatientRecord[]>([]);
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const patients =
     (userInfoStoreData.role === "doctor" && userInfoStoreData.patients) || [];
@@ -152,10 +173,29 @@ export default function PatientRecordsPanel() {
     fetchPatientRecords();
   }, [fetchPatientRecords]);
 
+  const handleTabSelectionChange = (
+    _event: React.SyntheticEvent,
+    newValue: number
+  ) => {
+    setSelectedTab(newValue);
+  };
+
   return (
     <div style={{ width: 600, height: 600 }}>
-      {records.map((record) => (
-        <PatientRecordView key={record.id} patientRecord={record} />
+      <Tabs value={selectedTab} onChange={handleTabSelectionChange}>
+        {records.map((record) => (
+          <Tab
+            label={record.patientName.split(" ")[0]}
+            id={`simple-tab=${record.id}`}
+            aria-controls={`simple-tabpanel-${record.id}`}
+          />
+        ))}
+      </Tabs>
+
+      {records.map((record, index) => (
+        <CustomTabPanel index={index} value={selectedTab} key={record.id}>
+          <PatientRecordView patientRecord={record} />
+        </CustomTabPanel>
       ))}
     </div>
   );
