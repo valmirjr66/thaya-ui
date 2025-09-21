@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
 import { useUserInfoStore } from "../store/UserInfo";
 import { PatientRecord, SeriesType } from "../types";
@@ -137,6 +138,7 @@ function CustomTabPanel(props: {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ overflowY: "scroll", height: 500 }}
       {...other}
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -144,7 +146,7 @@ function CustomTabPanel(props: {
   );
 }
 
-export default function PatientRecordsPanel() {
+export default function PatientRecordsPanel(props: { closePanel: () => void }) {
   const { data: userInfoStoreData } = useUserInfoStore();
 
   const [records, setRecords] = useState<PatientRecord[]>([]);
@@ -181,7 +183,30 @@ export default function PatientRecordsPanel() {
   };
 
   return (
-    <div style={{ width: 600, height: 600 }}>
+    <div
+      style={{
+        width: 600,
+        height: 600,
+        border: "1px solid white",
+        borderRadius: 8,
+        overflowY: "hidden",
+      }}
+    >
+      <div className="panelHeader">
+        <div>
+          <span style={{ marginLeft: 16 }}>Patient Records</span>
+        </div>
+        {
+          <img
+            src={closeIcon}
+            className="closeIcon"
+            alt="Close Patient Records Panel"
+            width={20}
+            style={{ marginRight: 16 }}
+            onClick={props.closePanel}
+          />
+        }
+      </div>{" "}
       <Tabs value={selectedTab} onChange={handleTabSelectionChange}>
         {records.map((record) => (
           <Tab
@@ -191,7 +216,6 @@ export default function PatientRecordsPanel() {
           />
         ))}
       </Tabs>
-
       {records.map((record, index) => (
         <CustomTabPanel index={index} value={selectedTab} key={record.id}>
           <PatientRecordView patientRecord={record} />

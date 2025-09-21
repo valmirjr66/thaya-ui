@@ -137,7 +137,9 @@ export default function Chat() {
         onClose={patientRecordsPanelStore.handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        <PatientRecordsPanel />
+        <PatientRecordsPanel
+          closePanel={patientRecordsPanelStore.handleClose}
+        />
       </Popover>
       <Popover
         open={agendaPanelStore.isOpen}
