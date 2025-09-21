@@ -75,6 +75,7 @@ export type PatientRecord = {
   summary: string;
   content: string;
   series: {
+    id: string;
     title: string;
     type: SeriesType;
     records: { datetime: Date; value: number }[];

@@ -22,9 +22,7 @@ const PatientRecordView = ({
 }: {
   patientRecord: PatientRecord;
 }) => {
-  const [selectedSeriesTypes, setSelectedSeriesTypes] = useState<SeriesType[]>(
-    []
-  );
+  const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
 
   return (
     <div style={{ padding: 16 }} key={patientRecord.id}>
@@ -57,26 +55,30 @@ const PatientRecordView = ({
         <Select
           labelId="series-type-select-label"
           multiple
-          value={selectedSeriesTypes}
+          value={selectedSeriesIds}
           label="Series Types"
           onChange={(e) =>
-            setSelectedSeriesTypes(
+            setSelectedSeriesIds(
               typeof e.target.value === "string"
-                ? (e.target.value.split(",") as SeriesType[])
-                : (e.target.value as SeriesType[])
+                ? e.target.value.split(",")
+                : (e.target.value as unknown as string[])
             )
           }
           fullWidth
         >
           {patientRecord.series
-            .map((serie) => ({ title: serie.title, type: serie.type }))
+            .map((s) => ({
+              id: s.id,
+              title: s.title,
+              type: s.type,
+            }))
             .map((item) => (
               <MenuItem
-                key={item.type}
-                value={item.type}
+                key={item.id}
+                value={item.id}
                 disabled={
-                  selectedSeriesTypes.length >= 2 &&
-                  !selectedSeriesTypes.includes(item.type)
+                  selectedSeriesIds.length >= 2 &&
+                  !selectedSeriesIds.includes(item.id)
                 }
               >
                 {item.title ||
@@ -85,12 +87,13 @@ const PatientRecordView = ({
               </MenuItem>
             ))}
         </Select>
-        {(selectedSeriesTypes.length && (
+        {(selectedSeriesIds.length && (
           <LineChart
             xAxis={[
               {
                 valueFormatter: (date) => dayjs(date).format("MMM D"),
                 data: patientRecord.series
+                  .filter((item) => selectedSeriesIds.includes(item.id))
                   .reduce(
                     (acc, curr) => [
                       ...acc,
@@ -103,8 +106,8 @@ const PatientRecordView = ({
               },
             ]}
             series={
-              selectedSeriesTypes.map((type) => {
-                const serie = patientRecord.series.find((s) => s.type === type);
+              selectedSeriesIds.map((id) => {
+                const serie = patientRecord.series.find((s) => s.id === id);
 
                 return {
                   data: serie ? serie.records.map((r) => r.value) : [],
