@@ -41,6 +41,7 @@ const PatientRecordView = ({
           border: "1px solid #ccc",
           padding: "8px 16px",
           margin: "8px 16px",
+          borderRadius: 4,
         }}
       >
         <Markdown rehypePlugins={[remarkGfm]}>{patientRecord.content}</Markdown>
@@ -50,6 +51,7 @@ const PatientRecordView = ({
           border: "1px solid #ccc",
           padding: "8px 16px",
           margin: "24px 16px",
+          borderRadius: 4,
         }}
       >
         <Select
@@ -117,7 +119,7 @@ const PatientRecordView = ({
           <span
             style={{ marginTop: 16, textAlign: "center", display: "block" }}
           >
-            No series type selected
+            No series selected
           </span>
         )}
       </div>
