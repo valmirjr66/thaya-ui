@@ -279,7 +279,7 @@ export function CalendarDayDetails({
                 >
                   <DeleteIcon
                     style={{ marginRight: 4, fontSize: 16 }}
-                    className="closeIcon"
+                    className="pointer goRedPointer"
                     onClick={() => deleteOccurrence(item.id)}
                   />
                   <EditIcon

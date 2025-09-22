@@ -224,48 +224,27 @@
   }
 }
 
-.settingsIcon {
+.pointer {
   cursor: pointer;
 }
 
-.settingsIcon:hover {
+.tinyTiltPointer:hover {
   transform: rotate(10deg);
 }
 
-.closeIcon {
-  cursor: pointer;
-}
-
-.closeIcon:hover {
-  filter: invert(30%) sepia(100%) saturate(4000%) hue-rotate(0deg)
-    brightness(90%) contrast(120%);
-}
-
-.chatIcon {
-  cursor: pointer;
-}
-
-.chatIcon:hover {
+.goBluePointer:hover {
   filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
     brightness(80%) contrast(100%);
 }
 
-.calendarIcon {
-  cursor: pointer;
-}
-
-.calendarIcon:hover {
-  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(200deg)
-    brightness(80%) contrast(100%);
-}
-
-.logoutIcon {
-  cursor: pointer;
-}
-
-.logoutIcon:hover {
+.goRedPointer:hover {
   filter: invert(30%) sepia(100%) saturate(4000%) hue-rotate(0deg)
     brightness(90%) contrast(120%);
+}
+
+.gotYellowPointer:hover {
+  filter: brightness(0) saturate(100%) invert(73%) sepia(61%) saturate(537%)
+    hue-rotate(5deg) brightness(94%) contrast(82%);
 }
 
 .promptSuggestion {

@@ -204,7 +204,7 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
         {
           <img
             src={closeIcon}
-            className="closeIcon"
+            className="pointer goRedPointer"
             alt="Close Patient Records Panel"
             width={20}
             style={{ marginRight: 16 }}

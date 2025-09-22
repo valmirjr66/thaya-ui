@@ -46,7 +46,7 @@ export default function Header({
                 <SettingsIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className="settingsIcon"
+                  className="pointer tinyTiltPointer"
                 />
               </Box>
             );
@@ -56,7 +56,7 @@ export default function Header({
                 <ChatIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className="chatIcon"
+                  className="pointer goBluePointer"
                 />
               </Box>
             );
@@ -66,7 +66,7 @@ export default function Header({
                 <CalendarMonthIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className={`calendarIcon ${
+                  className={`pointer goBluePointer ${
                     agendaPanelStore.isOpen ? "active" : ""
                   }`}
                 />
@@ -78,7 +78,7 @@ export default function Header({
                 <CalendarMonthIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className={`calendarIcon ${
+                  className={`pointer goBluePointer ${
                     agendaPanelStore.isOpen ? "active" : ""
                   }`}
                 />
@@ -90,7 +90,7 @@ export default function Header({
                 <CalendarMonthIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className={`calendarIcon ${
+                  className={`pointer goBluePointer ${
                     agendaPanelStore.isOpen ? "active" : ""
                   }`}
                 />
@@ -108,7 +108,7 @@ export default function Header({
                 <LogoutIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className="logoutIcon"
+                  className="pointer goRedPointer"
                 />
               </Box>
             );
@@ -118,7 +118,7 @@ export default function Header({
                 <TopicIcon
                   fontSize="medium"
                   style={sharedIconsStyle}
-                  className="recordsIcon"
+                  className="pointer gotYellowPointer"
                 />
               </Box>
             );

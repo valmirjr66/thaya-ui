@@ -224,7 +224,7 @@ export default function CalendarPanelContent({
         {closePanel && (
           <img
             src={closeIcon}
-            className="closeIcon"
+            className="pointer goRedPointer"
             alt="Close calendar"
             width={20}
             style={{ marginRight: 16 }}
