@@ -69,6 +69,7 @@ export default function RestrictWrapper(props: { role: UserRoles }) {
           phoneNumber: organizationData.phoneNumber,
           collaborators: organizationData.collaborators,
           timezoneOffset: organizationData.timezoneOffset,
+          profilePicFileName: organizationData.profilePicFileName,
           doctors: organizationDoctors,
         };
 
