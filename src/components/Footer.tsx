@@ -7,10 +7,10 @@ export default function Footer() {
         alignItems: "center",
         width: "100vw",
         backgroundColor: "#3a3a3a",
-        color: "#fff",
+        color: "#ffffff5c",
         height: 25,
         fontSize: 12,
-        borderTop: "rgba(255, 255, 255, 0.5) solid 1px",
+        borderTop: "rgba(255, 255, 255, 0.163) solid 1px",
       }}
     >
       <div style={{ marginLeft: 20 }}>© 2025 Thaya Health</div>
