@@ -1,134 +1,10 @@
-import { Box, MenuItem, Select, Tab, Tabs } from "@mui/material";
-import { LineChart } from "@mui/x-charts/LineChart";
-import dayjs from "dayjs";
+import { Box, Tab, Tabs } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
 import { useUserInfoStore } from "../store/UserInfo";
-import { PatientRecord, SeriesType } from "../types";
-
-const SERIES_TYPES_DISPLAY_NAMES: { [key in SeriesType]: string } = {
-  "blood-pressure-systolic": "Blood Pressure (Systolic)",
-  "blood-pressure-diastolic": "Blood Pressure (Diastolic)",
-  "heart-rate": "Heart Rate",
-  weight: "Weight",
-  custom: "Custom",
-};
-
-const PatientRecordView = ({
-  patientRecord,
-}: {
-  patientRecord: PatientRecord;
-}) => {
-  const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
-
-  return (
-    <div style={{ padding: 16 }} key={patientRecord.id}>
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ fontWeight: "bold" }}>Patient:</span>{" "}
-        {patientRecord.patientName}
-      </div>
-      <div style={{ marginBottom: 16, textAlign: "justify" }}>
-        <span style={{ fontWeight: "bold" }}>Summary:</span>{" "}
-        {patientRecord.summary}
-      </div>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "8px 16px",
-          margin: "8px 16px",
-          borderRadius: 4,
-        }}
-      >
-        <Markdown rehypePlugins={[remarkGfm]}>{patientRecord.content}</Markdown>
-      </div>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "8px 16px",
-          margin: "24px 16px",
-          borderRadius: 4,
-        }}
-      >
-        <Select
-          labelId="series-type-select-label"
-          multiple
-          value={selectedSeriesIds}
-          label="Series Types"
-          onChange={(e) =>
-            setSelectedSeriesIds(
-              typeof e.target.value === "string"
-                ? e.target.value.split(",")
-                : (e.target.value as unknown as string[])
-            )
-          }
-          fullWidth
-        >
-          {patientRecord.series
-            .map((s) => ({
-              id: s.id,
-              title: s.title,
-              type: s.type,
-            }))
-            .map((item) => (
-              <MenuItem
-                key={item.id}
-                value={item.id}
-                disabled={
-                  selectedSeriesIds.length >= 2 &&
-                  !selectedSeriesIds.includes(item.id)
-                }
-              >
-                {item.title ||
-                  SERIES_TYPES_DISPLAY_NAMES[item.type] ||
-                  item.type}
-              </MenuItem>
-            ))}
-        </Select>
-        {(selectedSeriesIds.length && (
-          <LineChart
-            xAxis={[
-              {
-                valueFormatter: (date) => dayjs(date).format("MMM D"),
-                data: patientRecord.series
-                  .filter((item) => selectedSeriesIds.includes(item.id))
-                  .reduce(
-                    (acc, curr) => [
-                      ...acc,
-                      curr.records.map((r) => r.datetime),
-                    ],
-                    []
-                  )
-                  .flat()
-                  .map((dt) => new Date(dt)),
-              },
-            ]}
-            series={
-              selectedSeriesIds.map((id) => {
-                const serie = patientRecord.series.find((s) => s.id === id);
-
-                return {
-                  data: serie ? serie.records.map((r) => r.value) : [],
-                };
-              }) as {
-                data: number[];
-              }[]
-            }
-            height={300}
-          />
-        )) || (
-          <span
-            style={{ marginTop: 16, textAlign: "center", display: "block" }}
-          >
-            No series selected
-          </span>
-        )}
-      </div>
-    </div>
-  );
-};
+import { PatientRecord } from "../types";
+import PatientRecordView from "./PatientRecordView";
 
 function CustomTabPanel(props: {
   children?: React.ReactNode;
@@ -223,7 +99,10 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
       </Tabs>
       {records.map((record, index) => (
         <CustomTabPanel index={index} value={selectedTab} key={record.id}>
-          <PatientRecordView patientRecord={record} />
+          <PatientRecordView
+            patientRecord={record}
+            reloadRecords={fetchPatientRecords}
+          />
         </CustomTabPanel>
       ))}
     </div>

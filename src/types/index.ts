@@ -74,8 +74,8 @@ export type PatientRecord = {
   doctorName?: string;
   patientId: string;
   patientName?: string;
-  summary: string;
-  content: string;
+  summary?: string;
+  content?: string;
   series: {
     id: string;
     title: string;
