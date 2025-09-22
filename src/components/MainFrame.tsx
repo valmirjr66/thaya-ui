@@ -105,10 +105,10 @@ export default function MainFrame({
                     fontSize: 12,
                     margin: "32px 0",
                     listStyle: "none",
-                    borderBottom: '1px solid #8a8a8a',
-                    width: '60%',
-                    placeSelf: 'center',
-                    paddingBottom: 8
+                    borderBottom: "1px solid #8a8a8a",
+                    width: "60%",
+                    placeSelf: "center",
+                    paddingBottom: 8,
                   }}
                   key={`divider-${message.id}`}
                 >
@@ -119,6 +119,10 @@ export default function MainFrame({
                 </li>
               )}
               <MessageBalloon
+                profilePicFileName={
+                  userInfoData.role === "doctor" &&
+                  userInfoData?.profilePicFileName
+                }
                 id={message.id}
                 content={message.content}
                 createdAt={message.createdAt}
@@ -145,9 +149,6 @@ export default function MainFrame({
           isLastMessage
           key={`loading_msg_${uuidv4()}`}
           onSendMessage={onSendMessage}
-          profilePicFileName={
-            userInfoData.role === "doctor" && userInfoData?.profilePicFileName
-          }
         />
       )}
     </ul>
