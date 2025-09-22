@@ -120,7 +120,7 @@ export default function MainFrame({
               )}
               <MessageBalloon
                 profilePicFileName={
-                  userInfoData.role === "doctor" &&
+                  userInfoData?.role === "doctor" &&
                   userInfoData?.profilePicFileName
                 }
                 id={message.id}
