@@ -11,6 +11,7 @@ export type Reference = {
 export type Message = {
   id: string;
   content: string;
+  createdAt: Date;
   role: "assistant" | "user";
   references?: Reference[];
 };

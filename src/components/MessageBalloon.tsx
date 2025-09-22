@@ -12,6 +12,7 @@ interface MessageBalloonProps {
   id: string;
   role: "assistant" | "user";
   content: React.ReactNode;
+  createdAt: Date;
   actions?: { type: string; feedbackResponse: string }[];
   references?: Reference[];
   isLastMessage?: boolean;
@@ -24,6 +25,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
   id,
   role,
   content,
+  createdAt,
   actions,
   references,
   isLastMessage,
@@ -93,7 +95,10 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
           </div>
           <div
             className="messageText"
-            style={{ maxWidth: role === "assistant" ? "90%" : "60vw" }}
+            style={{
+              maxWidth: role === "assistant" ? "90%" : "60vw",
+              minWidth: 100,
+            }}
           >
             {typeof content === "string" ? (
               <Markdown rehypePlugins={[remarkGfm]}>{content}</Markdown>
@@ -101,25 +106,28 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
               content
             )}
           </div>
+          <div style={{ color: "#999", fontSize: 12, marginTop: 8 }}>
+            {
+              <span style={{ marginLeft: 16 }}>
+                {new Date(createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            }
+          </div>
           <div style={{ width: "100%" }}>
-            {actions?.map((action) => {
-              const className = {
-                positive: "primary",
-                negative: "cancel",
-              }[action.type];
-
-              return (
-                <Button
-                  variant="contained"
-                  color={action.type === "negative" ? "error" : "primary"}
-                  style={{ marginRight: 16 }}
-                  disabled={!isLastMessage}
-                  onClick={() => onSendMessage?.(action?.feedbackResponse)}
-                >
-                  {action?.feedbackResponse}
-                </Button>
-              );
-            })}
+            {actions?.map((action) => (
+              <Button
+                variant="contained"
+                color={action.type === "negative" ? "error" : "primary"}
+                style={{ marginRight: 16 }}
+                disabled={!isLastMessage}
+                onClick={() => onSendMessage?.(action?.feedbackResponse)}
+              >
+                {action?.feedbackResponse}
+              </Button>
+            ))}
           </div>
           {references &&
             references

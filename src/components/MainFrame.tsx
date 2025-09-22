@@ -4,15 +4,10 @@ import Skeleton from "react-loading-skeleton";
 import { v4 as uuidv4 } from "uuid";
 import dotsGif from "../imgs/dots.gif";
 import { useUserInfoStore, useUserPromptStore } from "../store";
-import { Reference } from "../types";
+import { Message } from "../types";
 import MessageBalloon from "./MessageBalloon";
 
-type Message = {
-  id: string;
-  content: string | ReactElement;
-  role: "assistant" | "user";
-  references?: Reference[];
-};
+type CustomMessage = Omit<Message, "content"> & { content: ReactElement };
 
 interface MainFrameProps {
   messages: Message[];
@@ -31,7 +26,7 @@ export default function MainFrame({
 
   const LoadingDots = () => <img src={dotsGif} width={50} alt="Loading" />;
 
-  const loadingMessages: Message[] = [1, 2, 3, 4].map((i) => ({
+  const loadingMessages: CustomMessage[] = [1, 2, 3, 4].map((i) => ({
     id: `loading-msg-${i}`,
     role: i % 2 === 0 ? "assistant" : "user",
     content: (
@@ -43,6 +38,8 @@ export default function MainFrame({
         borderRadius={10}
       />
     ),
+    createdAt: new Date(),
+    references: [],
   }));
 
   const promptSuggestions = [
@@ -96,26 +93,54 @@ export default function MainFrame({
       {(isLoading ? loadingMessages : messages).map(
         (message, index, array) =>
           message && (
-            <MessageBalloon
-              id={message.id}
-              content={message.content}
-              role={message.role}
-              isLastMessage={messages.length === index + 1}
-              key={message.id}
-              onSendMessage={onSendMessage}
-              references={message.references}
-              previousPromptAnchorId={
-                message.role === "user" && !isLoading && array[index - 2]
-                  ? array[index - 2].id
-                  : null
-              }
-            />
+            <>
+              {(index === 0 ||
+                new Date(message.createdAt).getDate() !==
+                  new Date(array[index - 1].createdAt).getDate()) && (
+                <li
+                  className="date-divider"
+                  style={{
+                    textAlign: "center",
+                    color: "#ccc",
+                    fontSize: 12,
+                    margin: "32px 0",
+                    listStyle: "none",
+                    borderBottom: '1px solid #8a8a8a',
+                    width: '60%',
+                    placeSelf: 'center',
+                    paddingBottom: 8
+                  }}
+                  key={`divider-${message.id}`}
+                >
+                  {new Date(message.createdAt).toLocaleDateString(undefined, {
+                    day: "numeric",
+                    month: "short",
+                  })}
+                </li>
+              )}
+              <MessageBalloon
+                id={message.id}
+                content={message.content}
+                createdAt={message.createdAt}
+                role={message.role}
+                isLastMessage={messages.length === index + 1}
+                key={message.id}
+                onSendMessage={onSendMessage}
+                references={message.references}
+                previousPromptAnchorId={
+                  message.role === "user" && !isLoading && array[index - 2]
+                    ? array[index - 2].id
+                    : null
+                }
+              />
+            </>
           )
       )}
       {waitingAnswer && messages[messages.length - 1].role === "user" && (
         <MessageBalloon
           id={`loading_msg_${uuidv4()}`}
           content={<LoadingDots />}
+          createdAt={new Date()}
           role="assistant"
           isLastMessage
           key={`loading_msg_${uuidv4()}`}

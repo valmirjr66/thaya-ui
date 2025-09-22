@@ -44,6 +44,7 @@ export default function Chat() {
                 id: `packet-${uuidv4()}`,
                 role: "assistant",
                 content: "",
+                createdAt: new Date(),
               });
             }
 
@@ -107,6 +108,7 @@ export default function Chat() {
       {
         id: "temp_id",
         content: message,
+        createdAt: new Date(),
         role: "user",
       },
     ]);
