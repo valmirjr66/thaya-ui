@@ -30,6 +30,7 @@ const VisuallyHiddenInput = styled("input")({
 export default function Settings({ role }: { role: UserRoles }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [updatingProfilePic, setUpdatingProfilePic] = useState<boolean>(false);
   const [passwordModalIsOpen, setPasswordModalIsOpen] =
     useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -111,21 +112,31 @@ export default function Settings({ role }: { role: UserRoles }) {
   const closeProfilePicDialog = () => setIsProfilePicDialogOpen(false);
 
   const replaceProfilePic = async (event: ChangeEvent<HTMLInputElement>) => {
-    const formData = new FormData();
-    formData.append("profilePicture", event.target.files[0]);
+    setUpdatingProfilePic(true);
 
-    const userId = localStorage.getItem("userId");
-    await httpCallers.put(
-      `/${role}-users/${userId}/profile-picture`,
-      formData,
-      {
-        "Content-Type": "multipart/form-data",
-      }
-    );
+    try {
+      const formData = new FormData();
+      formData.append("profilePicture", event.target.files[0]);
 
-    await loadUser();
-    triggerToastSuccess("Profile picture updated successfully!");
-    closeProfilePicDialog();
+      const userId = localStorage.getItem("userId");
+      await httpCallers.put(
+        `/${role}-users/${userId}/profile-picture`,
+        formData,
+        {
+          "Content-Type": "multipart/form-data",
+        }
+      );
+
+      await loadUser();
+      triggerToastSuccess("Profile picture updated successfully!");
+      closeProfilePicDialog();
+    } catch {
+      triggerToastError(
+        "Something went wrong while updating profile picture 😟"
+      );
+    } finally {
+      setUpdatingProfilePic(false);
+    }
   };
 
   const removeProfilePic = async () => {
@@ -194,32 +205,38 @@ export default function Settings({ role }: { role: UserRoles }) {
           }}
         >
           <span style={{ marginBottom: 20, display: "block", fontSize: 14 }}>
-            What you want to do with your profile picture?
+            {updatingProfilePic
+              ? "Updating..."
+              : "What you want to do with your profile picture?"}
           </span>
-          <div>
-            <Button
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-              style={{ marginRight: 24 }}
-            >
-              Replace
-              <VisuallyHiddenInput
-                type="file"
-                onChange={replaceProfilePic}
-                multiple
-              />
-            </Button>
-            <Button
-              component="label"
-              variant="contained"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={removeProfilePic}
-            >
-              Remove
-            </Button>
-          </div>
+          {updatingProfilePic ? (
+            <img src={loadingIcon} width={30} />
+          ) : (
+            <div>
+              <Button
+                component="label"
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+                style={{ marginRight: 24 }}
+              >
+                Replace
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={replaceProfilePic}
+                  multiple
+                />
+              </Button>
+              <Button
+                component="label"
+                variant="contained"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={removeProfilePic}
+              >
+                Remove
+              </Button>
+            </div>
+          )}
         </Box>
       </Modal>
 
