@@ -50,6 +50,7 @@ export type Organization = {
   phoneNumber: string;
   address: string;
   timezoneOffset: number;
+  profilePicFileName?: string;
   doctors?: Doctor[];
   supports?: Support[];
 };

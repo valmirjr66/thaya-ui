@@ -1,6 +1,9 @@
 import { Doctor, Organization, Support } from "../../../types";
 import { OrganizationFormData } from "../ManageOrganizations";
 
+const profilePicsBaseAddress = import.meta.env
+  .VITE_PROFILE_PICS_STORAGE_BASE_ADDRESS;
+
 const OrganizationTable: React.FC<{
   organizations: Organization[];
   loadingCollaboratorsOrgIds: string[];
@@ -21,6 +24,7 @@ const OrganizationTable: React.FC<{
   openDoctorPatientManagement: (
     doctors: { id: string; fullname: string }[]
   ) => void;
+  openManageProfilePicModal: (orgId: string) => void;
 }> = ({
   organizations,
   loadingCollaboratorsOrgIds,
@@ -39,6 +43,7 @@ const OrganizationTable: React.FC<{
   cancelDeleteOrg,
   confirmDeleteOrg,
   openDoctorPatientManagement,
+  openManageProfilePicModal,
 }) => {
   const ActionButtons = ({
     isEditing,
@@ -137,6 +142,7 @@ const OrganizationTable: React.FC<{
           </button>
           <div
             style={{
+              marginBottom: 8,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -166,6 +172,16 @@ const OrganizationTable: React.FC<{
             >
               Delete
             </button>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={() => openManageProfilePicModal(org.id)}
+          >
+            <button>Manage Photo</button>
           </div>
         </>
       );
@@ -223,6 +239,12 @@ const OrganizationTable: React.FC<{
                   </>
                 ) : (
                   <>
+                    {org.profilePicFileName && (
+                      <img
+                        width={75}
+                        src={`${profilePicsBaseAddress}/${org.profilePicFileName}`}
+                      />
+                    )}
                     <div>{org.name}</div>
                     <div style={{ fontSize: 8, color: "#ccc" }}>{org.id}</div>
                   </>

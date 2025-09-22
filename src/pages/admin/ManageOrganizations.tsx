@@ -4,6 +4,7 @@ import httpCallers from "../../service";
 import { Doctor, Organization, Support } from "../../types";
 import DoctorInsertionModal from "./components/DoctorInsertionModal";
 import DoctorModal from "./components/DoctorModal";
+import ManageProfilePictureModal from "./components/ManageProfilePictureModal";
 import OrganizationInsertionModal from "./components/OrganizationInsertionModal";
 import OrganizationTable from "./components/OrganizationTable";
 import PatientManagementModal from "./components/PatientManagementModal";
@@ -36,6 +37,12 @@ const ManageOrganizations: React.FC = () => {
   const [selectedSupport, setSelectedSupport] = useState<Support | null>(null);
   const [doctorModalOpen, setDoctorModalOpen] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
+
+  const [manageProfilePicModalOpen, setManageProfilePicModalOpen] =
+    useState(false);
+  const [managingProfilePicOrgId, setManagingProfilePicOrgId] = useState<
+    string | null
+  >(null);
 
   const [addDoctorModalOpen, setAddDoctorModalOpen] = useState(false);
   const [addSupportModalOpen, setAddSupportModalOpen] = useState(false);
@@ -118,6 +125,16 @@ const ManageOrganizations: React.FC = () => {
       timezoneOffset: 0,
       collaborators: [],
     });
+  };
+
+  const openManageProfilePicModal = (orgId: string) => {
+    setManagingProfilePicOrgId(orgId);
+    setManageProfilePicModalOpen(true);
+  };
+
+  const closeManageProfilePicModal = () => {
+    setManageProfilePicModalOpen(false);
+    setManagingProfilePicOrgId(null);
   };
 
   const fetchDoctor = async (id: string): Promise<Doctor | null> => {
@@ -292,6 +309,36 @@ const ManageOrganizations: React.FC = () => {
     setManagingPatientDoctors([]);
   };
 
+  const handleProfilePicUpdate = async (formData: FormData) => {
+    try {
+      await httpCallers.put(
+        `organizations/${managingProfilePicOrgId}/profile-picture`,
+        formData,
+        {
+          "Content-Type": "multipart/form-data",
+        }
+      );
+
+      closeManageProfilePicModal();
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to update profile picture.");
+    }
+  };
+
+  const handleProfilePicRemove = async () => {
+    try {
+      await httpCallers.delete(
+        `organizations/${managingProfilePicOrgId}/profile-picture`
+      );
+
+      closeManageProfilePicModal();
+      fetchOrganizations();
+    } catch {
+      triggerToast("Failed to remove profile picture.");
+    }
+  };
+
   return (
     <>
       <PatientManagementModal
@@ -335,6 +382,7 @@ const ManageOrganizations: React.FC = () => {
             cancelDeleteOrg={cancelDeleteOrg}
             confirmDeleteOrg={confirmDeleteOrg}
             openDoctorPatientManagement={openDoctorPatientManagement}
+            openManageProfilePicModal={openManageProfilePicModal}
           />
         )}
         <DoctorModal
@@ -371,6 +419,12 @@ const ManageOrganizations: React.FC = () => {
             closeAddOrganizationModal={closeAddOrgModal}
           />
         )}
+        <ManageProfilePictureModal
+          onClose={closeManageProfilePicModal}
+          open={manageProfilePicModalOpen}
+          onReplacePhoto={handleProfilePicUpdate}
+          onRemovePhoto={handleProfilePicRemove}
+        />
       </div>
     </>
   );
