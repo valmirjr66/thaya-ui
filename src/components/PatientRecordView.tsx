@@ -63,7 +63,7 @@ export default function PatientRecordView({
         `patient-records/${patientRecord.id}/generate-summary`,
         {}
       );
-      await reloadRecords()
+      await reloadRecords();
       triggerSuccessToast("Summary generated successfully");
     } catch (error) {
       triggerErrorToast("Failed to generate summary");
@@ -143,6 +143,8 @@ export default function PatientRecordView({
                 }))
               }
             />
+          ) : isGeneratingSummary ? (
+            "Generating summary..."
           ) : (
             patientRecord.summary
           )}
