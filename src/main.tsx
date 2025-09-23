@@ -59,7 +59,7 @@ function fallbackRender({ error, resetErrorBoundary }: FallbackProps) {
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ErrorBoundary
       fallbackRender={fallbackRender}
       onReset={(details) => {
@@ -131,7 +131,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </SkeletonTheme>
       </ThemeProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
