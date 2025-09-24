@@ -133,6 +133,12 @@ export default function PatientRecordPrescriptions({
               }}
             >
               <TextField
+                placeholder={
+                  prescription.status !== "draft" &&
+                  prescription.status !== "ready"
+                    ? "No summary"
+                    : "Summary"
+                }
                 fullWidth
                 multiline
                 maxRows={3}
