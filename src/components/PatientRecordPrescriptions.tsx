@@ -28,13 +28,23 @@ export default function PatientRecordPrescriptions({
 
   const handleInsertPrescription = useCallback(async () => {
     try {
-      await httpCallers.post(`prescriptions`, {
-        doctorId: doctorId,
-        patientId: patientId,
-      });
+      const { data }: { data: { id: string } } = await httpCallers.post(
+        `prescriptions`,
+        {
+          doctorId: doctorId,
+          patientId: patientId,
+        }
+      );
 
       triggerSuccessToast("Prescription inserted successfully");
       await reloadRecords();
+      setInternalPrescriptions((prevState) => ({
+        ...prevState,
+        [data.id]: {
+          ...prescriptions.find((p) => p.id === data.id),
+          status: "draft",
+        },
+      }));
     } catch (error) {
       triggerErrorToast("Failed to insert prescription");
     }
