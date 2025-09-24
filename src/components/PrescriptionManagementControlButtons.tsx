@@ -190,11 +190,11 @@ const PrescriptionManagementControlButtons = ({
           <IconButton
             title="Erase"
             onClick={() => handleErasePrescription()}
-            disabled={status !== "draft"}
+            disabled={status !== "draft" || !fileName}
           >
             <LinkOffIcon
               fontSize="small"
-              color={status !== "draft" ? "disabled" : "primary"}
+              color={status !== "draft" || !fileName ? "disabled" : "primary"}
             />
           </IconButton>
           <IconButton
