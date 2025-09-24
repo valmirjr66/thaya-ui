@@ -52,7 +52,7 @@ export default function PatientRecordsPanel() {
       decoratedData.push({
         ...record,
         patientName: patient ? patient.fullname : "Unknown Patient",
-        prescriptions: prescriptionsData.items,
+        prescriptions: prescriptionsData.items.reverse(),
       });
     }
 
