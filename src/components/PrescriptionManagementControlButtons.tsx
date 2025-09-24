@@ -160,21 +160,15 @@ const PrescriptionManagementControlButtons = ({
           <IconButton
             title="AI: Summary"
             onClick={() => handleGenerateSummary()}
-            disabled={status !== "draft" || !fileName}
+            disabled={(status !== "draft" && status !== "ready") || !fileName}
           >
             <AutoAwesomeIcon
               fontSize="small"
-              color={status !== "draft" || !fileName ? "disabled" : "primary"}
-            />
-          </IconButton>
-          <IconButton
-            title="Delete"
-            onClick={() => handleDeletePrescription()}
-            disabled={status !== "draft"}
-          >
-            <DeleteIcon
-              fontSize="small"
-              color={status !== "draft" ? "disabled" : "error"}
+              color={
+                (status !== "draft" && status !== "ready") || !fileName
+                  ? "disabled"
+                  : "primary"
+              }
             />
           </IconButton>
           <IconButton
@@ -188,16 +182,6 @@ const PrescriptionManagementControlButtons = ({
             />
           </IconButton>
           <IconButton
-            title="Erase"
-            onClick={() => handleErasePrescription()}
-            disabled={status !== "draft" || !fileName}
-          >
-            <LinkOffIcon
-              fontSize="small"
-              color={status !== "draft" || !fileName ? "disabled" : "primary"}
-            />
-          </IconButton>
-          <IconButton
             title="Download"
             onClick={() => handleDownloadPrescription()}
             disabled={!fileName}
@@ -205,6 +189,26 @@ const PrescriptionManagementControlButtons = ({
             <DownloadIcon
               fontSize="small"
               color={fileName ? "primary" : "disabled"}
+            />
+          </IconButton>
+          <IconButton
+            title="Erase"
+            onClick={() => handleErasePrescription()}
+            disabled={status !== "draft" || !fileName}
+          >
+            <LinkOffIcon
+              fontSize="small"
+              color={status !== "draft" ? "disabled" : "primary"}
+            />
+          </IconButton>
+          <IconButton
+            title="Delete"
+            onClick={() => handleDeletePrescription()}
+            disabled={status !== "draft"}
+          >
+            <DeleteIcon
+              fontSize="small"
+              color={status !== "draft" ? "disabled" : "error"}
             />
           </IconButton>
         </div>
