@@ -267,16 +267,12 @@ export default function PatientRecordView({
           borderRadius: 4,
         }}
       >
-        {patientRecord.prescriptions?.length ? (
-          <PatientRecordPrescriptions
-            prescriptions={patientRecord.prescriptions}
-            doctorId={patientRecord.doctorId}
-            patientId={patientRecord.patientId}
-            reloadRecords={reloadRecords}
-          />
-        ) : (
-          <span style={{ textAlign: "center", display: "block" }}>Empty</span>
-        )}
+        <PatientRecordPrescriptions
+          prescriptions={patientRecord.prescriptions}
+          doctorId={patientRecord.doctorId}
+          patientId={patientRecord.patientId}
+          reloadRecords={reloadRecords}
+        />
       </div>
     </div>
   );
