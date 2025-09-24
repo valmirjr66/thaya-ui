@@ -1,4 +1,4 @@
-import { SERIES_TYPES, USER_ROLES } from "../constants";
+import { PRESCRIPTION_STATUS, SERIES_TYPES, USER_ROLES } from "../constants";
 
 export type Reference = {
   _id: string;
@@ -82,4 +82,15 @@ export type PatientRecord = {
     type: SeriesType;
     records: { datetime: Date; value: number }[];
   }[];
+  prescriptions?: Prescription[];
+};
+
+export type PrescriptionStatus = (typeof PRESCRIPTION_STATUS)[number];
+
+export type Prescription = {
+  doctorId: string;
+  patientId: string;
+  summary: string;
+  fileName: string;
+  status: PrescriptionStatus;
 };

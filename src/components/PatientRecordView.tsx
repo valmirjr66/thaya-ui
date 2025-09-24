@@ -1,4 +1,6 @@
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CancelIcon from "@mui/icons-material/Cancel";
+import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
@@ -9,8 +11,10 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
-import { PatientRecord, SeriesType } from "../types";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { PatientRecord, PrescriptionStatus, SeriesType } from "../types";
+
+const prescriptionsStorageBaseAddress = import.meta.env
+  .VITE_PRESCRIPTIONS_STORAGE_BASE_ADDRESS;
 
 const SERIES_TYPES_DISPLAY_NAMES: { [key in SeriesType]: string } = {
   "blood-pressure-systolic": "Blood Pressure (Systolic)",
@@ -71,6 +75,14 @@ export default function PatientRecordView({
       setIsGeneratingSummary(false);
     }
   };
+
+  const mapPrescriptionStatusToColor: { [key in PrescriptionStatus]: string } =
+    {
+      draft: "gray",
+      ready: "green",
+      sent: "blue",
+      cancelled: "red",
+    };
 
   return isSaving ? (
     <div
@@ -256,6 +268,52 @@ export default function PatientRecordView({
           >
             No series selected
           </span>
+        )}
+      </div>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          padding: "8px 16px",
+          margin: "24px 16px",
+          borderRadius: 4,
+        }}
+      >
+        <div style={{ fontWeight: "bold", marginBottom: 12 }}>
+          Prescriptions:
+        </div>
+        {patientRecord.prescriptions?.length ? (
+          patientRecord.prescriptions.map((prescription) => (
+            <div key={prescription.fileName}>
+              {
+                <div style={{ fontSize: 10, textAlign: "right" }}>
+                  {prescription.status}
+                </div>
+              }
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  border: "1px solid #ccc",
+                  padding: "4px 16px",
+                  borderRadius: 4,
+                  height: 100,
+                  borderTop: `10px solid ${mapPrescriptionStatusToColor[prescription.status]}`,
+                }}
+              >
+                <a
+                  href={`${prescriptionsStorageBaseAddress}/${prescription.fileName}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  {prescription.summary}
+                  <DownloadIcon fontSize="medium" />
+                </a>
+              </div>
+            </div>
+          ))
+        ) : (
+          <span style={{ textAlign: "center", display: "block" }}>Empty</span>
         )}
       </div>
     </div>

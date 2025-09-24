@@ -37,17 +37,24 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
     (userInfoStoreData.role === "doctor" && userInfoStoreData.patients) || [];
 
   const fetchPatientRecords = useCallback(async () => {
-    const { data } = await httpCallers.get(
+    const { data: patientRecordsData } = await httpCallers.get(
       `patient-records?doctorId=${userInfoStoreData?.id}`
     );
 
-    const decoratedData = data.items.map((item: PatientRecord) => {
-      const patient = patients.find((p) => p.id === item.patientId);
-      return {
-        ...item,
+    const decoratedData: PatientRecord[] = [];
+
+    for (const record of patientRecordsData.items) {
+      const { data: prescriptionsData } = await httpCallers.get(
+        `prescriptions?doctorId=${userInfoStoreData?.id}&patientId=${record.patientId}`
+      );
+
+      const patient = patients.find((p) => p.id === record.patientId);
+      decoratedData.push({
+        ...record,
         patientName: patient ? patient.fullname : "Unknown Patient",
-      };
-    });
+        prescriptions: prescriptionsData.items,
+      });
+    }
 
     setRecords(decoratedData);
   }, [setRecords]);
