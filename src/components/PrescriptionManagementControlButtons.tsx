@@ -110,6 +110,7 @@ const PrescriptionManagementControlButtons = ({
         size="small"
         variant="contained"
         onClick={() => handleUpdatePrescriptionStatus(prescriptionId, "ready")}
+        disabled={!fileName}
       >
         MARK READY
       </Button>

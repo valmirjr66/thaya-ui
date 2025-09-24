@@ -1,14 +1,12 @@
+import AddIcon from "@mui/icons-material/Add";
+import Save from "@mui/icons-material/Save";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useCallback, useRef, useState } from "react";
-import { PatientRecord, Prescription, PrescriptionStatus } from "../types";
+import useToaster from "../hooks/useToaster";
+import httpCallers from "../service";
+import { Prescription, PrescriptionStatus } from "../types";
 import { formatDate } from "../util/DateHelper";
 import PrescriptionManagementControlButtons from "./PrescriptionManagementControlButtons";
-import httpCallers from "../service";
-import useToaster from "../hooks/useToaster";
-import { IconButton, InputAdornment, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import Save from "@mui/icons-material/Save";
-import UndoIcon from "@mui/icons-material/Undo";
 
 export default function PatientRecordPrescriptions({
   prescriptions,
@@ -172,25 +170,11 @@ export default function PatientRecordPrescriptions({
                       <InputAdornment position="end">
                         {prescription.summary !==
                           internalPrescriptions[prescription.id].summary && (
-                          <>
-                            <IconButton title="Save">
-                              <Save
-                                onClick={() =>
-                                  handleSaveSummary(prescription.id)
-                                }
-                              />
-                            </IconButton>
-                            <IconButton title="Undo" style={{ marginLeft: 8 }}>
-                              <UndoIcon
-                                onClick={() =>
-                                  setInternalPrescriptions((prevState) => ({
-                                    ...prevState,
-                                    [prescription.id]: prescription,
-                                  }))
-                                }
-                              />
-                            </IconButton>
-                          </>
+                          <IconButton title="Save">
+                            <Save
+                              onClick={() => handleSaveSummary(prescription.id)}
+                            />
+                          </IconButton>
                         )}
                       </InputAdornment>
                     ),
