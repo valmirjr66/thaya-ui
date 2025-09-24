@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { io, Socket } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import AssistantChatInput from "../components/AssistantChatInput";
 import CalendarPanelContent from "../components/CalendarPanelContent";
@@ -14,7 +14,6 @@ import PatientRecordsPanel from "../components/PatientRecordsPanel";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
 import { useAgendaPanelStore, useUserInfoStore } from "../store";
-import { usePatientRecordsPanelStore } from "../store/PatientRecordsPanel";
 import { Message } from "../types";
 
 export default function Chat() {
@@ -128,22 +127,11 @@ export default function Chat() {
   };
 
   const agendaPanelStore = useAgendaPanelStore();
-  const patientRecordsPanelStore = usePatientRecordsPanelStore();
   const userInfoStore = useUserInfoStore();
 
   return (
     <main className="app">
       <ToastContainer />
-      <Popover
-        open={patientRecordsPanelStore.isOpen}
-        anchorEl={patientRecordsPanelStore.anchorElement}
-        onClose={patientRecordsPanelStore.handleClose}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-      >
-        <PatientRecordsPanel
-          closePanel={patientRecordsPanelStore.handleClose}
-        />
-      </Popover>
       <Popover
         open={agendaPanelStore.isOpen}
         anchorEl={agendaPanelStore.anchorElement}
@@ -156,14 +144,14 @@ export default function Chat() {
         />
       </Popover>
       <Header
-        buttonsToRender={["patient-records", "calendar", "settings"]}
+        buttonsToRender={["calendar", "settings"]}
         sharedIconsStyle={{ marginRight: 25 }}
       />
       <div className="appWrapper">
         <section className="appContent">
           <div
             style={{
-              width: isMobile ? "95%" : "70%",
+              width: isMobile ? "95%" : "80%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
@@ -176,6 +164,15 @@ export default function Chat() {
                 waitingAnswer={waitingAnswer}
                 onSendMessage={onSendMessage}
               />
+              <div
+                style={{
+                  marginLeft: 16,
+                  marginTop: 16,
+                  color: "white",
+                }}
+              >
+                <PatientRecordsPanel />
+              </div>
             </div>
             <AssistantChatInput
               placeholder="Ask me anything"

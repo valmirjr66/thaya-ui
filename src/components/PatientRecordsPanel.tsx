@@ -1,6 +1,5 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import closeIcon from "../imgs/ic-close.svg";
 import httpCallers from "../service";
 import { useUserInfoStore } from "../store/UserInfo";
 import { PatientRecord } from "../types";
@@ -27,14 +26,14 @@ function CustomTabPanel(props: {
   );
 }
 
-export default function PatientRecordsPanel(props: { closePanel: () => void }) {
+export default function PatientRecordsPanel() {
   const { data: userInfoStoreData } = useUserInfoStore();
 
   const [records, setRecords] = useState<PatientRecord[]>([]);
   const [selectedTab, setSelectedTab] = useState(0);
 
   const patients =
-    (userInfoStoreData.role === "doctor" && userInfoStoreData.patients) || [];
+    (userInfoStoreData?.role === "doctor" && userInfoStoreData?.patients) || [];
 
   const fetchPatientRecords = useCallback(async () => {
     const { data: patientRecordsData } = await httpCallers.get(
@@ -49,6 +48,7 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
       );
 
       const patient = patients.find((p) => p.id === record.patientId);
+
       decoratedData.push({
         ...record,
         patientName: patient ? patient.fullname : "Unknown Patient",
@@ -57,7 +57,7 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
     }
 
     setRecords(decoratedData);
-  }, [setRecords]);
+  }, [setRecords, userInfoStoreData]);
 
   useEffect(() => {
     fetchPatientRecords();
@@ -73,7 +73,7 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
   return (
     <div
       style={{
-        width: 600,
+        width: 700,
         height: 600,
         border: "1px solid white",
         borderRadius: 8,
@@ -84,16 +84,6 @@ export default function PatientRecordsPanel(props: { closePanel: () => void }) {
         <div>
           <span style={{ marginLeft: 16 }}>Patient Records</span>
         </div>
-        {
-          <img
-            src={closeIcon}
-            className="pointer goRedPointer"
-            alt="Close Patient Records Panel"
-            width={20}
-            style={{ marginRight: 16 }}
-            onClick={props.closePanel}
-          />
-        }
       </div>{" "}
       <Tabs value={selectedTab} onChange={handleTabSelectionChange}>
         {records.map((record) => (

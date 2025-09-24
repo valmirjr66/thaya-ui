@@ -94,4 +94,6 @@ export type Prescription = {
   summary: string;
   fileName: string;
   status: PrescriptionStatus;
+  createdAt: Date;
+  updatedAt: Date;
 };

@@ -1,20 +1,19 @@
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CancelIcon from "@mui/icons-material/Cancel";
-import DownloadIcon from "@mui/icons-material/Download";
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
 import { PatientRecord, PrescriptionStatus, SeriesType } from "../types";
-
-const prescriptionsStorageBaseAddress = import.meta.env
-  .VITE_PRESCRIPTIONS_STORAGE_BASE_ADDRESS;
+import { formatDate } from "../util/DateHelper";
+import PrescriptionManagementControlButtons from "./PrescriptionManagementControlButtons";
 
 const SERIES_TYPES_DISPLAY_NAMES: { [key in SeriesType]: string } = {
   "blood-pressure-systolic": "Blood Pressure (Systolic)",
@@ -31,6 +30,7 @@ export default function PatientRecordView({
   patientRecord: PatientRecord;
   reloadRecords: () => Promise<void>;
 }) {
+  const fileInputRefPrescription = useRef<HTMLInputElement>(null);
   const { triggerToast: triggerErrorToast } = useToaster({ type: "error" });
   const { triggerToast: triggerSuccessToast } = useToaster({ type: "success" });
 
@@ -76,24 +76,6 @@ export default function PatientRecordView({
     }
   };
 
-  const handleUpdatePrescriptionStatus = async (
-    prescriptionId: string,
-    newStatus: PrescriptionStatus
-  ) => {
-    try {
-      await httpCallers.patch(
-        `prescriptions/${prescriptionId}/mark-as-${newStatus}`,
-        {
-          status: newStatus,
-        }
-      );
-      triggerSuccessToast("Prescription status updated successfully");
-      reloadRecords();
-    } catch (error) {
-      triggerErrorToast("Failed to update prescription status");
-    }
-  };
-
   const mapPrescriptionStatusToColor: { [key in PrescriptionStatus]: string } =
     {
       draft: "gray",
@@ -101,54 +83,6 @@ export default function PatientRecordView({
       sent: "blue",
       cancelled: "red",
     };
-
-  const PrescriptionStatusControlButton = ({
-    prescriptionId,
-    status,
-  }: {
-    prescriptionId: string;
-    status: PrescriptionStatus;
-  }) => {
-    if (status === "draft") {
-      return (
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() =>
-            handleUpdatePrescriptionStatus(prescriptionId, "ready")
-          }
-        >
-          MARK AS READY
-        </Button>
-      );
-    } else if (status === "ready") {
-      return (
-        <>
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={() =>
-              handleUpdatePrescriptionStatus(prescriptionId, "sent")
-            }
-            style={{ marginRight: 16 }}
-          >
-            MARK AS SENT
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={() =>
-              handleUpdatePrescriptionStatus(prescriptionId, "cancelled")
-            }
-          >
-            MARK AS CANCELLED
-          </Button>
-        </>
-      );
-    }
-
-    return null;
-  };
 
   return isSaving ? (
     <div
@@ -162,7 +96,7 @@ export default function PatientRecordView({
       Saving...
     </div>
   ) : (
-    <div style={{ padding: 16 }}>
+    <div style={{ padding: 8 }}>
       <div style={{ marginBottom: 16, display: "flex", alignItems: "center" }}>
         <span style={{ fontWeight: "bold" }}>Patient:</span>&nbsp;
         {patientRecord.patientName}
@@ -317,10 +251,10 @@ export default function PatientRecordView({
             ]}
             series={
               selectedSeriesIds.map((id) => {
-                const serie = patientRecord.series.find((s) => s.id === id);
+                const series = patientRecord.series.find((s) => s.id === id);
 
                 return {
-                  data: serie ? serie.records.map((r) => r.value) : [],
+                  data: series ? series.records.map((r) => r.value) : [],
                 };
               }) as {
                 data: number[];
@@ -344,20 +278,35 @@ export default function PatientRecordView({
           borderRadius: 4,
         }}
       >
-        <div style={{ fontWeight: "bold", marginBottom: 12 }}>
-          Prescriptions:
+        <div
+          style={{
+            fontWeight: "bold",
+            marginBottom: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Prescriptions
+          <IconButton title="Add Prescription" onClick={() => {}}>
+            <AddIcon color="primary" />
+          </IconButton>
         </div>
         {patientRecord.prescriptions?.length ? (
           patientRecord.prescriptions.map((prescription) => (
-            <div key={prescription.fileName}>
-              <PrescriptionStatusControlButton
+            <div key={prescription.id}>
+              <PrescriptionManagementControlButtons
                 prescriptionId={prescription.id}
                 status={prescription.status}
+                fileInputRefPrescription={fileInputRefPrescription}
+                reloadRecords={reloadRecords}
+                fileName={prescription.fileName}
               />
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   border: "1px solid #ccc",
                   padding: "4px 16px",
                   borderRadius: 4,
@@ -366,15 +315,22 @@ export default function PatientRecordView({
                   marginTop: 8,
                 }}
               >
-                <a
-                  href={`${prescriptionsStorageBaseAddress}/${prescription.fileName}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: "none" }}
-                >
-                  {prescription.summary}
-                  <DownloadIcon fontSize="medium" />
-                </a>
+                {prescription.summary || "-"}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: 12,
+                  marginTop: 8,
+                }}
+              >
+                <div>
+                  Created at: {formatDate(new Date(prescription.createdAt))}
+                </div>
+                <div>
+                  Updated at: {formatDate(new Date(prescription.updatedAt))}
+                </div>
               </div>
             </div>
           ))

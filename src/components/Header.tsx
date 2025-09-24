@@ -2,11 +2,9 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ChatIcon from "@mui/icons-material/Chat";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
-import TopicIcon from "@mui/icons-material/Topic";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useAgendaPanelStore, useOrganizationInfoStore } from "../store";
-import { usePatientRecordsPanelStore } from "../store/PatientRecordsPanel";
 
 const profilePicsBaseAddress = import.meta.env
   .VITE_PROFILE_PICS_STORAGE_BASE_ADDRESS;
@@ -18,7 +16,6 @@ export type HeaderButtons =
   | "logout"
   | "organization-calendar"
   | "patient-calendar"
-  | "patient-records";
 
 export type HeaderProps = {
   buttonsToRender: HeaderButtons[];
@@ -32,7 +29,6 @@ export default function Header({
   const navigate = useNavigate();
 
   const agendaPanelStore = useAgendaPanelStore();
-  const patientRecordsPanelStore = usePatientRecordsPanelStore();
   const organizationInfoStore = useOrganizationInfoStore();
 
   return (
@@ -120,19 +116,6 @@ export default function Header({
                     fontSize="medium"
                     style={sharedIconsStyle}
                     className="pointer goRedPointer"
-                  />
-                </Box>
-              );
-            case "patient-records":
-              return (
-                <Box
-                  onClick={patientRecordsPanelStore.handleOpen}
-                  key="records"
-                >
-                  <TopicIcon
-                    fontSize="medium"
-                    style={sharedIconsStyle}
-                    className="pointer gotYellowPointer"
                   />
                 </Box>
               );

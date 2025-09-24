@@ -49,11 +49,11 @@ export default function Settings({ role }: { role: UserRoles }) {
       let birthdate: Date;
 
       if (data.birthdate) {
-        const [birdateYear, birthdateMonth, birthdateDay] = data.birthdate
+        const [birthdateYear, birthdateMonth, birthdateDay] = data.birthdate
           .split("-")
           .map((x: string) => Number(x));
 
-        birthdate = new Date(birdateYear, birthdateMonth - 1, birthdateDay);
+        birthdate = new Date(birthdateYear, birthdateMonth - 1, birthdateDay);
       }
 
       setUser({
@@ -90,7 +90,7 @@ export default function Settings({ role }: { role: UserRoles }) {
         birthdate: user.birthdate?.toISOString().split("T")[0],
       });
 
-      triggerToastSuccess("Informations updated successfully!");
+      triggerToastSuccess("Information updated successfully!");
     } catch {
       triggerToastError();
     } finally {
