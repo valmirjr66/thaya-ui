@@ -76,6 +76,24 @@ export default function PatientRecordView({
     }
   };
 
+  const handleUpdatePrescriptionStatus = async (
+    prescriptionId: string,
+    newStatus: PrescriptionStatus
+  ) => {
+    try {
+      await httpCallers.patch(
+        `prescriptions/${prescriptionId}/mark-as-${newStatus}`,
+        {
+          status: newStatus,
+        }
+      );
+      triggerSuccessToast("Prescription status updated successfully");
+      reloadRecords();
+    } catch (error) {
+      triggerErrorToast("Failed to update prescription status");
+    }
+  };
+
   const mapPrescriptionStatusToColor: { [key in PrescriptionStatus]: string } =
     {
       draft: "gray",
@@ -83,6 +101,54 @@ export default function PatientRecordView({
       sent: "blue",
       cancelled: "red",
     };
+
+  const PrescriptionStatusControlButton = ({
+    prescriptionId,
+    status,
+  }: {
+    prescriptionId: string;
+    status: PrescriptionStatus;
+  }) => {
+    if (status === "draft") {
+      return (
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() =>
+            handleUpdatePrescriptionStatus(prescriptionId, "ready")
+          }
+        >
+          MARK AS READY
+        </Button>
+      );
+    } else if (status === "ready") {
+      return (
+        <>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() =>
+              handleUpdatePrescriptionStatus(prescriptionId, "sent")
+            }
+            style={{ marginRight: 16 }}
+          >
+            MARK AS SENT
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() =>
+              handleUpdatePrescriptionStatus(prescriptionId, "cancelled")
+            }
+          >
+            MARK AS CANCELLED
+          </Button>
+        </>
+      );
+    }
+
+    return null;
+  };
 
   return isSaving ? (
     <div
@@ -284,11 +350,10 @@ export default function PatientRecordView({
         {patientRecord.prescriptions?.length ? (
           patientRecord.prescriptions.map((prescription) => (
             <div key={prescription.fileName}>
-              {
-                <div style={{ fontSize: 10, textAlign: "right" }}>
-                  {prescription.status}
-                </div>
-              }
+              <PrescriptionStatusControlButton
+                prescriptionId={prescription.id}
+                status={prescription.status}
+              />
               <div
                 style={{
                   display: "flex",
@@ -298,6 +363,7 @@ export default function PatientRecordView({
                   borderRadius: 4,
                   height: 100,
                   borderTop: `10px solid ${mapPrescriptionStatusToColor[prescription.status]}`,
+                  marginTop: 8,
                 }}
               >
                 <a

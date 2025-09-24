@@ -88,6 +88,7 @@ export type PatientRecord = {
 export type PrescriptionStatus = (typeof PRESCRIPTION_STATUS)[number];
 
 export type Prescription = {
+  id: string;
   doctorId: string;
   patientId: string;
   summary: string;
