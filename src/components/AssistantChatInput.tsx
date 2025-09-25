@@ -113,7 +113,7 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
       }
 
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
         mediaStreamRef.current = null;
       }
     };
@@ -126,7 +126,7 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
     }
 
     if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
       mediaStreamRef.current = null;
     }
 
@@ -140,12 +140,10 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
   );
 
   return (
-    <div
-      style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}
-    >
+    <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
       <form
         onSubmit={onSubmitInternal}
-        style={{ width: isMobile ? "90%" : "75%", display: "flex" }}
+        style={{ width: "100%", display: "flex" }}
       >
         <TextField
           label={placeholder}

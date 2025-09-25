@@ -18,7 +18,7 @@ function CustomTabPanel(props: {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      style={{ overflowY: "scroll", height: 500 }}
+      style={{ overflowY: "scroll", height: '70vh' }}
       {...other}
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -74,7 +74,7 @@ export default function PatientRecordsPanel() {
     <div
       style={{
         width: 700,
-        height: 600,
+        height: '80vh',
         border: "1px solid white",
         borderRadius: 8,
         overflowY: "hidden",

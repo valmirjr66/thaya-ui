@@ -158,12 +158,19 @@ export default function Chat() {
             }}
           >
             <div className="appInner">
-              <MainFrame
-                isLoading={isLoadingMessages}
-                messages={messages}
-                waitingAnswer={waitingAnswer}
-                onSendMessage={onSendMessage}
-              />
+              <div style={{ width: "100%" }}>
+                <MainFrame
+                  isLoading={isLoadingMessages}
+                  messages={messages}
+                  waitingAnswer={waitingAnswer}
+                  onSendMessage={onSendMessage}
+                />
+                <AssistantChatInput
+                  placeholder="Ask me anything"
+                  onSubmit={onSendMessage}
+                  waitingAnswer={waitingAnswer}
+                />
+              </div>
               <div
                 style={{
                   marginLeft: 16,
@@ -174,11 +181,6 @@ export default function Chat() {
                 <PatientRecordsPanel />
               </div>
             </div>
-            <AssistantChatInput
-              placeholder="Ask me anything"
-              onSubmit={onSendMessage}
-              waitingAnswer={waitingAnswer}
-            />
           </div>
         </section>
       </div>

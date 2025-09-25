@@ -54,8 +54,7 @@ export default function MainFrame({
     <div
       className="messagesList"
       style={{
-        fontSize: isMobile ? 14 : "unset",
-        height: isMobile ? "70vh" : "60vh",
+        height: "70vh",
         color: "white",
         display: "flex",
         flexDirection: "column",
@@ -85,9 +84,7 @@ export default function MainFrame({
       id="list-of-messages"
       className="messagesList"
       style={{
-        fontSize: isMobile ? 12 : "unset",
-        height: isMobile ? "calc(100vh - 200px)" : "60vh",
-        width: isMobile ? "100%" : "unset",
+        height: "70vh",
       }}
     >
       {(isLoading ? loadingMessages : messages).map(
