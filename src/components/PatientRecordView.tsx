@@ -5,7 +5,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useToaster from "../hooks/useToaster";
@@ -72,6 +72,18 @@ export default function PatientRecordView({
       setIsGeneratingSummary(false);
     }
   };
+
+  const xAxisData = useMemo(() => {
+    const allDatetimes = patientRecord.series
+      .filter((item) => selectedSeriesIds.includes(item.id))
+      .reduce((acc, curr) => [...acc, curr.records.map((r) => r.datetime)], [])
+      .flat()
+      .filter((dt) => dt && dayjs(dt).isValid())
+      .sort((a, b) => dayjs(a).valueOf() - dayjs(b).valueOf());
+
+    // Remove duplicates
+    return Array.from(new Set(allDatetimes));
+  }, [patientRecord.series, selectedSeriesIds]);
 
   return isSaving ? (
     <div
@@ -225,25 +237,23 @@ export default function PatientRecordView({
             xAxis={[
               {
                 valueFormatter: (date) => dayjs(date).format("MMM D"),
-                data: patientRecord.series
-                  .filter((item) => selectedSeriesIds.includes(item.id))
-                  .reduce(
-                    (acc, curr) => [
-                      ...acc,
-                      curr.records.map((r) => r.datetime),
-                    ],
-                    []
-                  )
-                  .flat()
-                  .map((dt) => new Date(dt)),
+                data: xAxisData.map((dt) => new Date(dt)),
               },
             ]}
             series={
               selectedSeriesIds.map((id) => {
                 const series = patientRecord.series.find((s) => s.id === id);
 
+                const yAxisData = series
+                  ? xAxisData.map(
+                      (dt) =>
+                        series.records.find((r) => r.datetime === dt)?.value ??
+                        null
+                    )
+                  : [];
+
                 return {
-                  data: series ? series.records.map((r) => r.value) : [],
+                  data: yAxisData,
                   label: series ? series.title : "",
                 };
               }) as {
