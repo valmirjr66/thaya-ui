@@ -20,6 +20,23 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const { content, setContent } = useUserPromptStore();
 
+  const cleanupMediaResources = useCallback(() => {
+    if (recorderRef.current) {
+      recorderRef.current.stop();
+      recorderRef.current = null;
+    }
+
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+  }, []);
+
+  const handleSubmit = useCallback(() => {
+    setContent("");
+    onSubmit(content);
+  }, [content, onSubmit, setContent]);
+
   function onChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
@@ -33,16 +50,14 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
     }
 
     e.preventDefault();
-    setContent("");
-    onSubmit(content);
+    handleSubmit();
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
       e.preventDefault();
       if (!isButtonDisabled) {
-        setContent("");
-        onSubmit(content);
+        handleSubmit();
       }
     }
   }
@@ -105,33 +120,15 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
         socketRef.current = null;
       }
 
-      // Clean up media recorder and stream
-      if (recorderRef.current) {
-        recorderRef.current.stop();
-        recorderRef.current = null;
-      }
-
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-        mediaStreamRef.current = null;
-      }
+      cleanupMediaResources();
     };
-  }, [onTranscript]);
+  }, [onTranscript, cleanupMediaResources]);
 
   const stopListening = useCallback(() => {
-    if (recorderRef.current) {
-      recorderRef.current.stop();
-      recorderRef.current = null;
-    }
-
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      mediaStreamRef.current = null;
-    }
-
+    cleanupMediaResources();
     socketRef.current?.emit("end_recording");
     setIsListening(false);
-  }, []);
+  }, [cleanupMediaResources]);
 
   const isButtonDisabled = useMemo(
     () => content?.length === 0 || waitingAnswer || isListening,
