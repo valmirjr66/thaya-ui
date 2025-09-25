@@ -17,7 +17,8 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
 
   const socketRef = useRef<Socket | null>(null);
   const [isListening, setIsListening] = useState(false);
-  const recorderRef = useRef(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
   const { content, setContent } = useUserPromptStore();
 
   function onChange(
@@ -52,19 +53,25 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
 
     setIsListening(true);
 
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
 
-    const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
-    recorderRef.current = recorder;
+      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
 
-    recorder.ondataavailable = async (event) => {
-      if (event.data.size > 0) {
-        const buffer = await event.data.arrayBuffer();
-        socketRef.current.emit("audio_chunk", buffer);
-      }
-    };
+      recorder.ondataavailable = async (event) => {
+        if (event.data.size > 0) {
+          const buffer = await event.data.arrayBuffer();
+          socketRef.current?.emit("audio_chunk", buffer);
+        }
+      };
 
-    recorder.start(250);
+      recorderRef.current = recorder;
+      recorder.start(250);
+    } catch (error) {
+      console.error("Error starting recording:", error);
+      setIsListening(false);
+    }
   }, [isListening]);
 
   const onTranscript = useCallback(
@@ -98,14 +105,34 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
         socketRef.current.disconnect();
         socketRef.current = null;
       }
+
+      // Clean up media recorder and stream
+      if (recorderRef.current) {
+        recorderRef.current.stop();
+        recorderRef.current = null;
+      }
+
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        mediaStreamRef.current = null;
+      }
     };
   }, [onTranscript]);
 
   const stopListening = useCallback(() => {
-    recorderRef.current?.stop?.();
-    socketRef.current.emit("end_recording");
+    if (recorderRef.current) {
+      recorderRef.current.stop();
+      recorderRef.current = null;
+    }
+
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current = null;
+    }
+
+    socketRef.current?.emit("end_recording");
     setIsListening(false);
-  }, [isListening]);
+  }, []);
 
   const isButtonDisabled = useMemo(
     () => content?.length === 0 || waitingAnswer || isListening,
@@ -147,15 +174,12 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
             disabled={waitingAnswer}
             title="Audio input"
             onClick={() => {
-              setIsListening((prevState) => {
-                if (prevState) {
-                  stopListening();
-                } else {
-                  setContent("");
-                  startListening();
-                }
-                return !prevState;
-              });
+              if (isListening) {
+                stopListening();
+              } else {
+                setContent("");
+                startListening();
+              }
             }}
           >
             <GraphicEqIcon
