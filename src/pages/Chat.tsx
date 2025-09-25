@@ -1,6 +1,5 @@
 import { Popover } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { isMobile } from "react-device-detect";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Socket, io } from "socket.io-client";
@@ -151,7 +150,7 @@ export default function Chat() {
         <section className="appContent">
           <div
             style={{
-              width: isMobile ? "95%" : "80%",
+              width: "80%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",

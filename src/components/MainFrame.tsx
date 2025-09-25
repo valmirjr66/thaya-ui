@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-import { isMobile } from "react-device-detect";
 import Skeleton from "react-loading-skeleton";
 import { v4 as uuidv4 } from "uuid";
 import dotsGif from "../imgs/dots.gif";

@@ -16,7 +16,6 @@
     "dayjs": "^1.11.13",
     "lottie-react": "^2.4.1",
     "react": "^19.1.0",
-    "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^6.0.0",
     "react-font": "^1.2.1",

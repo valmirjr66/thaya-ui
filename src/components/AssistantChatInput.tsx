@@ -2,8 +2,7 @@ import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import SendIcon from "@mui/icons-material/Send";
 import { IconButton, TextField } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { isMobile } from "react-device-detect";
-import { io, Socket } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import { useUserPromptStore } from "../store";
 
 type AssistantChatInputProps = {
@@ -155,9 +154,6 @@ export default function AssistantChatInput(props: AssistantChatInputProps) {
           spellCheck={false}
           fullWidth
           variant="filled"
-          slotProps={{
-            input: { style: { fontSize: isMobile ? 12 : "unset" } },
-          }}
           onKeyDown={onKeyDown}
           disabled={isListening}
         />

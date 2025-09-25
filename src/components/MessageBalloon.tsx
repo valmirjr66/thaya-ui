@@ -1,6 +1,5 @@
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Button } from "@mui/material";
-import { isMobile } from "react-device-detect";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import downloadIcon from "../imgs/ic-download.svg";
@@ -61,10 +60,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
   return (
     <>
       <div id={`${id}_anchor`} />
-      <li
-        className={className}
-        style={{ marginBottom: isMobile && !isLastMessage ? 32 : "unset" }}
-      >
+      <li className={className}>
         <img
           className="avatar"
           alt={member.clientData.username}
@@ -141,7 +137,7 @@ const MessageBalloon: React.FC<MessageBalloonProps> = ({
                     rel="noreferrer"
                     className="downloadFile"
                     key={index}
-                    style={{ marginTop: isMobile ? 10 : 20 }}
+                    style={{ marginTop: 20 }}
                   >
                     {`[${index + 1}]. `}
                     {reference?.displayName}
