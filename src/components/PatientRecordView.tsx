@@ -221,10 +221,6 @@ export default function PatientRecordView({
               <MenuItem
                 key={item.id}
                 value={item.id}
-                disabled={
-                  selectedSeriesIds.length >= 2 &&
-                  !selectedSeriesIds.includes(item.id)
-                }
               >
                 {item.title ||
                   SERIES_TYPES_DISPLAY_NAMES[item.type] ||
