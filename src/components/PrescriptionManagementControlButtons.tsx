@@ -28,11 +28,13 @@ const PrescriptionManagementControlButtons = ({
   const { triggerToast: triggerSuccessToast } = useToaster({ type: "success" });
   const { triggerToast: triggerErrorToast } = useToaster({ type: "error" });
 
-  const isDraftOnly = (status: PrescriptionStatus) => status !== "draft";
-  const isDraftOrReady = (status: PrescriptionStatus) =>
+  const isNotDraft = (status: PrescriptionStatus) => status !== "draft";
+  const isNotDraftNorReady = (status: PrescriptionStatus) =>
     status !== "draft" && status !== "ready";
-  const isDraftWithFile = (status: PrescriptionStatus, fileName: string) =>
-    status !== "draft" || !fileName;
+  const isNotDraftOrHasNoFile = (
+    status: PrescriptionStatus,
+    fileName: string
+  ) => status !== "draft" || !fileName;
 
   const PrescriptionIconButton = ({
     title,
@@ -188,13 +190,13 @@ const PrescriptionManagementControlButtons = ({
           <PrescriptionIconButton
             title="AI: Summary"
             onClick={handleGenerateSummary}
-            disabled={isDraftOrReady(status) || !fileName}
+            disabled={isNotDraftNorReady(status) || !fileName}
             icon={<AutoAwesomeIcon />}
           />
           <PrescriptionIconButton
             title="Upload"
             onClick={() => fileInputRefPrescription.current?.click()}
-            disabled={isDraftOnly(status)}
+            disabled={isNotDraft(status)}
             icon={<UploadIcon />}
           />
           <PrescriptionIconButton
@@ -206,13 +208,13 @@ const PrescriptionManagementControlButtons = ({
           <PrescriptionIconButton
             title="Erase"
             onClick={handleErasePrescription}
-            disabled={isDraftWithFile(status, fileName)}
+            disabled={isNotDraftOrHasNoFile(status, fileName)}
             icon={<LinkOffIcon />}
           />
           <PrescriptionIconButton
             title="Delete"
             onClick={handleDeletePrescription}
-            disabled={isDraftOnly(status)}
+            disabled={isNotDraft(status)}
             icon={<DeleteIcon />}
             color="error"
           />

@@ -24,6 +24,9 @@ export default function PatientRecordPrescriptions({
   const { triggerToast: triggerErrorToast } = useToaster({ type: "error" });
   const { triggerToast: triggerSuccessToast } = useToaster({ type: "success" });
 
+  const isNotDraftNorReady = (status: PrescriptionStatus) =>
+    status !== "draft" && status !== "ready";
+
   const handleInsertPrescription = useCallback(async () => {
     try {
       const { data }: { data: { id: string } } = await httpCallers.post(
@@ -142,8 +145,7 @@ export default function PatientRecordPrescriptions({
             >
               <TextField
                 placeholder={
-                  prescription.status !== "draft" &&
-                  prescription.status !== "ready"
+                  isNotDraftNorReady(prescription.status)
                     ? "No summary"
                     : "Summary"
                 }
@@ -160,10 +162,7 @@ export default function PatientRecordPrescriptions({
                     },
                   }));
                 }}
-                disabled={
-                  prescription.status !== "draft" &&
-                  prescription.status !== "ready"
-                }
+                disabled={isNotDraftNorReady(prescription.status)}
                 slotProps={{
                   input: {
                     endAdornment: (
@@ -172,15 +171,11 @@ export default function PatientRecordPrescriptions({
                           internalPrescriptions[prescription.id].summary && (
                           <IconButton
                             title="Save"
-                            disabled={
-                              prescription.status !== "draft" &&
-                              prescription.status !== "ready"
-                            }
+                            disabled={isNotDraftNorReady(prescription.status)}
                           >
                             <Save
                               color={
-                                prescription.status !== "draft" &&
-                                prescription.status !== "ready"
+                                isNotDraftNorReady(prescription.status)
                                   ? "disabled"
                                   : "primary"
                               }
