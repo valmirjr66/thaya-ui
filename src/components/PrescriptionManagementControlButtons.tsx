@@ -4,7 +4,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import UploadIcon from "@mui/icons-material/Upload";
 import { Button, IconButton } from "@mui/material";
-import { RefObject } from "react";
+import React, { RefObject } from "react";
 import useToaster from "../hooks/useToaster";
 import httpCallers from "../service";
 import { PrescriptionStatus } from "../types";
@@ -27,6 +27,33 @@ const PrescriptionManagementControlButtons = ({
 }) => {
   const { triggerToast: triggerSuccessToast } = useToaster({ type: "success" });
   const { triggerToast: triggerErrorToast } = useToaster({ type: "error" });
+
+  const isDraftOnly = (status: PrescriptionStatus) => status !== "draft";
+  const isDraftOrReady = (status: PrescriptionStatus) =>
+    status !== "draft" && status !== "ready";
+  const isDraftWithFile = (status: PrescriptionStatus, fileName: string) =>
+    status !== "draft" || !fileName;
+
+  const PrescriptionIconButton = ({
+    title,
+    onClick,
+    disabled,
+    icon,
+    color = "primary",
+  }: {
+    title: string;
+    onClick: () => void;
+    disabled: boolean;
+    icon: React.ReactNode;
+    color?: "primary" | "error";
+  }) => (
+    <IconButton title={title} onClick={onClick} disabled={disabled}>
+      {React.cloneElement(icon as React.ReactElement, {
+        fontSize: "small",
+        color: disabled ? "disabled" : color,
+      })}
+    </IconButton>
+  );
 
   const handleDeletePrescription = async () => {
     try {
@@ -158,60 +185,37 @@ const PrescriptionManagementControlButtons = ({
             ref={fileInputRefPrescription}
             onChange={() => handleUploadPrescription()}
           />
-          <IconButton
+          <PrescriptionIconButton
             title="AI: Summary"
-            onClick={() => handleGenerateSummary()}
-            disabled={(status !== "draft" && status !== "ready") || !fileName}
-          >
-            <AutoAwesomeIcon
-              fontSize="small"
-              color={
-                (status !== "draft" && status !== "ready") || !fileName
-                  ? "disabled"
-                  : "primary"
-              }
-            />
-          </IconButton>
-          <IconButton
+            onClick={handleGenerateSummary}
+            disabled={isDraftOrReady(status) || !fileName}
+            icon={<AutoAwesomeIcon />}
+          />
+          <PrescriptionIconButton
             title="Upload"
             onClick={() => fileInputRefPrescription.current?.click()}
-            disabled={status !== "draft"}
-          >
-            <UploadIcon
-              fontSize="small"
-              color={status !== "draft" ? "disabled" : "primary"}
-            />
-          </IconButton>
-          <IconButton
+            disabled={isDraftOnly(status)}
+            icon={<UploadIcon />}
+          />
+          <PrescriptionIconButton
             title="Download"
-            onClick={() => handleDownloadPrescription()}
+            onClick={handleDownloadPrescription}
             disabled={!fileName}
-          >
-            <DownloadIcon
-              fontSize="small"
-              color={fileName ? "primary" : "disabled"}
-            />
-          </IconButton>
-          <IconButton
+            icon={<DownloadIcon />}
+          />
+          <PrescriptionIconButton
             title="Erase"
-            onClick={() => handleErasePrescription()}
-            disabled={status !== "draft" || !fileName}
-          >
-            <LinkOffIcon
-              fontSize="small"
-              color={status !== "draft" || !fileName ? "disabled" : "primary"}
-            />
-          </IconButton>
-          <IconButton
+            onClick={handleErasePrescription}
+            disabled={isDraftWithFile(status, fileName)}
+            icon={<LinkOffIcon />}
+          />
+          <PrescriptionIconButton
             title="Delete"
-            onClick={() => handleDeletePrescription()}
-            disabled={status !== "draft"}
-          >
-            <DeleteIcon
-              fontSize="small"
-              color={status !== "draft" ? "disabled" : "error"}
-            />
-          </IconButton>
+            onClick={handleDeletePrescription}
+            disabled={isDraftOnly(status)}
+            icon={<DeleteIcon />}
+            color="error"
+          />
         </div>
       }
     </div>
