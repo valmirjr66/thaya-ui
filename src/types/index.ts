@@ -80,7 +80,7 @@ export type PatientRecord = {
     id: string;
     title: string;
     type: SeriesType;
-    records: { datetime: Date; value: number }[];
+    records: { id: string; datetime: Date; value: number }[];
   }[];
   prescriptions?: Prescription[];
 };
