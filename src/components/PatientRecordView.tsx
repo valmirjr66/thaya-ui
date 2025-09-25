@@ -244,9 +244,11 @@ export default function PatientRecordView({
 
                 return {
                   data: series ? series.records.map((r) => r.value) : [],
+                  label: series ? series.title : "",
                 };
               }) as {
                 data: number[];
+                label: string;
               }[]
             }
             height={300}
