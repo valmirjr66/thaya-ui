@@ -170,8 +170,20 @@ export default function PatientRecordPrescriptions({
                       <InputAdornment position="end">
                         {prescription.summary !==
                           internalPrescriptions[prescription.id].summary && (
-                          <IconButton title="Save">
+                          <IconButton
+                            title="Save"
+                            disabled={
+                              prescription.status !== "draft" &&
+                              prescription.status !== "ready"
+                            }
+                          >
                             <Save
+                              color={
+                                prescription.status !== "draft" &&
+                                prescription.status !== "ready"
+                                  ? "disabled"
+                                  : "primary"
+                              }
                               onClick={() => handleSaveSummary(prescription.id)}
                             />
                           </IconButton>
