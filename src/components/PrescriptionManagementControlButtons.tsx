@@ -199,7 +199,7 @@ const PrescriptionManagementControlButtons = ({
           >
             <LinkOffIcon
               fontSize="small"
-              color={status !== "draft" ? "disabled" : "primary"}
+              color={status !== "draft" || !fileName ? "disabled" : "primary"}
             />
           </IconButton>
           <IconButton
